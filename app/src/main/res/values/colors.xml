@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#616969</color>
+    <color name="colorPrimaryDark">#616969</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="nav_item_bottom_backgroud">#ffffff</color>
+    <color name="nav_bottom_backgroud">#737171</color>
+    <color name="home_fragment_tab">#c4b9b9</color>
+</resources>

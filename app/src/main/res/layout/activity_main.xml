@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Activity.MainActivity">
+
+
+    <!--custom an Action bar-->
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/action_tool_bar_custom"
+        android:layout_alignParentTop="true"
+        android:theme="@style/Acction_top_bar"
+        android:gravity="left"
+        />
+
+    <!--</android.support.v7.widget.Toolbar>-->
+
+    <LinearLayout
+        android:id="@+id/fragment_main_LL_Container"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/nav_bottom_view">
+    </LinearLayout>
+
+
+    <!--custom a BottomNavigationView-->
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/nav_bottom_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+
+        app:itemBackground="@color/nav_bottom_backgroud"
+        app:itemIconTint="@color/nav_item_bottom_backgroud"
+        app:itemTextColor="@color/nav_item_bottom_backgroud"
+        app:menu="@menu/nav_bottom_items"
+        />
+
+</RelativeLayout>

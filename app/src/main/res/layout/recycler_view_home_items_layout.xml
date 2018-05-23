@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="1dp"
+    >
+
+    <ImageButton
+        android:id="@+id/imgBtn_recycler_view_home_item"
+        android:src="@drawable/benh_vien_da_khoa_sai_gon"
+        android:layout_width="match_parent"
+        android:layout_height="400px"
+        android:scaleType="fitXY"
+        android:background="@drawable/custome_layout_border"
+        />
+    <ImageView
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/imgBtn_recycler_view_home_item"
+        android:background="#bf000000"
+        >
+        <LinearLayout
+            android:id="@+id/container_txt_name_location"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/icon_eye"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            >
+
+            <TextView
+                android:textStyle="bold"
+                android:textColor="#ffffff"
+                android:layout_width="match_parent"
+                android:textAppearance="?android:attr/textAppearance"
+                android:layout_height="match_parent"
+                android:id="@+id/txt_name_location_ecycler_view_home_item"
+                android:text="Bưu Điện Trung Tâm Sài Gòn"
+                android:gravity="center|left"
+                android:autoSizeTextType="uniform"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="3dp"
+                android:layout_gravity="fill_horizontal"
+                />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@+id/txt_amount_of_view"
+            android:id="@+id/icon_eye"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_eye_lc_home"
+            android:layout_marginRight="5dp"/>
+
+        <TextView
+            android:gravity="center|left"
+            android:layout_centerInParent="true"
+            android:id="@+id/txt_amount_of_view"
+            android:layout_alignParentRight="true"
+            android:textColor="#ffffff"
+            android:text="20000000"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoSizeTextType="uniform"/>
+    </RelativeLayout>
+</RelativeLayout>
