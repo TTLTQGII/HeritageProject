@@ -39,13 +39,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     List<String> fragmentList = new ArrayList<>();
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        initData();
+        initView();
+        loadFragment("Home", new navHomefrag());
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initData();
-        initView();
 
-        loadFragment("Home", new navHomefrag());
     }
 
     // create instance View
