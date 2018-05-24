@@ -4,7 +4,7 @@
     android:padding="1dp"
     >
 
-    <ImageButton
+    <ImageView
         android:id="@+id/imgBtn_recycler_view_home_item"
         android:src="@drawable/benh_vien_da_khoa_sai_gon"
         android:layout_width="match_parent"

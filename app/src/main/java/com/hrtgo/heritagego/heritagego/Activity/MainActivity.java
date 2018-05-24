@@ -6,21 +6,14 @@ import android.support.annotation.NonNull;
 
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.hrtgo.heritagego.heritagego.Fragment.homeTabFamous;
-import com.hrtgo.heritagego.heritagego.Fragment.homeTabMostViewed;
-import com.hrtgo.heritagego.heritagego.Fragment.homeTabMyFavorite;
-import com.hrtgo.heritagego.heritagego.Fragment.homeTabNear;
 import com.hrtgo.heritagego.heritagego.Fragment.navHomefrag;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Fragment.navitem3frag;

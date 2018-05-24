@@ -8,51 +8,87 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.untill.customize;
+import com.hrtgo.heritagego.heritagego.Adapter.imgViewpagerAdapterLocationDetail;
+
+import java.util.ArrayList;
+
+import at.blogc.android.views.ExpandableTextView;
 
 public class LocationDetail extends AppCompatActivity {
 
-    private android.support.v7.widget.Toolbar actionToolBar;
-
+    android.support.v7.widget.Toolbar actionToolBar;
+    TextView txtAmountOfLike, txtAmountOfComment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.location_detail);
 
+        //Create Action bar
+        actionToolBar = findViewById(R.id.action_tool_bar_custom_location_detail);
+        initCustomizeActionBar();
         initViewAndEvent();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        actionToolBar = findViewById(R.id.action_tool_bar_custom_location_detail);
-        initCustomizeActionBar();
     }
 
     void initViewAndEvent(){
+        final TextView txtLocationName, txtLocationDistance, txtLocationAddress, txtAmountOfView, txtAmountOfLike;
+        eventLikeComment();
+    }
 
-        final TextView txtLocationName, txtLocationDistance, txtLocationAddress, txtAmountOfView, txtAmountOfLike, txtAmountOfComment;
+    // gọi qua worker -> asyntask
+    // push image into viewpager
+    private void eventViewPager(ArrayList<Integer> imgLocationDetails){
         ViewPager imgViewPager;
-        ImageView imgLike, imgComment;
+        imgViewPager = findViewById(R.id.img_location_container_detail);
+
+        imgViewpagerAdapterLocationDetail imgAdapter = new imgViewpagerAdapterLocationDetail(imgLocationDetails, this);
+        imgViewPager.setAdapter(imgAdapter);
+
+        int imgCount = imgAdapter.getCount();
+    }
+
+    // create like and comment event
+    public void eventLikeComment(){
+        final ImageView imgLike, imgComment;
+        txtAmountOfLike = findViewById(R.id.txt_amount_of_like);
+        txtAmountOfComment = findViewById(R.id.txt_amount_of_comment);
 
         imgLike = findViewById(R.id.img_btn_like);
-        txtAmountOfLike = findViewById(R.id.txt_amount_of_like);
+        imgComment = findViewById(R.id.img_btn_comment);
 
         imgLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                txtAmountOfLike.setText("0");
+                imgLike.setImageResource(R.drawable.ic_like_active_32dp);
+                int amoutOfLike = Integer.valueOf((String) txtAmountOfLike.getText());
+                amoutOfLike = amoutOfLike + 1;
+                txtAmountOfLike.setText(String.valueOf(amoutOfLike));
+                imgLike.setClickable(false);
             }
         });
+
+        imgComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int amountOfComent = Integer.valueOf((String)txtAmountOfComment.getText());
+                amountOfComent = amountOfComent + 1;
+                txtAmountOfComment.setText(String.valueOf(amountOfComent));
+            }
+        });
+
     }
 
+    // customize Action bar
     private void initCustomizeActionBar(){
         if(actionToolBar != null) {
             setSupportActionBar(actionToolBar);
@@ -63,4 +99,19 @@ public class LocationDetail extends AppCompatActivity {
             customize.customizeActionBar(actionToolBar, actionBar, customAcionBar);
         }
     }
+
+    // expand and collapse the location content
+    private void eventExpandableTextView(String description, String content){
+        ExpandableTextView txtDescription = findViewById(R.id.expTxt_description_location_detail);
+
+        if(txtDescription.isExpanded()){
+            txtDescription.collapse();
+            txtDescription.setText(description);
+        }
+        else {
+            txtDescription.expand();
+            txtDescription.setText(content);
+        }
+    }
+
 }

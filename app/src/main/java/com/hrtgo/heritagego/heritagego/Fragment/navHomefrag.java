@@ -5,17 +5,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hrtgo.heritagego.heritagego.Model.LocationHome;
 import com.hrtgo.heritagego.heritagego.R;
-import com.hrtgo.heritagego.heritagego.Adapter.navHomeAdapter;
-
-import java.util.ArrayList;
+import com.hrtgo.heritagego.heritagego.Adapter.navBottomAdapterViewpagerHome;
 
 public class navHomefrag extends Fragment {
 
@@ -33,14 +29,14 @@ public class navHomefrag extends Fragment {
     private void initeViewAndEvent(View view){
 
         //initial View
-        TabLayout tabLayout;
+        final TabLayout tabLayout;
         ViewPager viewPager;
 
         tabLayout = view.findViewById(R.id.home_fragment_tab_Layout);
         viewPager = view.findViewById(R.id.home_fragment_tab_viewpagger);
 
         //initial Event
-        navHomeAdapter adapter = new navHomeAdapter(getActivity().getSupportFragmentManager());
+        navBottomAdapterViewpagerHome adapter = new navBottomAdapterViewpagerHome(getActivity().getSupportFragmentManager());
         adapter.getItem(0);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -69,7 +65,7 @@ public class navHomefrag extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-                //  appBarLayout.setExpanded(true,true);
+
             }
 
             @Override
