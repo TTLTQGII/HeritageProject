@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabMostViewHome;
+import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
 import com.hrtgo.heritagego.heritagego.Model.LocationHome;
 import com.hrtgo.heritagego.heritagego.R;
 
@@ -43,7 +43,7 @@ public class tabMostViewedHome extends Fragment{
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        final rcvAdapterTabMostViewHome adapter = new rcvAdapterTabMostViewHome(locationMostViewed, getActivity());
+        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationMostViewed, this.getContext());
         recyclerView.setAdapter(adapter);
     }
 

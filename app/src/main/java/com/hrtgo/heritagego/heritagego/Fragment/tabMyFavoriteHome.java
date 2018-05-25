@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabMyFavoriteHome;
+import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
 import com.hrtgo.heritagego.heritagego.Model.LocationHome;
 import com.hrtgo.heritagego.heritagego.R;
 
@@ -44,13 +44,13 @@ public class tabMyFavoriteHome extends Fragment {
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        final rcvAdapterTabMyFavoriteHome adapter = new rcvAdapterTabMyFavoriteHome(locationMyfavorite, getActivity());
+        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationMyfavorite, this.getContext());
         recyclerView.setAdapter(adapter);
     }
 
     private void initData(){
         locationMyfavorite = new ArrayList<>();
-        //locationHomes.add(new LocationHome(R.drawable.benh_vien_da_khoa_sai_gon, "20", "Bệnh Viện Đa Khoa Sài Gòn"));
+        locationMyfavorite.add(new LocationHome(R.drawable.benh_vien_da_khoa_sai_gon, "20", "Bệnh Viện Đa Khoa Sài Gòn"));
         locationMyfavorite.add(new LocationHome(R.drawable.cho_ben_thanh, "50", "Chợ Bến Thành"));
 
     }

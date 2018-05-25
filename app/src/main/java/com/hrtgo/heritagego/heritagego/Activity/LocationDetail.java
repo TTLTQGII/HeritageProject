@@ -9,11 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.untill.customize;
-import com.hrtgo.heritagego.heritagego.Adapter.imgViewpagerAdapterLocationDetail;
+import com.hrtgo.heritagego.heritagego.Adapter.imgListAdapterLocationDetail;
 
 import java.util.ArrayList;
 
@@ -51,7 +52,7 @@ public class LocationDetail extends AppCompatActivity {
         ViewPager imgViewPager;
         imgViewPager = findViewById(R.id.img_location_container_detail);
 
-        imgViewpagerAdapterLocationDetail imgAdapter = new imgViewpagerAdapterLocationDetail(imgLocationDetails, this);
+        imgListAdapterLocationDetail imgAdapter = new imgListAdapterLocationDetail(imgLocationDetails, this);
         imgViewPager.setAdapter(imgAdapter);
 
         int imgCount = imgAdapter.getCount();
@@ -59,25 +60,27 @@ public class LocationDetail extends AppCompatActivity {
 
     // create like and comment event
     public void eventLikeComment(){
+        final RelativeLayout imgBtnLike, imgBtnComment;
         final ImageView imgLike, imgComment;
         txtAmountOfLike = findViewById(R.id.txt_amount_of_like);
         txtAmountOfComment = findViewById(R.id.txt_amount_of_comment);
+        imgLike = findViewById(R.id.img_like);
 
-        imgLike = findViewById(R.id.img_btn_like);
-        imgComment = findViewById(R.id.img_btn_comment);
+        imgBtnLike = findViewById(R.id.btn_like);
+        imgBtnComment = findViewById(R.id.btn_comment);
 
-        imgLike.setOnClickListener(new View.OnClickListener() {
+        imgBtnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imgLike.setImageResource(R.drawable.ic_like_active_32dp);
                 int amoutOfLike = Integer.valueOf((String) txtAmountOfLike.getText());
                 amoutOfLike = amoutOfLike + 1;
                 txtAmountOfLike.setText(String.valueOf(amoutOfLike));
-                imgLike.setClickable(false);
+                imgLike.setImageResource(R.drawable.ic_like_active_32dp);
+                imgBtnLike.setClickable(false);
             }
         });
 
-        imgComment.setOnClickListener(new View.OnClickListener() {
+        imgBtnComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int amountOfComent = Integer.valueOf((String)txtAmountOfComment.getText());
@@ -85,7 +88,6 @@ public class LocationDetail extends AppCompatActivity {
                 txtAmountOfComment.setText(String.valueOf(amountOfComent));
             }
         });
-
     }
 
     // customize Action bar

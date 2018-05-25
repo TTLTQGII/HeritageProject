@@ -1,7 +1,5 @@
 package com.hrtgo.heritagego.heritagego.Model;
 
-import java.util.Comparator;
-
 public class LocationHome{
 
     private int locationImage;

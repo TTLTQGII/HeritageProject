@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabNearHome;
+import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
 import com.hrtgo.heritagego.heritagego.Model.LocationHome;
 import com.hrtgo.heritagego.heritagego.R;
 
@@ -44,17 +44,17 @@ public class tabNearHome extends Fragment{
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        final rcvAdapterTabNearHome adapter = new rcvAdapterTabNearHome(locationNear, getContext());
+        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationNear, this.getContext());
         recyclerView.setAdapter(adapter);
     }
 
     private void initData(){
         locationNear = new ArrayList<>();
+        locationNear.add(new LocationHome(R.drawable.dinh_doc_lap, "1000", "Dinh Độc Lập"));
         locationNear.add(new LocationHome(R.drawable.benh_vien_da_khoa_sai_gon, "20", "Bệnh Viện Đa Khoa Sài Gòn"));
         locationNear.add(new LocationHome(R.drawable.cau_mong_sai_gon, "50", "Chợ Bến Thành"));
         locationNear.add(new LocationHome(R.drawable.cho_ben_thanh, "50", "Chợ Bến Thành"));
         locationNear.add(new LocationHome(R.drawable.ben_nha_rong, "1000000", "Bến Nhà Rồng"));
-        locationNear.add(new LocationHome(R.drawable.dinh_doc_lap, "1000", "Dinh Độc Lập"));
         locationNear.add(new LocationHome(R.drawable.buu_dien_trung_tam_sai_gon, "10000000", "Bưu Điện Trung Tâm Sài Gòn"));
     }
 }
