@@ -28,7 +28,7 @@ public class tabMyFavoriteHome extends Fragment {
         View view = inflater.inflate(R.layout.home_fragment_tab_my_favorite, container, false);
 
         initView(view);
-        initData();
+        //initData();
         setRecyclerView();
 
         return view;

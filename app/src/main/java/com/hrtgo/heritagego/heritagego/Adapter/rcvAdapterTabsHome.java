@@ -17,11 +17,11 @@ import java.util.ArrayList;
 
 public class rcvAdapterTabsHome extends RecyclerView.Adapter<rcvAdapterTabsHome.viewHolder>{
 
-    ArrayList<LocationHome> locationHomes;
+    ArrayList<LocationHome> locationDatas;
     Context context;
 
-    public rcvAdapterTabsHome(ArrayList<LocationHome> locationHomes, Context context) {
-        this.locationHomes = locationHomes;
+    public rcvAdapterTabsHome(ArrayList<LocationHome> locationDatas, Context context) {
+        this.locationDatas = locationDatas;
         this.context = context;
     }
 
@@ -36,14 +36,19 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<rcvAdapterTabsHome.
 
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
-        holder.imgBtnRCVHome.setImageResource(locationHomes.get(position).getLocationImage());
-        holder.txtLocationName.setText(locationHomes.get(position).getLocationName());
-        holder.txtAmountOfLocationView.setText(locationHomes.get(position).getLocationViewed());
+        holder.imgBtnRCVHome.setImageResource(locationDatas.get(position).getLocationImage());
+        holder.txtLocationName.setText(locationDatas.get(position).getLocationName());
+        holder.txtAmountOfLocationView.setText(locationDatas.get(position).getLocationViewed());
     }
 
     @Override
     public int getItemCount() {
-        return locationHomes.size();
+        if(locationDatas != null){
+            return locationDatas.size();
+        }
+        else {
+            return 0;
+        }
     }
 
 

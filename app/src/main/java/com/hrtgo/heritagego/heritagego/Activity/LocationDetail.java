@@ -9,7 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.hrtgo.heritagego.heritagego.R;
@@ -31,7 +33,6 @@ public class LocationDetail extends AppCompatActivity {
         setContentView(R.layout.location_detail);
 
         //Create Action bar
-        actionToolBar = findViewById(R.id.action_tool_bar_custom_location_detail);
         initCustomizeActionBar();
         initViewAndEvent();
     }
@@ -41,12 +42,33 @@ public class LocationDetail extends AppCompatActivity {
         super.onStart();
     }
 
+    // customize Action bar
+    private void initCustomizeActionBar(){
+        actionToolBar = findViewById(R.id.action_tool_bar_custom_location_detail);
+        if(actionToolBar != null) {
+            setSupportActionBar(actionToolBar);
+            ActionBar actionBar = getSupportActionBar();
+            LayoutInflater inflater = (LayoutInflater) LocationDetail.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View customAcionBar = inflater.inflate(R.layout.tool_action_bar_customize, null);
+            actionBar.setCustomView(customAcionBar);
+            customize.customizeActionBar(actionToolBar, actionBar, customAcionBar);
+        }
+    }
+
+
     void initViewAndEvent(){
         final TextView txtLocationName, txtLocationDistance, txtLocationAddress, txtAmountOfView, txtAmountOfLike;
         eventLikeComment();
+        ArrayList<Integer> listTest = new ArrayList<>();
+
+        listTest.add(R.drawable.cho_ben_thanh);
+        listTest.add(R.drawable.benh_vien_da_khoa_sai_gon);
+        listTest.add(R.drawable.buu_dien_trung_tam_sai_gon);
+
+        eventViewPager(listTest);
     }
 
-    // gọi qua worker -> asyntask
+    // gọi qua worker -> worker asyntask
     // push image into viewpager
     private void eventViewPager(ArrayList<Integer> imgLocationDetails){
         ViewPager imgViewPager;
@@ -55,7 +77,7 @@ public class LocationDetail extends AppCompatActivity {
         imgListAdapterLocationDetail imgAdapter = new imgListAdapterLocationDetail(imgLocationDetails, this);
         imgViewPager.setAdapter(imgAdapter);
 
-        int imgCount = imgAdapter.getCount();
+        //int imgCount = imgAdapter.getCount();
     }
 
     // create like and comment event
@@ -83,6 +105,7 @@ public class LocationDetail extends AppCompatActivity {
         imgBtnComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // temp function
                 int amountOfComent = Integer.valueOf((String)txtAmountOfComment.getText());
                 amountOfComent = amountOfComent + 1;
                 txtAmountOfComment.setText(String.valueOf(amountOfComent));
@@ -90,30 +113,27 @@ public class LocationDetail extends AppCompatActivity {
         });
     }
 
-    // customize Action bar
-    private void initCustomizeActionBar(){
-        if(actionToolBar != null) {
-            setSupportActionBar(actionToolBar);
-            ActionBar actionBar = getSupportActionBar();
-            LayoutInflater inflater = (LayoutInflater) LocationDetail.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View customAcionBar = inflater.inflate(R.layout.tool_action_bar_customize, null);
-            actionBar.setCustomView(customAcionBar);
-            customize.customizeActionBar(actionToolBar, actionBar, customAcionBar);
-        }
-    }
 
     // expand and collapse the location content
-    private void eventExpandableTextView(String description, String content){
-        ExpandableTextView txtDescription = findViewById(R.id.expTxt_description_location_detail);
+    // goi qua -> worker asyntask
+    public void eventExpandableTextView(final String description, final String content){
+        final ExpandableTextView txtDescription = findViewById(R.id.expTxt_description_location_detail);
+        txtDescription.setText(description);
 
-        if(txtDescription.isExpanded()){
-            txtDescription.collapse();
-            txtDescription.setText(description);
-        }
-        else {
-            txtDescription.expand();
-            txtDescription.setText(content);
-        }
+        txtDescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(txtDescription.isExpanded()){
+                    txtDescription.collapse();
+                    txtDescription.setText(description);
+                }
+                else {
+                    txtDescription.expand();
+                    txtDescription.setText(content);
+                }
+            }
+        });
     }
+
 
 }
