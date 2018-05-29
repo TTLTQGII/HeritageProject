@@ -17,7 +17,7 @@ import com.hrtgo.heritagego.heritagego.R;
 import java.util.ArrayList;
 
 public class tabMostViewedHome extends Fragment{
-    ArrayList<LocationHome> locationMostViewed;
+    //ArrayList<LocationHome> locationMostViewed; changed model
     RecyclerView recyclerView;
 
 
@@ -27,8 +27,8 @@ public class tabMostViewedHome extends Fragment{
         View view = inflater.inflate(R.layout.home_fragment_tab_most_viewed, container, false);
 
         initView(view);
-        initData();
-        setRecyclerView();
+        //initData();
+        //setRecyclerView();
 
         return view;
     }
@@ -39,19 +39,19 @@ public class tabMostViewedHome extends Fragment{
 
 
     // set adapter for recyclerView at Tab MostViewed
-    private void setRecyclerView(){
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationMostViewed, this.getContext());
-        recyclerView.setAdapter(adapter);
-    }
+//    private void setRecyclerView(){
+//        recyclerView.setHasFixedSize(true);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+//        recyclerView.setLayoutManager(linearLayoutManager);
+//        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationMostViewed, this.getContext());
+//        recyclerView.setAdapter(adapter);
+//    }
 
-    private void initData(){
-        locationMostViewed = new ArrayList<>();
-        locationMostViewed.add(new LocationHome(R.drawable.cho_ben_thanh, "5000000", "Chợ Bến Thành"));
-        locationMostViewed.add(new LocationHome(R.drawable.ben_nha_rong, "1000000", "Bến Nhà Rồng"));
-        locationMostViewed.add(new LocationHome(R.drawable.dinh_doc_lap, "2000", "Dinh Độc Lập"));
-        locationMostViewed.add(new LocationHome(R.drawable.buu_dien_trung_tam_sai_gon, "100", "Bưu Điện Trung Tâm Sài Gòn"));
-    }
+//    private void initData(){
+//        locationMostViewed = new ArrayList<>();
+//        locationMostViewed.add(new LocationHome(R.drawable.cho_ben_thanh, "5000000", "Chợ Bến Thành"));
+//        locationMostViewed.add(new LocationHome(R.drawable.ben_nha_rong, "1000000", "Bến Nhà Rồng"));
+//        locationMostViewed.add(new LocationHome(R.drawable.dinh_doc_lap, "2000", "Dinh Độc Lập"));
+//        locationMostViewed.add(new LocationHome(R.drawable.buu_dien_trung_tam_sai_gon, "100", "Bưu Điện Trung Tâm Sài Gòn"));
+//    }
 }

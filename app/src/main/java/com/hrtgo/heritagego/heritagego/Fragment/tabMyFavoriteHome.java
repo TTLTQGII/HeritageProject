@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class tabMyFavoriteHome extends Fragment {
 
-    ArrayList<LocationHome> locationMyfavorite;
+    //ArrayList<LocationHome> locationMyfavorite;//change model;
     RecyclerView recyclerView;
 
 
@@ -28,8 +28,8 @@ public class tabMyFavoriteHome extends Fragment {
         View view = inflater.inflate(R.layout.home_fragment_tab_my_favorite, container, false);
 
         initView(view);
-        //initData();
-        setRecyclerView();
+//        initData();
+//        setRecyclerView();
 
         return view;
     }
@@ -40,18 +40,18 @@ public class tabMyFavoriteHome extends Fragment {
     }
 
     // set adapter for recyclerView at Tab MyFavorite
-    private void setRecyclerView(){
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationMyfavorite, this.getContext());
-        recyclerView.setAdapter(adapter);
-    }
-
-    private void initData(){
-        locationMyfavorite = new ArrayList<>();
-        locationMyfavorite.add(new LocationHome(R.drawable.benh_vien_da_khoa_sai_gon, "20", "Bệnh Viện Đa Khoa Sài Gòn"));
-        locationMyfavorite.add(new LocationHome(R.drawable.cho_ben_thanh, "50", "Chợ Bến Thành"));
-
-    }
+//    private void setRecyclerView(){
+//        recyclerView.setHasFixedSize(true);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+//        recyclerView.setLayoutManager(linearLayoutManager);
+//        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationMyfavorite, this.getContext());
+//        recyclerView.setAdapter(adapter);
+//    }
+//
+//    private void initData(){
+//        locationMyfavorite = new ArrayList<>();
+//        locationMyfavorite.add(new LocationHome(R.drawable.benh_vien_da_khoa_sai_gon, "20", "Bệnh Viện Đa Khoa Sài Gòn"));
+//        locationMyfavorite.add(new LocationHome(R.drawable.cho_ben_thanh, "50", "Chợ Bến Thành"));
+//
+//    }
 }

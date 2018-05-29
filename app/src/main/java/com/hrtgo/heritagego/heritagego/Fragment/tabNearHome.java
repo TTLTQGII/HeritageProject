@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class tabNearHome extends Fragment{
 
-    ArrayList<LocationHome> locationNear;
+    //ArrayList<LocationHome> locationNear; change model
     RecyclerView recyclerView;
 
 
@@ -28,8 +28,8 @@ public class tabNearHome extends Fragment{
         View view = inflater.inflate(R.layout.home_fragment_tab_near, container, false);
 
         initView(view);
-        initData();
-        setRecyclerView();
+//        initData();
+//        setRecyclerView();
 
         return view;
     }
@@ -40,21 +40,21 @@ public class tabNearHome extends Fragment{
     }
 
     // set adapter for recyclerView at Tab Near
-    private void setRecyclerView(){
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationNear, this.getContext());
-        recyclerView.setAdapter(adapter);
-    }
-
-    private void initData(){
-        locationNear = new ArrayList<>();
-        locationNear.add(new LocationHome(R.drawable.dinh_doc_lap, "1000", "Dinh Độc Lập"));
-        locationNear.add(new LocationHome(R.drawable.benh_vien_da_khoa_sai_gon, "20", "Bệnh Viện Đa Khoa Sài Gòn"));
-        locationNear.add(new LocationHome(R.drawable.cau_mong_sai_gon, "50", "Chợ Bến Thành"));
-        locationNear.add(new LocationHome(R.drawable.cho_ben_thanh, "50", "Chợ Bến Thành"));
-        locationNear.add(new LocationHome(R.drawable.ben_nha_rong, "1000000", "Bến Nhà Rồng"));
-        locationNear.add(new LocationHome(R.drawable.buu_dien_trung_tam_sai_gon, "10000000", "Bưu Điện Trung Tâm Sài Gòn"));
-    }
+//    private void setRecyclerView(){
+//        recyclerView.setHasFixedSize(true);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+//        recyclerView.setLayoutManager(linearLayoutManager);
+//        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationNear, this.getContext());
+//        recyclerView.setAdapter(adapter);
+//    }
+//
+//    private void initData(){
+//        locationNear = new ArrayList<>();
+//        locationNear.add(new LocationHome(R.drawable.dinh_doc_lap, "1000", "Dinh Độc Lập"));
+//        locationNear.add(new LocationHome(R.drawable.benh_vien_da_khoa_sai_gon, "20", "Bệnh Viện Đa Khoa Sài Gòn"));
+//        locationNear.add(new LocationHome(R.drawable.cau_mong_sai_gon, "50", "Chợ Bến Thành"));
+//        locationNear.add(new LocationHome(R.drawable.cho_ben_thanh, "50", "Chợ Bến Thành"));
+//        locationNear.add(new LocationHome(R.drawable.ben_nha_rong, "1000000", "Bến Nhà Rồng"));
+//        locationNear.add(new LocationHome(R.drawable.buu_dien_trung_tam_sai_gon, "10000000", "Bưu Điện Trung Tâm Sài Gòn"));
+//    }
 }
