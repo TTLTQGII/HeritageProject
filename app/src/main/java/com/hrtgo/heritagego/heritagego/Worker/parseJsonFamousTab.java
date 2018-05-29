@@ -26,19 +26,20 @@ public class parseJsonFamousTab extends AsyncTask<String, Void, ArrayList<herita
     protected ArrayList<heritageInfoHomeModel> doInBackground(String... strings) {
         ArrayList<heritageInfoHomeModel> listData = new ArrayList<>();
 
-        String ID = "", Name = "", Like = "", Viewed = "", imagePath = "";
+        String ID = "", Name = "", imagePath = "", Viewed = "";
+        Integer Like = 0;
 
         try {
-            JSONObject parentObject = new JSONObject(strings[0]);
+            JSONObject root = new JSONObject(strings[0]);
 
-            JSONArray pdataArray = parentObject.getJSONArray("pdata");
+            JSONArray pdataArray = root.getJSONArray("pdata");
 
             for (int i = 0; i < pdataArray.length(); i++){
                 JSONObject location = pdataArray.getJSONObject(i);
 
                 ID = location.getString("ID");
                 Name = location.getString("Name");
-                Like = location.getString("Liked");
+                Like = location.getInt("Liked");
                 Viewed = location.getString("Viewed");
 
                 listData.add(new heritageInfoHomeModel(ID, Name, Like, Viewed));
@@ -53,8 +54,6 @@ public class parseJsonFamousTab extends AsyncTask<String, Void, ArrayList<herita
 
     @Override
     protected void onPostExecute(ArrayList<heritageInfoHomeModel> heritageInfoHomeModels) {
-        super.onPostExecute(heritageInfoHomeModels);
-
         tabFamousHome.setHomeRecyclerView(heritageInfoHomeModels);
     }
 }

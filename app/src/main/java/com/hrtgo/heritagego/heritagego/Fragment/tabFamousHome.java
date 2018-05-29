@@ -85,7 +85,6 @@ public class tabFamousHome extends Fragment {
             @Override
             public void onResponse(String response) {
                 parseJson(response);
-
             }
         }, new Response.ErrorListener() {
             @Override

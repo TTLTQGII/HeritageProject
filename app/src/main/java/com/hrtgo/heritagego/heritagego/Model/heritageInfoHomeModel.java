@@ -1,7 +1,8 @@
 package com.hrtgo.heritagego.heritagego.Model;
 
 public class heritageInfoHomeModel {
-    String ID, locationName, liked, viewed, imagePath;
+    String ID, locationName, imagePath, viewed;
+    int liked;
 
     public String getID() {
         return ID;
@@ -19,11 +20,20 @@ public class heritageInfoHomeModel {
         this.locationName = locationName;
     }
 
-    public String getLocationLiked() {
+
+    public String getLocationImagePath() {
+        return imagePath;
+    }
+
+    public void setLocationImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public int getLocationLiked() {
         return liked;
     }
 
-    public void setLocationLiked(String liked) {
+    public void setLocationLiked(int liked) {
         this.liked = liked;
     }
 
@@ -35,18 +45,11 @@ public class heritageInfoHomeModel {
         this.viewed = viewed;
     }
 
-    public String getLocationImagePath() {
-        return imagePath;
-    }
-
-    public void setLocationImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
-
-    public heritageInfoHomeModel(String ID, String locationName, String liked, String viewed) {
+    public heritageInfoHomeModel(String ID, String locationName, int liked, String  viewed) {
         this.ID = ID;
         this.locationName = locationName;
         this.liked = liked;
+
         this.viewed = viewed;
         //this.imagePath = imagePath;
     }

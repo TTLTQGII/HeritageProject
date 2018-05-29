@@ -38,7 +38,7 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<rcvAdapterTabsHome.
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
         holder.txtLocationName.setText(locationDatas.get(position).getLocationName());
-        holder.txtAmountOfLocationView.setText(locationDatas.get(position).getLocationViewed());
+        holder.txtAmountOfLocationView.setText(String.valueOf(locationDatas.get(position).getLocationLiked()));
     }
 
     @Override
