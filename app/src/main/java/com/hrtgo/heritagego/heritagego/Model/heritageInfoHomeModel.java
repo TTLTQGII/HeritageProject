@@ -1,14 +1,14 @@
 package com.hrtgo.heritagego.heritagego.Model;
 
 public class heritageInfoHomeModel {
-    String ID, locationName, imagePath, viewed;
-    int liked;
+    String locationName, imagePath;
+    int ID, liked, viewed;
 
-    public String getID() {
+    public int getID() {
         return ID;
     }
 
-    public void setID(String ID) {
+    public void setID(int    ID) {
         this.ID = ID;
     }
 
@@ -37,20 +37,20 @@ public class heritageInfoHomeModel {
         this.liked = liked;
     }
 
-    public String getLocationViewed() {
+    public int getLocationViewed() {
         return viewed;
     }
 
-    public void setLocationViewed(String viewed) {
+    public void setLocationViewed(int viewed) {
         this.viewed = viewed;
     }
 
-    public heritageInfoHomeModel(String ID, String locationName, int liked, String  viewed) {
+    public heritageInfoHomeModel(int ID, String locationName, int liked, int  viewed, String imagePath) {
         this.ID = ID;
         this.locationName = locationName;
         this.liked = liked;
 
         this.viewed = viewed;
-        //this.imagePath = imagePath;
+        this.imagePath = imagePath;
     }
 }

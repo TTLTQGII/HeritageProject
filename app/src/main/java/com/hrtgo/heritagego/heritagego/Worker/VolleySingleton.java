@@ -6,7 +6,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
 public class VolleySingleton {
-    private static final String Tag = "VolleySingleton";
+    //private static final String Tag = "VolleySingleton";
     private RequestQueue requestQueue;
     private static VolleySingleton inStance;
 

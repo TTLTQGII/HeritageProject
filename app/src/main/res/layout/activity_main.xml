@@ -21,6 +21,7 @@
     <!--</android.support.v7.widget.Toolbar>-->
 
     <LinearLayout
+        android:layout_below="@+id/action_tool_bar_custom"
         android:id="@+id/fragment_main_LL_Container"
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -38,8 +39,8 @@
         android:layout_alignParentBottom="true"
 
         app:itemBackground="@color/nav_bottom_backgroud"
-        app:itemIconTint="@color/nav_item_bottom_backgroud"
-        app:itemTextColor="@color/nav_item_bottom_backgroud"
+        app:itemIconTint="@drawable/handle_enable_state"
+        app:itemTextColor="@drawable/handle_enable_state"
         app:menu="@menu/nav_bottom_items"
         />
 

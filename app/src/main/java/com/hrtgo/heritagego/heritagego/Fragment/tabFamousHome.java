@@ -1,6 +1,5 @@
 package com.hrtgo.heritagego.heritagego.Fragment;
 
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,19 +10,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
-import com.hrtgo.heritagego.heritagego.Model.LocationHome;
 import com.hrtgo.heritagego.heritagego.Model.heritageInfoHomeModel;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
 import com.hrtgo.heritagego.heritagego.Worker.parseJsonFamousTab;
-import com.hrtgo.heritagego.heritagego.untill.DeviceConnection;
 
 import java.util.ArrayList;
 
@@ -31,6 +27,7 @@ public class tabFamousHome extends Fragment {
 
     RecyclerView recyclerView;
     String result = "";
+
     private static final String TAG = "Location Json";
 
     @Nullable
@@ -38,12 +35,14 @@ public class tabFamousHome extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment_tab_famous, container, false);
-
         initView(view);
-
-        getJsonData();
-
         return  view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        callAPI("1");
     }
 
     // Create inStance view
@@ -66,29 +65,19 @@ public class tabFamousHome extends Fragment {
 
         adapter.notifyDataSetChanged();
     }
-//
-//    private void initData(){
-//        locationFamous = new ArrayList<>();
-//        locationFamous.add(new LocationHome(R.drawable.benh_vien_da_khoa_sai_gon, "20", "Bệnh Viện Đa Khoa Sài Gòn"));
-//        locationFamous.add(new LocationHome(R.drawable.cho_ben_thanh, "50", "Chợ Bến Thành"));
-//        locationFamous.add(new LocationHome(R.drawable.ben_nha_rong, "1000000", "Bến Nhà Rồng"));
-//        locationFamous.add(new LocationHome(R.drawable.dinh_doc_lap, "1000", "Dinh Độc Lập"));
-//        locationFamous.add(new LocationHome(R.drawable.buu_dien_trung_tam_sai_gon, "10000000", "Bưu Điện Trung Tâm Sài Gòn ABCDEFGHIJK"));
-//        locationFamous.add(new LocationHome(R.drawable.cau_mong_sai_gon, "100000", "Cầu Mòng Sài Gòn"));
-//    }
 
     // Connect to API get json and parse json in Asyntask
-    private void getJsonData(){
-        String url = getActivity().getResources().getString(R.string.request_url);
-
+    private void getListData(String url){
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Log.e(TAG, response);
                 parseJson(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                // control error in here
             }
         });
 
@@ -99,4 +88,8 @@ public class tabFamousHome extends Fragment {
         new parseJsonFamousTab(this).execute(json);
     }
 
+    private void callAPI(String currentPage){
+        String url = getActivity().getResources().getString(R.string.request_heritage_info_home_view) + currentPage;
+        getListData(url);
+    }
 }

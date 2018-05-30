@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     protected void onStart() {
         super.onStart();
         initData();
-        initView();
         loadFragment("Home", new navHomefrag());
     }
 
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        initView();
     }
 
     // create instance View
@@ -60,13 +59,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     // customize Action Bar
     private void initCustomizeActionBar(){
+        actionToolBar = findViewById(R.id.action_tool_bar_custom);
         if(actionToolBar != null) {
             setSupportActionBar(actionToolBar);
             ActionBar actionBar = getSupportActionBar();
-
-            // hide original action bar
-            actionBar.hide();
-
+            //actionBar.hide();
             LayoutInflater inflater = (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View customAcionBar = inflater.inflate(R.layout.tool_action_bar_customize, null);
             actionBar.setCustomView(customAcionBar);
@@ -97,18 +94,22 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.nav_action_bottom_home:
                 fragment = new navHomefrag();
                 title = item.getTitle().toString();
+                item.setChecked(true);
                 break;
             case R.id.nav_action_bottom_maps:
                 fragment = new navMapsfrag();
                 title = item.getTitle().toString();
+                item.setChecked(true);
                 break;
             case R.id.nav_action_bottom_item3:
                 fragment = new navitem3frag();
                 title = item.getTitle().toString();
+                item.setChecked(true);
                 break;
             case R.id.nav_action_bottom_item4:
                 fragment = new navitem4frag();
                 title = item.getTitle().toString();
+                item.setChecked(true);
                 break;
         }
 

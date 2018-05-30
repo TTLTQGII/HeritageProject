@@ -3,10 +3,7 @@ package com.hrtgo.heritagego.heritagego.Worker;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.android.volley.toolbox.StringRequest;
-import com.hrtgo.heritagego.heritagego.Fragment.tabFamousHome;
 import com.hrtgo.heritagego.heritagego.Model.heritageInfoHomeModel;
-import com.hrtgo.heritagego.heritagego.Model.heritageLocationDetail;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,13 +11,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class parseJsonFamousTab extends AsyncTask<String, Void, ArrayList<heritageInfoHomeModel>> {
+public class parseJsonMyFavoriteTab  extends AsyncTask<String, Void, ArrayList<heritageInfoHomeModel>> {
 
-    tabFamousHome tabFamousHome;
+    com.hrtgo.heritagego.heritagego.Fragment.tabMyFavoriteHome tabMyFavoriteHome;
     private static final String TAG = "Location Json";
 
-    public parseJsonFamousTab(com.hrtgo.heritagego.heritagego.Fragment.tabFamousHome tabFamousHome) {
-        this.tabFamousHome = tabFamousHome;
+    public parseJsonMyFavoriteTab(com.hrtgo.heritagego.heritagego.Fragment.tabMyFavoriteHome tabMyFavoriteHome) {
+        this.tabMyFavoriteHome = tabMyFavoriteHome;
     }
 
     @Override
@@ -52,6 +49,6 @@ public class parseJsonFamousTab extends AsyncTask<String, Void, ArrayList<herita
 
     @Override
     protected void onPostExecute(ArrayList<heritageInfoHomeModel> heritageInfoHomeModels) {
-        tabFamousHome.setHomeRecyclerView(heritageInfoHomeModels);
+        tabMyFavoriteHome.setRecyclerView(heritageInfoHomeModels);
     }
 }

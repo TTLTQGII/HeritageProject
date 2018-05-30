@@ -3,10 +3,7 @@ package com.hrtgo.heritagego.heritagego.Worker;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.android.volley.toolbox.StringRequest;
-import com.hrtgo.heritagego.heritagego.Fragment.tabFamousHome;
 import com.hrtgo.heritagego.heritagego.Model.heritageInfoHomeModel;
-import com.hrtgo.heritagego.heritagego.Model.heritageLocationDetail;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,14 +11,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class parseJsonFamousTab extends AsyncTask<String, Void, ArrayList<heritageInfoHomeModel>> {
+public class parseJsonNearTab extends AsyncTask<String, Void, ArrayList<heritageInfoHomeModel>> {
 
-    tabFamousHome tabFamousHome;
-    private static final String TAG = "Location Json";
-
-    public parseJsonFamousTab(com.hrtgo.heritagego.heritagego.Fragment.tabFamousHome tabFamousHome) {
-        this.tabFamousHome = tabFamousHome;
+    public parseJsonNearTab(com.hrtgo.heritagego.heritagego.Fragment.tabNearHome tabNearHome) {
+        this.tabNearHome = tabNearHome;
     }
+
+    com.hrtgo.heritagego.heritagego.Fragment.tabNearHome tabNearHome;
+    private static final String TAG = "Location Json";
 
     @Override
     protected ArrayList<heritageInfoHomeModel> doInBackground(String... strings) {
@@ -52,6 +49,6 @@ public class parseJsonFamousTab extends AsyncTask<String, Void, ArrayList<herita
 
     @Override
     protected void onPostExecute(ArrayList<heritageInfoHomeModel> heritageInfoHomeModels) {
-        tabFamousHome.setHomeRecyclerView(heritageInfoHomeModels);
+        tabNearHome.setRecyclerView(heritageInfoHomeModels);
     }
 }

@@ -1,11 +1,13 @@
 package com.hrtgo.heritagego.heritagego.Activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,7 +16,14 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.hrtgo.heritagego.heritagego.R;
+import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
+import com.hrtgo.heritagego.heritagego.Worker.parseJsonFamousTab;
+import com.hrtgo.heritagego.heritagego.Worker.parseJsonLocationDetail;
 import com.hrtgo.heritagego.heritagego.untill.customize;
 import com.hrtgo.heritagego.heritagego.Adapter.imgListAdapterLocationDetail;
 
@@ -25,23 +34,26 @@ import at.blogc.android.views.ExpandableTextView;
 public class LocationDetail extends AppCompatActivity {
 
     android.support.v7.widget.Toolbar actionToolBar;
-    TextView txtAmountOfLike, txtAmountOfComment;
+    int locationID = 0;
+    TextView txtLocationName, txtLocationDistance, txtLocationAddress, txtAmountOfView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.location_detail);
-
         //Create Action bar
         initCustomizeActionBar();
-        initViewAndEvent();
+        getIntentData();
+        initView();
+        callAPI(String.valueOf(locationID),"5", "7");
     }
+
+
 
     @Override
     protected void onStart() {
         super.onStart();
     }
-
     // customize Action bar
     private void initCustomizeActionBar(){
         actionToolBar = findViewById(R.id.action_tool_bar_custom_location_detail);
@@ -55,22 +67,36 @@ public class LocationDetail extends AppCompatActivity {
         }
     }
 
+    private void initView(){
 
-    void initViewAndEvent(){
-        final TextView txtLocationName, txtLocationDistance, txtLocationAddress, txtAmountOfView, txtAmountOfLike;
-        eventLikeComment();
-        ArrayList<Integer> listTest = new ArrayList<>();
+        txtLocationName = findViewById(R.id.txt_location_name);
+        txtLocationDistance = findViewById(R.id.txt_location_distance);
+        txtLocationAddress = findViewById(R.id.txt_location_address);
+        txtAmountOfView = findViewById(R.id.txt_amount_of_view);
 
-        listTest.add(R.drawable.cho_ben_thanh);
-        listTest.add(R.drawable.benh_vien_da_khoa_sai_gon);
-        listTest.add(R.drawable.buu_dien_trung_tam_sai_gon);
-
-        eventViewPager(listTest);
     }
+
+    public void bindData(String locationName, String address, String distance, int Viewed){
+        txtLocationName.setText(locationName);
+        txtLocationAddress.setText(address);
+        txtLocationDistance.setText(distance);
+        txtAmountOfView.setText(String.valueOf(Viewed));
+    }
+
+    // get data put from home activity
+    private void getIntentData(){
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if(bundle != null) {
+            locationID = bundle.getInt("ID");
+        }
+        Log.e("locationID", String.valueOf(locationID));
+    }
+
 
     // gọi qua worker -> worker asyntask
     // push image into viewpager
-    private void eventViewPager(ArrayList<Integer> imgLocationDetails){
+    public void eventViewPager(ArrayList<String> imgLocationDetails){
         ViewPager imgViewPager;
         imgViewPager = findViewById(R.id.img_location_container_detail);
 
@@ -81,12 +107,15 @@ public class LocationDetail extends AppCompatActivity {
     }
 
     // create like and comment event
-    public void eventLikeComment(){
+    public void eventLikeComment(final int Liked, int Comment){
+        final TextView txtAmountOfLike, txtAmountOfComment;
         final RelativeLayout imgBtnLike, imgBtnComment;
         final ImageView imgLike, imgComment;
         txtAmountOfLike = findViewById(R.id.txt_amount_of_like);
         txtAmountOfComment = findViewById(R.id.txt_amount_of_comment);
         imgLike = findViewById(R.id.img_like);
+        txtAmountOfLike.setText(String.valueOf(Liked));
+        txtAmountOfComment.setText(String.valueOf(Comment));
 
         imgBtnLike = findViewById(R.id.btn_like);
         imgBtnComment = findViewById(R.id.btn_comment);
@@ -94,9 +123,7 @@ public class LocationDetail extends AppCompatActivity {
         imgBtnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int amoutOfLike = Integer.valueOf((String) txtAmountOfLike.getText());
-                amoutOfLike = amoutOfLike + 1;
-                txtAmountOfLike.setText(String.valueOf(amoutOfLike));
+                txtAmountOfLike.setText(String.valueOf(Liked + 1));
                 imgLike.setImageResource(R.drawable.ic_like_active_32dp);
                 imgBtnLike.setClickable(false);
             }
@@ -135,5 +162,32 @@ public class LocationDetail extends AppCompatActivity {
         });
     }
 
+    //Connect to API get json and parse json in Asyntask
+    private void getListData(String url){
+        StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.e("LocationDetail", response);
+                parseJson(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // control error in here
+            }
+        });
 
+        VolleySingleton.getInStance(this).getRequestQueue().add(jsonRequest);
+    }
+
+
+    private void parseJson(String json){
+        new parseJsonLocationDetail(this).execute(json);
+    }
+
+    private void callAPI(String currentPage, String longTiTue, String latituge){
+        String url = getString(R.string.request_heritage_location_detail) + currentPage + "/" +longTiTue + "/" +latituge;
+        Log.e("URLDetail", url);
+        getListData(url);
+    }
 }
