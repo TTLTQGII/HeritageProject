@@ -156,7 +156,8 @@
             android:padding="3dp"
             android:layout_below="@+id/viewpager_container"
             android:layout_width="match_parent"
-            android:layout_height="30dp">
+            android:layout_height="30dp"
+            >
 
             <RelativeLayout
                 android:id="@+id/btn_like"

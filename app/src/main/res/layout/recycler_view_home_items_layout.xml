@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="1dp"
+    android:layout_marginTop="5dp"
     android:clickable="true"
+    android:background="@drawable/customize_boder_item_home"
     >
 
     <ImageView
         android:id="@+id/img_recycler_view_home_item"
         android:src="@drawable/benh_vien_da_khoa_sai_gon"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/custome_layout_border"
+        android:layout_height="400px"
+        android:scaleType="fitXY"
+        android:background="@drawable/customize_boder_item_home"
         />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignBottom="@+id/img_recycler_view_home_item"
-        android:background="#bf000000"
+        android:background="#60383636"
+        android:gravity="center_vertical"
         >
         <LinearLayout
             android:id="@+id/container_txt_name_location"
@@ -28,19 +31,21 @@
             android:layout_centerInParent="true"
             >
 
+            <!--location name-->
+
             <TextView
                 android:textStyle="bold"
                 android:textColor="#ffffff"
-                android:layout_width="match_parent"
+                android:textSize="20dp"
+                android:layout_width="wrap_content"
                 android:textAppearance="?android:attr/textAppearance"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/txt_name_location_ecycler_view_home_item"
                 android:text="Bưu Điện Trung Tâm Sài Gòn"
-                android:gravity="center|left"
+                android:gravity="center|left|center_vertical"
                 android:autoSizeTextType="uniform"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="3dp"
-                android:layout_gravity="fill_horizontal"
                 />
 
         </LinearLayout>

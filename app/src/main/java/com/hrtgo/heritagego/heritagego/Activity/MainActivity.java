@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if(actionToolBar != null) {
             setSupportActionBar(actionToolBar);
             ActionBar actionBar = getSupportActionBar();
-            //actionBar.hide();
+            actionBar.hide();
             LayoutInflater inflater = (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View customAcionBar = inflater.inflate(R.layout.tool_action_bar_customize, null);
             actionBar.setCustomView(customAcionBar);

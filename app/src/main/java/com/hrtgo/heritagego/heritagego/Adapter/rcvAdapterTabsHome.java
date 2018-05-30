@@ -47,6 +47,7 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<rcvAdapterTabsHome.
         Picasso.get()
                 .load(context.getResources().getString(R.string.request_image) + locationDatas.get(position).getLocationImagePath())
                 .resize(holder.imgLocation.getWidth(), 400)
+                .fit()
                 .into(holder.imgLocation);
     }
 
@@ -78,6 +79,12 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<rcvAdapterTabsHome.
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(itemView.getContext(), LocationDetail.class);
+
+                    Bundle bundle;
+                    bundle = new Bundle();
+                    bundle.putInt("ID", locationDatas.get(getAdapterPosition()).getID());
+                    bundle.putString("LocationName", locationDatas.get(getAdapterPosition()).getLocationName());
+
                     intent.putExtra("ID", locationDatas.get(getAdapterPosition()).getID());
                     itemView.getContext().startActivity(intent);
                 }
