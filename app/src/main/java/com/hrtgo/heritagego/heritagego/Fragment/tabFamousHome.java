@@ -1,5 +1,7 @@
 package com.hrtgo.heritagego.heritagego.Fragment;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,25 +12,37 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
+import com.hrtgo.heritagego.heritagego.Interface.Json;
 import com.hrtgo.heritagego.heritagego.Model.heritageInfoHomeModel;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
-import com.hrtgo.heritagego.heritagego.Worker.parseJsonFamousTab;
+import com.hrtgo.heritagego.heritagego.untill.customize;
+
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class tabFamousHome extends Fragment {
 
     RecyclerView recyclerView;
-    String result = "";
+    ProgressDialog pBar;
+    ArrayList<heritageInfoHomeModel> listData = new ArrayList<>();
+    int currentPage = 1;
 
-    private static final String TAG = "Location Json";
+
+    private static final String TAG = "Location Home";
 
     @Nullable
     @Override
@@ -42,8 +56,13 @@ public class tabFamousHome extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        callAPI("1");
+        startOverLay();
+        callAPI(String.valueOf(currentPage));
+        currentPage++;
+        callAPI(String.valueOf(currentPage));
     }
+
+
 
     // Create inStance view
     private void initView(View view){
@@ -57,22 +76,26 @@ public class tabFamousHome extends Fragment {
 
     // set adapter for recyclerView at Tab Famous
     public void setHomeRecyclerView(ArrayList<heritageInfoHomeModel> locationFamous){
+        stopOverLay();
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationFamous, this.getContext());
         recyclerView.setAdapter(adapter);
-
         adapter.notifyDataSetChanged();
+
     }
 
+
     // Connect to API get json and parse json in Asyntask
-    private void getListData(String url){
+    private void getListData(String url, final Json json){
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.e(TAG, response);
-                parseJson(response);
+                //parseJson(response);
+                json.parseJson(response);
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -84,12 +107,44 @@ public class tabFamousHome extends Fragment {
         VolleySingleton.getInStance(this.getContext()).getRequestQueue().add(jsonRequest);
     }
 
-    private void parseJson(String json){
-        new parseJsonFamousTab(this).execute(json);
-    }
 
     private void callAPI(String currentPage){
         String url = getActivity().getResources().getString(R.string.request_heritage_info_home_view) + currentPage;
-        getListData(url);
+        getListData(url, new Json() {
+            @Override
+            public void parseJson(String jsonString) {
+                try {
+                    JSONObject root = new JSONObject(jsonString);
+
+                    JSONArray pdataArray = root.getJSONArray("pdata");
+
+                    for (int i = 0; i < pdataArray.length(); i++){
+                        JSONObject location = pdataArray.getJSONObject(i);
+
+                        listData.add(new heritageInfoHomeModel(location.getInt("ID")
+                                ,location.getString("Name")
+                                ,location.getInt("Liked")
+                                ,location.getInt("Viewed")
+                                ,location.getString("ImagePath")));
+                    }
+
+                } catch (JSONException e) {
+                    Log.e(TAG,e.toString());
+                }
+                setHomeRecyclerView(listData);
+            }
+
+        });
+
+    }
+
+    public void startOverLay(){
+        pBar = new ProgressDialog(getActivity());
+        customize.startloading(pBar);
+    }
+
+
+    public void stopOverLay(){
+        pBar.dismiss();
     }
 }

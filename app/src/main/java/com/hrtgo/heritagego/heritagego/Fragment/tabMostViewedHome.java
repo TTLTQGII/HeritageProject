@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +16,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
+import com.hrtgo.heritagego.heritagego.Interface.Json;
 import com.hrtgo.heritagego.heritagego.Model.heritageInfoHomeModel;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
-import com.hrtgo.heritagego.heritagego.Worker.parseJsonMostViewTab;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class tabMostViewedHome extends Fragment{
     RecyclerView recyclerView;
+    ArrayList<heritageInfoHomeModel> listData = new ArrayList<>();
 
 
     @Nullable
@@ -63,12 +69,12 @@ public class tabMostViewedHome extends Fragment{
     }
 
     // Connect to API get json and parse json in Asyntask
-    private void getListData(String url){
+    private void getListData(String url, final Json json){
 
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                parseJson(response);
+                json.parseJson(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -80,12 +86,32 @@ public class tabMostViewedHome extends Fragment{
         VolleySingleton.getInStance(this.getContext()).getRequestQueue().add(jsonRequest);
     }
 
-    private void parseJson(String json){
-        new parseJsonMostViewTab(this).execute(json);
-    }
 
     private void callAPI(String currentPage){
         String url = getActivity().getResources().getString(R.string.request_heritage_info_home_like) + currentPage;
-        getListData(url);
+        getListData(url, new Json() {
+            @Override
+            public void parseJson(String jsonString) {
+                try {
+                    JSONObject root = new JSONObject(jsonString);
+
+                    JSONArray pdataArray = root.getJSONArray("pdata");
+
+                    for (int i = 0; i < pdataArray.length(); i++){
+                        JSONObject location = pdataArray.getJSONObject(i);
+
+                        listData.add(new heritageInfoHomeModel(location.getInt("ID")
+                                ,location.getString("Name")
+                                ,location.getInt("Liked")
+                                ,location.getInt("Viewed")
+                                ,location.getString("ImagePath")));
+                    }
+
+                } catch (JSONException e) {
+                    //Log.e(TAG,e.toString());
+                }
+                setRecyclerView(listData);
+            }
+        });
     }
 }

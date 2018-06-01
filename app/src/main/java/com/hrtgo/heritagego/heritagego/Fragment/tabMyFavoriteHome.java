@@ -16,16 +16,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
+import com.hrtgo.heritagego.heritagego.Interface.Json;
 import com.hrtgo.heritagego.heritagego.Model.heritageInfoHomeModel;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
-import com.hrtgo.heritagego.heritagego.Worker.parseJsonMyFavoriteTab;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class tabMyFavoriteHome extends Fragment {
     RecyclerView recyclerView;
-
+    ArrayList<heritageInfoHomeModel> listData = new ArrayList<>();
 
     @Nullable
     @Override
@@ -63,13 +67,12 @@ public class tabMyFavoriteHome extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    private void getListData( String url){
+    private void getListData(String url, final Json json){
 
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                parseJson(response);
-                Log.e("locationView", response);
+                json.parseJson(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -81,12 +84,33 @@ public class tabMyFavoriteHome extends Fragment {
         VolleySingleton.getInStance(this.getContext()).getRequestQueue().add(jsonRequest);
     }
 
-    private void parseJson(String json){
-        new parseJsonMyFavoriteTab(this).execute(json);
-    }
-
     private void callAPI(String currentPage){
         String url = getActivity().getResources().getString(R.string.request_heritage_info_home_like) + currentPage;
-        getListData(url);
+        getListData(url, new Json() {
+            @Override
+            public void parseJson(String jsonString) {
+
+                try {
+                    JSONObject root = new JSONObject(jsonString);
+
+                    JSONArray pdataArray = root.getJSONArray("pdata");
+
+                    for (int i = 0; i < pdataArray.length(); i++){
+                        JSONObject location = pdataArray.getJSONObject(i);
+
+                        listData.add(new heritageInfoHomeModel(location.getInt("ID")
+                                ,location.getString("Name")
+                                ,location.getInt("Liked")
+                                ,location.getInt("Viewed")
+                                ,location.getString("ImagePath")));
+                    }
+
+                } catch (JSONException e) {
+                    //Log.e(TAG,e.toString());
+                }
+
+                setRecyclerView(listData);
+            }
+        });
     }
 }
