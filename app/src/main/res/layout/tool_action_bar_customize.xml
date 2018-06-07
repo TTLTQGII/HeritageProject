@@ -6,11 +6,13 @@
 
 
     <ImageView
+        android:id="@+id/logo_application"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_appplication"
         android:layout_marginLeft="5dp"
         android:layout_gravity="center"
+        android:clickable="true"
         />
 
 
@@ -23,5 +25,6 @@
         android:gravity="center"
         android:layout_marginLeft="10dp"
         android:layout_gravity="center"
+        android:textSize="25sp"
         />
 </LinearLayout>

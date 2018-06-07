@@ -4,7 +4,6 @@
 
     <ImageView
         android:id="@+id/img_viewpager_location_detail"
-        android:src="@drawable/benh_vien_da_khoa_sai_gon"
         android:adjustViewBounds="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

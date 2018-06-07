@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.hrtgo.heritagego.heritagego.R;
 
-public class navitem3frag extends Fragment {
+public class navSettingfrag extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

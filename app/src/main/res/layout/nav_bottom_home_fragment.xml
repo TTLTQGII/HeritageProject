@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:layout_height="match_parent" android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/home_background">
 
     <android.support.design.widget.TabLayout
         android:layout_alignParentTop="true"
         android:id="@+id/home_fragment_tab_Layout"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:background="@color/home_fragment_tab_background"
+        app:tabSelectedTextColor="#ffff"
+        app:tabTextColor="#c2f5f5"
+        app:tabIndicatorColor="#ffff"
+        app:tabPadding="2dp"
        />
     <android.support.v4.view.ViewPager
         android:layout_below="@+id/home_fragment_tab_Layout"

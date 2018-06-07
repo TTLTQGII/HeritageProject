@@ -1,24 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_height="match_parent" android:layout_width="match_parent"
+<RelativeLayout android:layout_height="match_parent" android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <android.support.v7.widget.Toolbar
+  <LinearLayout
+      android:id="@+id/search_action_bar"
+      android:layout_alignParentTop="true"
+      android:weightSum="10"
+      android:orientation="horizontal"
       android:layout_width="match_parent"
-      android:background="@color/colorPrimary"
-      android:layout_height="56dp">
+      android:layout_height="56dp"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:background="@color/colorPrimary">
 
-      <EditText
-          android:id="@+id/txt_search"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:inputType="text|textFilter"
-          android:maxLines="1"
-          />
+    <EditText
+        android:textColor="#ffff"
+        android:layout_weight="10"
+        android:id="@+id/txt_search"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:hint="Search"
+        android:textColorHint="#ffff"
+        android:maxLines="1"
+        android:backgroundTint="#ffff"
+        android:textCursorDrawable="@drawable/cursor_edittext"
+        />
+  </LinearLayout>
 
-  </android.support.v7.widget.Toolbar>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rcv_search"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/rcv_search"
+      android:layout_below="@id/search_action_bar"
+      android:padding="1dp"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"/>
 
-</LinearLayout>
+</RelativeLayout>

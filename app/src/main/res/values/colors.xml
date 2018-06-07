@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#616969</color>
-    <color name="colorPrimaryDark">#616969</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="nav_item_bottom_active">#ffffff</color>
-    <color name="nav_item_bottom_nonactive">#737171</color>
-    <color name="nav_bottom_backgroud">#bebebe</color>
-    <color name="home_fragment_tab_background">#bebebe</color>
-    <color name="customize_like_comment_border">#bebebe</color>
+    <!--action bar color-->
+    <color name="colorPrimary">#015959</color>
+    <color name="colorPrimaryDark">#004040</color>
+    <color name="colorAccent">#616969</color>
 
+    <!--tabs color at home-->
+    <color name="home_fragment_tab_background">#015959</color>
+
+    <!--navigation bottom -->
+    <!--color of item at navigation bottom when it active-->
+    <color name="nav_item_bottom_active">#015959</color>
+    <!--color of item at navigation bottom when it non-active-->
+    <color name="nav_item_bottom_nonactive">#6b6a6a</color>
+    <!--background of navigation bottom-->
+    <color name="nav_bottom_backgroud">#92e1d5d5</color>
+
+    <!--item home-->
+    <!--background of Home item in navigation bottom-->
+    <color name="home_background">#a5a4a4a4</color>
+    <!--background of the location items border in home-->
+
+
+
+
+    <!--Location detail-->
+    <!--backgound of Name, address, viewed, distance-->
+    <color name="location_detail_info_background">#d5ecdede</color>
+    <!--background of imageview container in location detail-->
+    <color name="img_container_location_detail">#7c252525</color>
+    <!--customize border like and comment-->
+    <color name="customize_like_comment_border">#bebebe</color>
+    <!--background of comment items-->
+    <color name="background_of_comment">#4da9a9a9</color>
 </resources>

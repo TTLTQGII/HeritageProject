@@ -1,5 +1,8 @@
 package com.hrtgo.heritagego.heritagego.Interface;
 
+import android.content.Context;
+import android.os.AsyncTask;
+
 public interface Json {
-    public void parseJson(String jsonString);
+    void parseJson(String jsonString);
 }

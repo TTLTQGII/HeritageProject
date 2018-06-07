@@ -59,7 +59,7 @@ public class parseJsonLocationDetail extends AsyncTask<String, Void, ArrayList<h
         super.onPostExecute(heritageLocationDetails);
 
         locationDetail.eventExpandableTextView(heritageLocationDetails.get(0).getDescription(), heritageLocationDetails.get(0).getContents());
-        locationDetail.eventLikeComment(heritageLocationDetails.get(0).getLiked(), heritageLocationDetails.get(0).getComment());
+        locationDetail.eventLikeComment(heritageLocationDetails.get(0).getLiked(), heritageLocationDetails.get(0).getAmountOfComment());
         locationDetail.eventViewPager(heritageLocationDetails.get(0).getImagePath());
         locationDetail.bindData(heritageLocationDetails.get(0).getName(),
                 heritageLocationDetails.get(0).getAddress(),

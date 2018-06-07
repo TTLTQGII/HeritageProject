@@ -25,6 +25,7 @@ import android.view.inputmethod.InputMethod;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -85,11 +86,7 @@ public class navSearchfrag extends Fragment {
                 if(actionId == EditorInfo.IME_ACTION_SEARCH){
                     listData.clear();
                     setSearchRecyclerView(listData);
-                    try {
-                        callAPI("1", edtSearch.getText().toString());
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+                    callAPI(getURL("1", edtSearch.getText().toString()));
                     return true;
                 }
 
@@ -121,49 +118,57 @@ public class navSearchfrag extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    private void getListData(String url, final Json json){
-
+    // call API get DATA
+    private void callAPI(String url){
+        //startOverLay();
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.e("search", response);
-                json.parseJson(response);
+                parseJson(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                // control error in here
+                //stopOverLay();
+                Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
             }
         });
         VolleySingleton.getInStance(this.getContext()).getRequestQueue().add(jsonRequest);
     }
 
-    private void callAPI(String currentPage, String txtSearch) throws UnsupportedEncodingException {
-        String search = URLEncoder.encode(txtSearch, "UTF-8");
-        String url = getActivity().getResources().getString(R.string.request_search) + search + "/" + currentPage ;
+    public void parseJson(String result){
+        try {
+            JSONObject root = new JSONObject(result);
 
-        getListData(url, new Json() {
-            @Override
-            public void parseJson(String jsonString) {
-                try {
-                    JSONObject root = new JSONObject(jsonString);
+            JSONArray pdataArray = root.getJSONArray("pdata");
 
-                    JSONArray pdataArray = root.getJSONArray("pdata");
+            for (int i = 0; i < pdataArray.length(); i++){
+                JSONObject location = pdataArray.getJSONObject(i);
 
-                    for (int i = 0; i < pdataArray.length(); i++){
-                        JSONObject location = pdataArray.getJSONObject(i);
-
-                        listData.add(new heritageInfoHomeModel(location.getInt("ID")
-                                ,location.getString("Name")
-                                ,location.getInt("Liked")
-                                ,location.getInt("Viewed")
-                                ,location.getString("ImagePath")));
-                    }
-
-                } catch (JSONException e) {
-                }
-                setSearchRecyclerView(listData);
+                listData.add(new heritageInfoHomeModel(location.getInt("ID")
+                        ,location.getString("Name")
+                        ,location.getInt("Liked")
+                        ,location.getInt("Viewed")
+                        ,location.getString("ImagePath")));
             }
-        });
+            setSearchRecyclerView(listData);
+
+        } catch (JSONException e) {
+        }
+    }
+
+    private String getURL(String currentPage, String txtSearch){
+        String search = txtSearch.trim();
+
+        try {
+            search = URLEncoder.encode(txtSearch.trim(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String url = getActivity().getResources().getString(R.string.request_search) + search + "/" + currentPage ;
+        Log.e("urlSearch", url);
+        return url;
     }
 }

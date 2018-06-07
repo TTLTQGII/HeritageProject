@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -29,7 +30,13 @@ import java.util.ArrayList;
 
 public class tabMyFavoriteHome extends Fragment {
     RecyclerView recyclerView;
-    ArrayList<heritageInfoHomeModel> listData = new ArrayList<>();
+    ArrayList<heritageInfoHomeModel> listData;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        listData = new ArrayList<>();
+    }
 
     @Nullable
     @Override
@@ -37,14 +44,10 @@ public class tabMyFavoriteHome extends Fragment {
         View view = inflater.inflate(R.layout.home_fragment_tab_my_favorite, container, false);
 
         initView(view);
+        //callAPI("2");
         return view;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        callAPI("1");
-    }
 
     // create instance view
     private void initView(View view){
@@ -57,60 +60,57 @@ public class tabMyFavoriteHome extends Fragment {
     }
 
     //     set adapter for recyclerView at Tab MyFavorite
-    public void setRecyclerView(ArrayList<heritageInfoHomeModel> locationMyfavorite){
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationMyfavorite, this.getContext());
-        recyclerView.setAdapter(adapter);
-
-        adapter.notifyDataSetChanged();
-    }
-
-    private void getListData(String url, final Json json){
-
+//    public void setMyFavoriteRecyclerView(ArrayList<heritageInfoHomeModel> locationMyfavorite){
+//        recyclerView.setHasFixedSize(true);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+//        recyclerView.setLayoutManager(linearLayoutManager);
+//        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationMyfavorite, this.getContext());
+//        recyclerView.setAdapter(adapter);
+//
+//        adapter.notifyDataSetChanged();
+//    }
+//
+    // call API get DATA
+    private void callAPI(String url){
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                json.parseJson(response);
+                parseJson(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // control error in here
+                Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
             }
         });
-
         VolleySingleton.getInStance(this.getContext()).getRequestQueue().add(jsonRequest);
     }
 
-    private void callAPI(String currentPage){
-        String url = getActivity().getResources().getString(R.string.request_heritage_info_home_like) + currentPage;
-        getListData(url, new Json() {
-            @Override
-            public void parseJson(String jsonString) {
+    public void parseJson(String result){
+        try {
+            JSONObject root = new JSONObject(result);
 
-                try {
-                    JSONObject root = new JSONObject(jsonString);
+            JSONArray pdataArray = root.getJSONArray("pdata");
 
-                    JSONArray pdataArray = root.getJSONArray("pdata");
+            for (int i = 0; i < pdataArray.length(); i++){
+                JSONObject location = pdataArray.getJSONObject(i);
 
-                    for (int i = 0; i < pdataArray.length(); i++){
-                        JSONObject location = pdataArray.getJSONObject(i);
-
-                        listData.add(new heritageInfoHomeModel(location.getInt("ID")
-                                ,location.getString("Name")
-                                ,location.getInt("Liked")
-                                ,location.getInt("Viewed")
-                                ,location.getString("ImagePath")));
-                    }
-
-                } catch (JSONException e) {
-                    //Log.e(TAG,e.toString());
-                }
-
-                setRecyclerView(listData);
+                listData.add(new heritageInfoHomeModel(location.getInt("ID")
+                        ,location.getString("Name")
+                        ,location.getInt("Liked")
+                        ,location.getInt("Viewed")
+                        ,location.getString("ImagePath")));
             }
-        });
+            //setHomeRecyclerView(listData);
+
+        } catch (JSONException e) {
+
+        }
+    }
+
+    private String getURL(String currentPage){
+        String url = getActivity().getResources().getString(R.string.request_heritage_info_home_like) + currentPage.trim();
+        return url;
     }
 }

@@ -5,16 +5,16 @@ import java.util.ArrayList;
 public class heritageLocationDetail {
 
     String Name, timeOfBuild, Address, Contents, Description, Distance;
-    int liked, viewed, comment;
+    int liked, viewed, amountOfComment;
 
     ArrayList<String> imagePath;
 
-    public int getComment() {
-        return comment;
+    public int getAmountOfComment() {
+        return amountOfComment;
     }
 
-    public void setComment(int comment) {
-        this.comment = comment;
+    public void setAmountComment(int comment) {
+        this.amountOfComment = comment;
     }
 
     public heritageLocationDetail(String name, String timeOfBuild, String address, String contents, String description, String distance, int liked, int viewed, int comment, ArrayList<String> imagePath) {
@@ -26,7 +26,7 @@ public class heritageLocationDetail {
         Distance = distance;
         this.liked = liked;
         this.viewed = viewed;
-        this.comment = comment;
+        this.amountOfComment = comment;
         this.imagePath = imagePath;
     }
 

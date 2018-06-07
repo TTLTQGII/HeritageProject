@@ -11,7 +11,7 @@
         android:layout_height="?attr/actionBarSize"
         android:id="@+id/action_tool_bar_custom_location_detail"
         android:layout_alignParentTop="true"
-        android:theme="@style/Acction_top_bar"
+        android:background="@color/colorPrimary"
         android:gravity="left"
         />
 
@@ -26,6 +26,7 @@
 
         <!--1 Location name, distance and address, amount of view container-->
         <RelativeLayout
+            android:background="@color/location_detail_info_background"
             android:layout_alignParentTop="true"
             android:id="@+id/topPanel"
             android:orientation="vertical"
@@ -44,6 +45,7 @@
                 android:weightSum="10"
                 >
 
+                <!--location name-->
                 <TextView
                     android:id="@+id/txt_location_name"
                     android:textColor="#000000"
@@ -51,7 +53,7 @@
                     android:gravity="left|center"
                     android:layout_weight="8"
                     android:text=""
-                    android:textSize="23sp"
+                    android:textSize="20sp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:maxLines="2"/>
@@ -86,6 +88,7 @@
                 android:weightSum="10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 >
 
                 <ImageView
@@ -95,12 +98,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
 
+                <!--address-->
+
                 <TextView
                     android:gravity="center|left"
                     android:layout_gravity="center"
                     android:id="@+id/txt_location_address"
                     android:textStyle="normal|italic"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:text=""
                     android:layout_weight="7.3"
                     android:layout_width="0dp"
@@ -138,13 +143,14 @@
             android:id="@+id/viewpager_container"
             android:layout_below="@+id/topPanel"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <android.support.v4.view.ViewPager
+            android:layout_height="175dp"
+            android:background="@color/img_container_location_detail"
+            >
 
+            <android.support.v4.view.ViewPager
                 android:id="@+id/img_location_container_detail"
-                android:background="@drawable/custome_layout_border"
                 android:layout_width="match_parent"
-                android:layout_height="175dp"
+                android:layout_height="match_parent"
                 />
 
         </RelativeLayout>
@@ -157,12 +163,14 @@
             android:layout_below="@+id/viewpager_container"
             android:layout_width="match_parent"
             android:layout_height="30dp"
+            android:background="@drawable/customize_boder_like_comment"
+            android:layout_marginTop="1.5dp"
             >
 
             <RelativeLayout
+                android:layout_weight="1"
                 android:id="@+id/btn_like"
                 android:clickable="true"
-                android:layout_marginLeft="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
@@ -170,10 +178,11 @@
                     android:layout_gravity="center"
                     android:id="@+id/img_like"
                     android:layout_centerVertical="true"
-                    android:layout_alignParentLeft="true"
                     android:src="@drawable/ic_like_non_active_32dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    />
 
                 <TextView
                     android:gravity="center"
@@ -190,17 +199,17 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:layout_weight="1"
                 android:id="@+id/btn_comment"
                 android:clickable="true"
-                android:layout_marginLeft="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
                 <ImageView
                     android:id="@+id/img_comment"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/ic_add_comment_32dp" />
 
@@ -224,31 +233,33 @@
         <ScrollView
             android:id="@+id/description_location_container"
             android:layout_below="@+id/like_and_comment_container"
-            android:layout_marginRight="2dp"
-            android:layout_marginLeft="2dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
                 <at.blogc.android.views.ExpandableTextView
                     android:id="@+id/expTxt_description_location-detail"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/app_name"
-                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
                     android:textStyle="normal"
                     android:maxLines="5"
                     app:animation_duration="10"
-                    android:ellipsize="end"/>
+                    android:ellipsize="end"
+                    />
         </ScrollView>
 
         <android.support.v7.widget.RecyclerView
             android:layout_alignParentBottom="true"
             android:layout_below="@+id/description_location_container"
             android:id="@+id/list_comment"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"/>
+            />
 
     </RelativeLayout>
 </RelativeLayout>

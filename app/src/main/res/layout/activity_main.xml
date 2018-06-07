@@ -29,7 +29,6 @@
         android:layout_above="@+id/nav_bottom_view">
     </LinearLayout>
 
-
     <!--custom a BottomNavigationView-->
 
     <android.support.design.widget.BottomNavigationView

@@ -45,7 +45,7 @@ public class imgListAdapterLocationDetail extends PagerAdapter {
         // do du lieu
         String Url = context.getResources().getString(R.string.request_image) + imgPath.get(position);
         Log.e("lcDetailImg", Url);
-        Picasso.get().load(Url).resize(imgLocationDetail.getWidth(), 175).into(imgLocationDetail);
+        Picasso.get().load(Url).fit().into(imgLocationDetail);
         // add view child to Viewgroup
         container.addView(view);
 

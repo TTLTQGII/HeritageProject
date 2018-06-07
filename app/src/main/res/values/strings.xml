@@ -2,13 +2,16 @@
     <string name="app_name">Heritage Go</string>
     <string name="navigation_bottom_home">Home</string>
     <string name="navigation_bottom_Maps">Maps</string>
-    <string name="naviagtion_bottom_item3">item3</string>
-    <string name="navigation_bottom_item4">item4</string>
+    <string name="naviagtion_bottom_setting">Setting</string>
+    <string name="navigation_bottom_search">Search</string>
     <string name="home_fragment_tab_name_1"> tab 1</string>
     <string name="home_fragment_tab_name_2"> tab 2</string>
+
+    <!--URL request api-->
+
     <string name="request_heritage_info_home_like">http://e567fdy.somee.com/api/HeritagerInfor/GetHeritagerInfoHomeLike/</string>
     <string name="request_heritage_info_home_view">http://e567fdy.somee.com/api/HeritagerInfor/GetHeritagerInfoHomeView/</string>
     <string name="request_heritage_location_detail">http://e567fdy.somee.com/api/HeritagerInfor/GetHeritagerInfoByID/</string>
     <string name="request_image">http://</string>
-    <string name="request_search"></string>
+    <string name="request_search">http://e567fdy.somee.com/api/HeritagerInfor/SearchHeritager/</string>
 </resources>

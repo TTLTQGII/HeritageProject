@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -29,8 +30,13 @@ import java.util.ArrayList;
 
 public class tabMostViewedHome extends Fragment{
     RecyclerView recyclerView;
-    ArrayList<heritageInfoHomeModel> listData = new ArrayList<>();
+    ArrayList<heritageInfoHomeModel> listData;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+         listData = new ArrayList<>();
+    }
 
     @Nullable
     @Override
@@ -45,7 +51,7 @@ public class tabMostViewedHome extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        callAPI("1");
+        callAPI(getURL("2"));
     }
 
     private void initView(View view){
@@ -58,7 +64,7 @@ public class tabMostViewedHome extends Fragment{
     }
 
     // set adapter for recyclerView at Tab MostViewed
-    public void setRecyclerView(ArrayList<heritageInfoHomeModel> locationMostViewed){
+    public void setMostViewRecyclerView(ArrayList<heritageInfoHomeModel> locationMostViewed){
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -68,50 +74,49 @@ public class tabMostViewedHome extends Fragment{
         adapter.notifyDataSetChanged();
     }
 
-    // Connect to API get json and parse json in Asyntask
-    private void getListData(String url, final Json json){
-
+    // call API get DATA
+    private void callAPI(String url){
+        //startOverLay();
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                json.parseJson(response);
+                parseJson(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // control error in here
+
+                Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
             }
         });
-
         VolleySingleton.getInStance(this.getContext()).getRequestQueue().add(jsonRequest);
     }
 
+    public void parseJson(String result){
+        try {
+            JSONObject root = new JSONObject(result);
 
-    private void callAPI(String currentPage){
-        String url = getActivity().getResources().getString(R.string.request_heritage_info_home_like) + currentPage;
-        getListData(url, new Json() {
-            @Override
-            public void parseJson(String jsonString) {
-                try {
-                    JSONObject root = new JSONObject(jsonString);
+            JSONArray pdataArray = root.getJSONArray("pdata");
 
-                    JSONArray pdataArray = root.getJSONArray("pdata");
+            for (int i = 0; i < pdataArray.length(); i++){
+                JSONObject location = pdataArray.getJSONObject(i);
 
-                    for (int i = 0; i < pdataArray.length(); i++){
-                        JSONObject location = pdataArray.getJSONObject(i);
-
-                        listData.add(new heritageInfoHomeModel(location.getInt("ID")
-                                ,location.getString("Name")
-                                ,location.getInt("Liked")
-                                ,location.getInt("Viewed")
-                                ,location.getString("ImagePath")));
-                    }
-
-                } catch (JSONException e) {
-                    //Log.e(TAG,e.toString());
-                }
-                setRecyclerView(listData);
+                listData.add(new heritageInfoHomeModel(location.getInt("ID")
+                        ,location.getString("Name")
+                        ,location.getInt("Liked")
+                        ,location.getInt("Viewed")
+                        ,location.getString("ImagePath")));
             }
-        });
+            setMostViewRecyclerView(listData);
+
+        } catch (JSONException e) {
+            //Log.e(TAG,e.toString());
+        }
+    }
+
+    private String getURL(String currentPage){
+        String url = getActivity().getResources().getString(R.string.request_heritage_info_home_like) + currentPage.trim();
+        return url;
     }
 }
