@@ -46,7 +46,6 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<rcvAdapterTabsHome.
         holder.txtAmountOfLocationView.setText(String.valueOf(locationDatas.get(position).getLocationViewed()));
         Picasso.get()
                 .load(context.getResources().getString(R.string.request_image) + locationDatas.get(position).getLocationImagePath())
-                .resize(holder.imgLocation.getWidth(), 400)
                 .fit()
                 .into(holder.imgLocation);
     }

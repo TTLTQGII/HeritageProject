@@ -1,25 +1,36 @@
 package com.hrtgo.heritagego.heritagego.Fragment;
 
-import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethod;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.hrtgo.heritagego.heritagego.Activity.LocationDetail;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
 import com.hrtgo.heritagego.heritagego.Interface.Json;
@@ -28,52 +39,64 @@ import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
 import com.hrtgo.heritagego.heritagego.untill.customize;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
-public class tabFamousHome extends Fragment {
+import okhttp3.ResponseBody;
 
+public class navSearchfrag extends Fragment {
+
+    EditText edtSearch;
     RecyclerView recyclerView;
-    ProgressDialog pBar;
-    ArrayList<heritageInfoHomeModel> listData = new ArrayList<>();
-    int currentPage = 1;
-    Double logtitue, lagtitue;
-
-    private static final String TAG = "Location Home";
+    ArrayList<heritageInfoHomeModel> listData;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LocationDetail locationDetail = new LocationDetail();
-
+        listData = new ArrayList<>();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.home_fragment_tab_famous, container, false);
+        View view = inflater.inflate(R.layout.nav_bottom_search_fragment, container, false);
         initView(view);
-        return  view;
+        return view;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        //startOverLay();
-        callAPI(String.valueOf(currentPage));
-        currentPage++;
-        callAPI(String.valueOf(currentPage));
-    }
-
-
-
-    // Create inStance view
     private void initView(View view){
-        recyclerView = view.findViewById(R.id.recycler_view_home_tab_famous);
+        recyclerView = view.findViewById(R.id.rcv_search);
+        editextSearchEvent(view);
+    }
+
+    private void editextSearchEvent(View view){
+        edtSearch = view.findViewById(R.id.txt_search);
+        edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+                if(actionId == EditorInfo.IME_ACTION_SEARCH){
+                    listData.clear();
+                    setSearchRecyclerView(listData);
+                    try {
+                        callAPI("1", edtSearch.getText().toString());
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
     }
 
     @Override
@@ -81,42 +104,44 @@ public class tabFamousHome extends Fragment {
         super.onStart();
     }
 
-    // set adapter for recyclerView at Tab Famous
-    public void setHomeRecyclerView(ArrayList<heritageInfoHomeModel> locationFamous){
-        //stopOverLay();
+//    private void setFocusEditSearch(){
+//        edtSearch.setFocusableInTouchMode(true);
+//        edtSearch.requestFocus();
+//        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+//        ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(edtSearch, 0);
+//    }
+
+    private void setSearchRecyclerView(ArrayList<heritageInfoHomeModel> listData){
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationFamous, this.getContext());
+        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(listData, this.getContext());
         recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
 
+        adapter.notifyDataSetChanged();
     }
 
-
-    // Connect to API get json and parse json in Asyntask
     private void getListData(String url, final Json json){
+
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.e(TAG, response);
-                //parseJson(response);
+                Log.e("search", response);
                 json.parseJson(response);
-
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // control error in here
+
             }
         });
-
         VolleySingleton.getInStance(this.getContext()).getRequestQueue().add(jsonRequest);
     }
 
+    private void callAPI(String currentPage, String txtSearch) throws UnsupportedEncodingException {
+        String search = URLEncoder.encode(txtSearch, "UTF-8");
+        String url = getActivity().getResources().getString(R.string.request_search) + search + "/" + currentPage ;
 
-    private void callAPI(String currentPage){
-        String url = getActivity().getResources().getString(R.string.request_heritage_info_home_view) + currentPage;
         getListData(url, new Json() {
             @Override
             public void parseJson(String jsonString) {
@@ -136,22 +161,9 @@ public class tabFamousHome extends Fragment {
                     }
 
                 } catch (JSONException e) {
-                    Log.e(TAG,e.toString());
                 }
-                setHomeRecyclerView(listData);
+                setSearchRecyclerView(listData);
             }
-
         });
-
     }
-
-//    public void startOverLay(){
-//        pBar = new ProgressDialog(getActivity());
-//        customize.startloading(pBar);
-//    }
-//
-//
-//    public void stopOverLay(){
-//        pBar.dismiss();
-//    }
 }
