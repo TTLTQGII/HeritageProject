@@ -14,7 +14,7 @@ public class navitem3frag extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.nav_bottom_item_fragment3, container, false);
+        View view = inflater.inflate(R.layout.nav_bottom_setting_fragment, container, false);
 
         return view;
     }

@@ -65,8 +65,7 @@ public class tabFamousHome extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         //startOverLay();
         callAPI(String.valueOf(currentPage));
-        currentPage++;
-        callAPI(String.valueOf(currentPage));
+
     }
 
 

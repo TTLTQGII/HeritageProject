@@ -8,13 +8,17 @@
       android:layout_height="56dp">
 
       <EditText
+          android:id="@+id/txt_search"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:inputType="text|textFilter"
           android:maxLines="1"
-          android:textCursorDrawable="@drawable/cursor_edittext"
           />
 
   </android.support.v7.widget.Toolbar>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcv_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

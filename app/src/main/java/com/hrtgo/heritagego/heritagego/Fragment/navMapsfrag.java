@@ -14,7 +14,7 @@ public class navMapsfrag extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.nav_bottom_maps_fragment2, container, false);
+        View view = inflater.inflate(R.layout.nav_bottom_maps_fragment, container, false);
 
         return view;
     }

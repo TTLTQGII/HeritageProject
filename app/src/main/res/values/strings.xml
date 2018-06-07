@@ -10,4 +10,5 @@
     <string name="request_heritage_info_home_view">http://e567fdy.somee.com/api/HeritagerInfor/GetHeritagerInfoHomeView/</string>
     <string name="request_heritage_location_detail">http://e567fdy.somee.com/api/HeritagerInfor/GetHeritagerInfoByID/</string>
     <string name="request_image">http://</string>
+    <string name="request_search"></string>
 </resources>

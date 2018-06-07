@@ -7,4 +7,6 @@
     <color name="nav_item_bottom_nonactive">#737171</color>
     <color name="nav_bottom_backgroud">#bebebe</color>
     <color name="home_fragment_tab_background">#bebebe</color>
+    <color name="customize_like_comment_border">#bebebe</color>
+
 </resources>

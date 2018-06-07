@@ -22,10 +22,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.hrtgo.heritagego.heritagego.Fragment.navHomefrag;
+import com.hrtgo.heritagego.heritagego.Fragment.navSearchfrag;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Fragment.navitem3frag;
 import com.hrtgo.heritagego.heritagego.Fragment.navMapsfrag;
-import com.hrtgo.heritagego.heritagego.Fragment.navitem4frag;
 import com.hrtgo.heritagego.heritagego.untill.customize;
 
 import java.util.ArrayList;
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 item.setChecked(true);
                 break;
             case R.id.nav_action_bottom_item4:
-                fragment = new navitem4frag();
+                fragment = new navSearchfrag();
                 title = item.getTitle().toString();
                 item.setChecked(true);
                 break;

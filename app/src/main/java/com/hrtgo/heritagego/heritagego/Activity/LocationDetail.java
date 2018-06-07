@@ -46,6 +46,8 @@ import com.hrtgo.heritagego.heritagego.Worker.parseJsonLocationDetail;
 import com.hrtgo.heritagego.heritagego.untill.customize;
 import com.hrtgo.heritagego.heritagego.Adapter.imgListAdapterLocationDetail;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +68,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     Location mLastLocation;
     Marker mCurrLocationMarker;
     FusedLocationProviderClient mFusedLocationClient;
-    double latitude, longitude;
+    //double latitude, longitude;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -75,54 +77,59 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         setContentView(R.layout.location_detail);
         //Create Action bar
         getUserLocation();
-        //new getCurrentLocation().execute();
         initCustomizeActionBar();
         getIntentData();
         initView();
 
     }
 
-//    private class getCurrentLocation extends AsyncTask<Void, Void, Void>{
-//        @Override
-//        protected Void doInBackground(Void... voids) {
-//
-//            getUserLocation();
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            super.onPostExecute(aVoid);
-//
-//            callAPI(String.valueOf(locationID),String.valueOf(getLongitude()), String.valueOf(getLatitude()));
-//        }
-//    }
-
-    @SuppressLint("RestrictedApi")
-    public void getUserLocation(){
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(60000); // 1 minute interval
-        mLocationRequest.setFastestInterval(120000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                //Location Permission already granted
-                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-
-            } else {
-                //Request Location Permission
+    //Connect to API get json and parse json in Asyntask
+    private void getListData(String url){
+        StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.e("LocationDetail", response);
+                parseJson(response);
             }
-        } else {
-            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-
-        }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // control error in here
+            }
+        });
+        VolleySingleton.getInStance(this).getRequestQueue().add(jsonRequest);
     }
 
+    private void parseJson(String result){
+        new parseJsonLocationDetail(this).execute(result);
+    }
+
+    private void callAPI(String currentPage, double Latitude, double  Longtitude ){
+        String url = getString(R.string.request_heritage_location_detail) + currentPage + "/" + getEncodeUserLocation(Latitude, Longtitude);
+        Log.e("URLDetail", url);
+        getListData(url);
+    }
+
+    // encode url before get request API
+    private String getEncodeUserLocation(double latitude, double longtitude){
+        String Encoded = "";
+        String tempLongitude = String.valueOf(longtitude);
+        String tempLatitude = String.valueOf(latitude);
+
+        String edited_longititude = tempLongitude.replace(".", ",");
+        String edited_latitude = tempLatitude.replace(".", ",");
+
+        try {
+            String Longitude = URLEncoder.encode(edited_longititude, "UTF-8");
+            String Latitude = URLEncoder.encode(edited_latitude, "UTF-8");
+
+            Encoded = Latitude + "/" + Longitude;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return Encoded;
+    }
 
 
     @Override
@@ -237,30 +244,32 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         });
     }
 
-    //Connect to API get json and parse json in Asyntask
-    private void getListData(String url){
-        StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.e("LocationDetail", response);
-                parseJson(response);
+
+    // Get User Location
+
+    @SuppressLint("RestrictedApi")
+    public void getUserLocation(){
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(60000); // 1 minute interval
+        mLocationRequest.setFastestInterval(120000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                //Location Permission already granted
+                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+
+            } else {
+                //Request Location Permission
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                // control error in here
-            }
-        });
+        } else {
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
 
-        VolleySingleton.getInStance(this).getRequestQueue().add(jsonRequest);
+        }
     }
-
-
-    private void parseJson(String json){
-        new parseJsonLocationDetail(this).execute(json);
-    }
-
-
 
 
     public LocationCallback mLocationCallback = new LocationCallback() {
@@ -276,14 +285,14 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
                     mCurrLocationMarker.remove();
                 }
 
-                longitude = location.getLongitude();
-                latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                double latitude = location.getLatitude();
 
                 Log.e("asc",String.valueOf(longitude)+","+String.valueOf(latitude));
 
+                callAPI(String.valueOf(locationID), latitude, longitude);
 
             }
-            callAPI(String.valueOf(locationID));
 
         }
     };
@@ -316,12 +325,6 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
                 return;
             }
         }
-    }
-
-    private void callAPI(String currentPage){
-        String url = getString(R.string.request_heritage_location_detail) + currentPage + "/" + String.valueOf(longitude) + "/" + String.valueOf(latitude);
-        Log.e("URLDetail", url);
-        getListData(url);
     }
 
     @Override
@@ -359,11 +362,4 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
 }
