@@ -1,13 +1,23 @@
 package com.hrtgo.heritagego.heritagego.Activity;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +26,20 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.Marker;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
 
@@ -28,34 +47,44 @@ import com.hrtgo.heritagego.heritagego.Worker.parseJsonLocationDetail;
 import com.hrtgo.heritagego.heritagego.untill.customize;
 import com.hrtgo.heritagego.heritagego.Adapter.imgListAdapterLocationDetail;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import at.blogc.android.views.ExpandableTextView;
 
-public class LocationDetail extends AppCompatActivity {
+public class LocationDetail extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener{
 
     android.support.v7.widget.Toolbar actionToolBar;
     int locationID = 0;
     TextView txtLocationName, txtLocationDistance, txtLocationAddress, txtAmountOfView;
+    ImageView icApplication;
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
+
+    LocationRequest mLocationRequest;
+    Location mLastLocation;
+    Marker mCurrLocationMarker;
+    FusedLocationProviderClient mFusedLocationClient;
+    double latitude, longitude;
+
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.location_detail);
         //Create Action bar
+        getUserLocation();
+        //new getCurrentLocation().execute();
         initCustomizeActionBar();
         getIntentData();
         initView();
-
+        iconBackpress();
     }
 
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        callAPI(String.valueOf(locationID),"5", "7");
-    }
     // customize Action bar
     private void initCustomizeActionBar(){
         actionToolBar = findViewById(R.id.action_tool_bar_custom_location_detail);
@@ -70,20 +99,20 @@ public class LocationDetail extends AppCompatActivity {
     }
 
     private void initView(){
-
         txtLocationName = findViewById(R.id.txt_location_name);
         txtLocationDistance = findViewById(R.id.txt_location_distance);
         txtLocationAddress = findViewById(R.id.txt_location_address);
         txtAmountOfView = findViewById(R.id.txt_amount_of_view);
+        icApplication = findViewById(R.id.logo_application);
+    }
 
-        ImageView logoBackpress = findViewById(R.id.logo_application);
-        logoBackpress.setOnClickListener(new View.OnClickListener() {
+    private void iconBackpress(){
+        icApplication.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-
     }
 
     public void bindData(String locationName, String address, String distance, int Viewed){
@@ -110,7 +139,7 @@ public class LocationDetail extends AppCompatActivity {
         ViewPager imgViewPager;
         imgViewPager = findViewById(R.id.img_location_container_detail);
 
-        imgListAdapterLocationDetail imgAdapter = new imgListAdapterLocationDetail(imgLocationDetails, this);
+        imgListAdapterLocationDetail imgAdapter = new imgListAdapterLocationDetail(imgLocationDetails, this, imgViewPager);
         imgViewPager.setAdapter(imgAdapter);
 
         //int imgCount = imgAdapter.getCount();
@@ -162,18 +191,24 @@ public class LocationDetail extends AppCompatActivity {
             public void onClick(View v) {
                 if(txtDescription.isExpanded()){
                     txtDescription.collapse();
-                    txtDescription.setText(Html.fromHtml(description));
+                    txtDescription.setText(description);
                 }
                 else {
                     txtDescription.expand();
-                    txtDescription.setText(Html.fromHtml(content));
+                    txtDescription.setText(content);
                 }
             }
         });
     }
 
-    //Connect to API get json and parse json in Asyntask
-    private void getListData(String url){
+
+    private void parseJson(String json){
+        new parseJsonLocationDetail(this).execute(json);
+    }
+
+    private void callAPI(String currentPage, double latitude, double longitude){
+        String url = getURL(currentPage, latitude, longitude);
+        Log.e("URLDetail", url);
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -190,14 +225,147 @@ public class LocationDetail extends AppCompatActivity {
         VolleySingleton.getInStance(this).getRequestQueue().add(jsonRequest);
     }
 
+    private String getEncodedLocation(double latitude, double longitude){
+        String encodedLocation = "";
 
-    private void parseJson(String json){
-        new parseJsonLocationDetail(this).execute(json);
+        String tempLatitude = String.valueOf(latitude).trim();
+        String tempLongitude = String.valueOf(longitude).trim();
+
+        String Latitude = tempLatitude.replace(".", ",");
+        String Longitude = tempLongitude.replace(".", ",");
+
+        try {
+            String encodedLatitude = URLEncoder.encode(Latitude, "UTF-8");
+            String encodedLongitude = URLEncoder.encode(Longitude, "UTF-8");
+            encodedLocation = encodedLatitude + "/" + encodedLongitude;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return encodedLocation;
     }
 
-    private void callAPI(String currentPage, String longTiTue, String latituge){
-        String url = getString(R.string.request_heritage_location_detail) + currentPage + "/" +longTiTue + "/" +latituge;
-        Log.e("URLDetail", url);
-        getListData(url);
+    private String getURL(String currentPage, double latitude, double longitude){
+        String url = getString(R.string.request_heritage_location_detail) + currentPage + "/" + getEncodedLocation(latitude, longitude);
+        return url;
     }
+
+    public LocationCallback mLocationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            List<Location> locationList = locationResult.getLocations();
+            if (locationList.size() > 0) {
+                //The last location in the list is the newest
+                Location location = locationList.get(locationList.size() - 1);
+                Log.e("asd", "Location: " + location.getLatitude() + " " + location.getLongitude());
+                mLastLocation = location;
+                if (mCurrLocationMarker != null) {
+                    mCurrLocationMarker.remove();
+                }
+
+                longitude = location.getLongitude();
+                latitude = location.getLatitude();
+
+                Log.e("asc",String.valueOf(longitude)+","+String.valueOf(latitude));
+
+
+            }
+            callAPI(String.valueOf(locationID), latitude, longitude);
+
+        }
+    };
+
+
+    @SuppressLint("RestrictedApi")
+    public void getUserLocation(){
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(60000); // 1 minute interval
+        mLocationRequest.setFastestInterval(120000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                //Location Permission already granted
+                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+
+            } else {
+                //Request Location Permission
+            }
+        } else {
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+
+        }
+    }
+    //Connect to API get json and parse json in Asyntask
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+
+                    }
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
 }

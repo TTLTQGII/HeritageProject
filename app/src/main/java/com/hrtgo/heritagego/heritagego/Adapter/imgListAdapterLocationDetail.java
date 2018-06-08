@@ -3,6 +3,7 @@ package com.hrtgo.heritagego.heritagego.Adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +19,12 @@ public class imgListAdapterLocationDetail extends PagerAdapter {
 
     ArrayList<String> imgPath;
     Context context;
+    ViewPager imgContainer;
 
-    public imgListAdapterLocationDetail(ArrayList<String> imgPath, Context context) {
+    public imgListAdapterLocationDetail(ArrayList<String> imgPath, Context context, ViewPager container) {
         this.imgPath = imgPath;
         this.context = context;
+        this.imgContainer = container;
     }
 
     @Override
@@ -45,7 +48,9 @@ public class imgListAdapterLocationDetail extends PagerAdapter {
         // do du lieu
         String Url = context.getResources().getString(R.string.request_image) + imgPath.get(position);
         Log.e("lcDetailImg", Url);
-        Picasso.get().load(Url).fit().into(imgLocationDetail);
+        int width = imgContainer.getWidth();
+        int height = imgContainer.getHeight();
+        Picasso.get().load(Url).resize(width, height).into(imgLocationDetail);
         // add view child to Viewgroup
         container.addView(view);
 

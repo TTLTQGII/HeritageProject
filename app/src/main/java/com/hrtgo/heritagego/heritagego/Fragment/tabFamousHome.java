@@ -93,6 +93,19 @@ public class tabFamousHome extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationFamous, this.getContext());
         recyclerView.setAdapter(adapter);
+
+//        adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+//            @Override
+//            public void onLoadMore() {
+//                adapter.notifyItemInserted(locationFamous.size() - 1);
+//                locationFamous.remove(locationFamous.size() - 1);
+//                adapter.notifyItemRemoved(locationFamous.size());
+//                callAPI("1");
+//                adapter.notifyDataSetChanged();
+//                adapter.loaded();
+//
+//            }
+//        });
     }
 
     // call API get DATA
