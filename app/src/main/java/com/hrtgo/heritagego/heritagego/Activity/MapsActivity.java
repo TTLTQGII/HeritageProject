@@ -2,9 +2,7 @@ package com.hrtgo.heritagego.heritagego.Activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -14,14 +12,11 @@ import android.os.Build;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MapDirection extends FragmentActivity implements OnMapReadyCallback,
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,DirectionTaskListener {
@@ -61,9 +56,6 @@ public class MapDirection extends FragmentActivity implements OnMapReadyCallback
     String Destination = "";
     double latitude, longitude;
 
-
-
-    Button btnFindPath;
 
     List<Marker> originMarkers = new ArrayList<>();
     List<Marker> destinationMarkers = new ArrayList<>();
@@ -78,16 +70,13 @@ public class MapDirection extends FragmentActivity implements OnMapReadyCallback
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
-    public MapDirection() {
-
-    }
-
 
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map_direction);
+        setContentView(R.layout.activity_maps);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -116,17 +105,15 @@ public class MapDirection extends FragmentActivity implements OnMapReadyCallback
             }
         } else {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-
         }
-        btnFindPath =  findViewById(R.id.button2);
-
     }
+
     private void getIntentData(){
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if(bundle != null) {
             Destination = bundle.getString("destination");
-
+            CurrentLocation(bundle.getDouble("latitude"), bundle.getDouble("longitude"));
         }
         Log.e("Destination", String.valueOf(Destination));
     }
@@ -221,7 +208,7 @@ public class MapDirection extends FragmentActivity implements OnMapReadyCallback
 
     // gửi request về GetDirectionTask
     private void sendRequest(String origin, String destination) {
-       // String origin = CurrentLocation(latitude,longitude);
+        // String origin = CurrentLocation(latitude,longitude);
         Log.e("abc",String.valueOf(latitude) +" "+String.valueOf(longitude));
         //String destination = "10.774604, 106.689337";
         try {

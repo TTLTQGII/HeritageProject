@@ -62,6 +62,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     int locationID = 0;
     TextView txtLocationName, txtLocationDistance, txtLocationAddress, txtAmountOfView;
     ImageView icApplication;
+    RelativeLayout DirectionMap;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
 
@@ -83,6 +84,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         getIntentData();
         initView();
         iconBackpress();
+        getDirection();
     }
 
     // customize Action bar
@@ -113,6 +115,26 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
                 onBackPressed();
             }
         });
+    }
+
+    private void getDirection(){
+        DirectionMap = findViewById(R.id.derection_container);
+
+        DirectionMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity();
+            }
+        });
+
+    }
+
+    private void startActivity(){
+        Intent DirectionMap = new Intent(this, MapsActivity.class);
+        DirectionMap.putExtra("destination", "10.780153, 106.700063");
+        DirectionMap.putExtra("latitude", latitude);
+        DirectionMap.putExtra("longitude", longitude);
+        startActivity(DirectionMap);
     }
 
     public void bindData(String locationName, String address, String distance, int Viewed){
