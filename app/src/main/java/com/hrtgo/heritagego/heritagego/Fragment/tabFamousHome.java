@@ -56,6 +56,7 @@ public class tabFamousHome extends Fragment {
     ProgressDialog pBar;
     ArrayList<heritageInfoHomeModel> listData;
     int currentPage = 1;
+    rcvAdapterTabsHome adapter;
 
 
     private static final String TAG = "Location Home";
@@ -70,8 +71,9 @@ public class tabFamousHome extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment_tab_famous, container, false);
-        initView(view);
         callAPI(getURL(String.valueOf(currentPage)));
+        callAPI(getURL(String.valueOf(currentPage)));
+        initView(view);
         return  view;
     }
 
@@ -79,6 +81,7 @@ public class tabFamousHome extends Fragment {
     // Create inStance view
     private void initView(View view){
         recyclerView = view.findViewById(R.id.recycler_view_home_tab_famous);
+        setHomeRecyclerView();
     }
 
     @Override
@@ -87,25 +90,21 @@ public class tabFamousHome extends Fragment {
     }
 
     // set adapter for recyclerView at Tab Famous
-    private void setHomeRecyclerView(final ArrayList<heritageInfoHomeModel> locationFamous){
+    private void setHomeRecyclerView(){
         recyclerView.setHasFixedSize(false);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationFamous, this.getContext());
+        adapter = new rcvAdapterTabsHome(recyclerView, listData, this.getContext());
         recyclerView.setAdapter(adapter);
 
-//        adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
-//            @Override
-//            public void onLoadMore() {
-//                adapter.notifyItemInserted(locationFamous.size() - 1);
-//                locationFamous.remove(locationFamous.size() - 1);
-//                adapter.notifyItemRemoved(locationFamous.size());
-//                callAPI("1");
-//                adapter.notifyDataSetChanged();
-//                adapter.loaded();
-//
-//            }
-//        });
+        adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                callAPI(getURL("2"));
+                onDataChanged();
+                adapter.loaded();
+            }
+        });
     }
 
     // call API get DATA
@@ -121,7 +120,7 @@ public class tabFamousHome extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // control error in here
-                stopOverLay();
+                //stopOverLay();
                 Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
             }
         });
@@ -142,12 +141,16 @@ public class tabFamousHome extends Fragment {
                         ,location.getInt("Liked")
                         ,location.getInt("Viewed")
                         ,location.getString("ImagePath")));
+                onDataChanged();
             }
-            setHomeRecyclerView(listData);
-
         } catch (JSONException e) {
             Log.e(TAG,e.toString());
         }
+    }
+
+    private void onDataChanged(){
+        adapter.locationDatas = listData;
+        adapter.notifyItemInserted(listData.size()+1);
     }
 
     private String getURL(String currentPage){

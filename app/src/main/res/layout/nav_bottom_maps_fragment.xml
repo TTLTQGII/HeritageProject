@@ -2,13 +2,11 @@
 <LinearLayout android:layout_height="match_parent" android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Chưa xác định chức năng fragment 2"
-        android:textSize="20sp"
-        />
+    <com.google.android.gms.maps.MapView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/Fragment_map">
+    </com.google.android.gms.maps.MapView>
 
 
 </LinearLayout>

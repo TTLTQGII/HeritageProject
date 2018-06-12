@@ -64,15 +64,15 @@ public class tabMostViewedHome extends Fragment{
     }
 
     // set adapter for recyclerView at Tab MostViewed
-    public void setMostViewRecyclerView(ArrayList<heritageInfoHomeModel> locationMostViewed){
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationMostViewed, this.getContext());
-        recyclerView.setAdapter(adapter);
-
-        adapter.notifyDataSetChanged();
-    }
+//    public void setMostViewRecyclerView(ArrayList<heritageInfoHomeModel> locationMostViewed){
+//        recyclerView.setHasFixedSize(true);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+//        recyclerView.setLayoutManager(linearLayoutManager);
+//        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationMostViewed, this.getContext());
+//        recyclerView.setAdapter(adapter);
+//
+//        adapter.notifyDataSetChanged();
+//    }
 
     // call API get DATA
     private void callAPI(String url){
@@ -108,7 +108,7 @@ public class tabMostViewedHome extends Fragment{
                         ,location.getInt("Viewed")
                         ,location.getString("ImagePath")));
             }
-            setMostViewRecyclerView(listData);
+            //setMostViewRecyclerView(listData);
 
         } catch (JSONException e) {
             //Log.e(TAG,e.toString());

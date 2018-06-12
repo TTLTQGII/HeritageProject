@@ -65,15 +65,15 @@ public class tabNearHome extends Fragment{
     }
 
     // set adapter for recyclerView at Tab Near
-    public void setNearRecyclerView(ArrayList<heritageInfoHomeModel> locationNear){
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationNear, this.getContext());
-        recyclerView.setAdapter(adapter);
-
-        adapter.notifyDataSetChanged();
-    }
+//    public void setNearRecyclerView(ArrayList<heritageInfoHomeModel> locationNear){
+//        recyclerView.setHasFixedSize(true);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+//        recyclerView.setLayoutManager(linearLayoutManager);
+//        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationNear, this.getContext());
+//        recyclerView.setAdapter(adapter);
+//
+//        adapter.notifyDataSetChanged();
+//    }
 
     // call API get DATA
     private void callAPI(String url){
@@ -107,7 +107,7 @@ public class tabNearHome extends Fragment{
                         ,location.getInt("Viewed")
                         ,location.getString("ImagePath")));
             }
-            setNearRecyclerView(listData);
+            //setNearRecyclerView(listData);
 
         } catch (JSONException e) {
         }

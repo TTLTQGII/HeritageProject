@@ -85,7 +85,7 @@ public class navSearchfrag extends Fragment {
 
                 if(actionId == EditorInfo.IME_ACTION_SEARCH){
                     listData.clear();
-                    setSearchRecyclerView(listData);
+                    //setSearchRecyclerView(listData);
                     callAPI(getURL("1", edtSearch.getText().toString()));
                     return true;
                 }
@@ -108,15 +108,15 @@ public class navSearchfrag extends Fragment {
 //        ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(edtSearch, 0);
 //    }
 
-    private void setSearchRecyclerView(ArrayList<heritageInfoHomeModel> listData){
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(listData, this.getContext());
-        recyclerView.setAdapter(adapter);
-
-        adapter.notifyDataSetChanged();
-    }
+//    private void setSearchRecyclerView(ArrayList<heritageInfoHomeModel> listData){
+//        recyclerView.setHasFixedSize(true);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+//        recyclerView.setLayoutManager(linearLayoutManager);
+//        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(listData, this.getContext());
+//        recyclerView.setAdapter(adapter);
+//
+//        adapter.notifyDataSetChanged();
+//    }
 
     // call API get DATA
     private void callAPI(String url){
@@ -152,7 +152,7 @@ public class navSearchfrag extends Fragment {
                         ,location.getInt("Viewed")
                         ,location.getString("ImagePath")));
             }
-            setSearchRecyclerView(listData);
+            //setSearchRecyclerView(listData);
 
         } catch (JSONException e) {
         }
