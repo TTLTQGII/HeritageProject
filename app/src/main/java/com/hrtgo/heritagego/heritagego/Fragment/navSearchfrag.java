@@ -35,6 +35,7 @@ import com.android.volley.toolbox.Volley;
 import com.hrtgo.heritagego.heritagego.Activity.LocationDetail;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
 import com.hrtgo.heritagego.heritagego.Interface.Json;
+import com.hrtgo.heritagego.heritagego.Interface.OnLoadMoreListener;
 import com.hrtgo.heritagego.heritagego.Model.heritageInfoHomeModel;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
@@ -57,6 +58,7 @@ public class navSearchfrag extends Fragment {
     EditText edtSearch;
     RecyclerView recyclerView;
     ArrayList<heritageInfoHomeModel> listData;
+    rcvAdapterTabsHome adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +76,7 @@ public class navSearchfrag extends Fragment {
 
     private void initView(View view){
         recyclerView = view.findViewById(R.id.rcv_search);
+        setSearchRecyclerView();
         editextSearchEvent(view);
     }
 
@@ -108,15 +111,21 @@ public class navSearchfrag extends Fragment {
 //        ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(edtSearch, 0);
 //    }
 
-//    private void setSearchRecyclerView(ArrayList<heritageInfoHomeModel> listData){
-//        recyclerView.setHasFixedSize(true);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-//        recyclerView.setLayoutManager(linearLayoutManager);
-//        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(listData, this.getContext());
-//        recyclerView.setAdapter(adapter);
-//
-//        adapter.notifyDataSetChanged();
-//    }
+    private void setSearchRecyclerView(){
+        recyclerView.setHasFixedSize(false);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        adapter = new rcvAdapterTabsHome(recyclerView, listData, this.getContext());
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                callAPI(getURL("2", edtSearch.getText().toString()));
+                Log.e("ListData", String.valueOf(listData.size()));
+            }
+        });
+    }
 
     // call API get DATA
     private void callAPI(String url){
@@ -152,10 +161,19 @@ public class navSearchfrag extends Fragment {
                         ,location.getInt("Viewed")
                         ,location.getString("ImagePath")));
             }
-            //setSearchRecyclerView(listData);
+
+            if(listData.size() > 0){
+                adapter.locationDatas = listData;
+                onDataChanged();
+            }
 
         } catch (JSONException e) {
         }
+    }
+
+    private void onDataChanged(){
+        adapter.notifyDataSetChanged();
+        adapter.loaded();
     }
 
     private String getURL(String currentPage, String txtSearch){

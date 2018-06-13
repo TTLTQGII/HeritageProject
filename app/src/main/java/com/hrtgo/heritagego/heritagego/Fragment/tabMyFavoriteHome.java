@@ -18,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
 import com.hrtgo.heritagego.heritagego.Interface.Json;
+import com.hrtgo.heritagego.heritagego.Interface.OnLoadMoreListener;
 import com.hrtgo.heritagego.heritagego.Model.heritageInfoHomeModel;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 public class tabMyFavoriteHome extends Fragment {
     RecyclerView recyclerView;
     ArrayList<heritageInfoHomeModel> listData;
+    rcvAdapterTabsHome adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class tabMyFavoriteHome extends Fragment {
     // create instance view
     private void initView(View view){
         recyclerView = view.findViewById(R.id.recycler_view_home_tab_my_favorite);
+        setMyFavoriteRecyclerView();
     }
 
     @Override
@@ -60,16 +63,22 @@ public class tabMyFavoriteHome extends Fragment {
     }
 
     //     set adapter for recyclerView at Tab MyFavorite
-//    public void setMyFavoriteRecyclerView(ArrayList<heritageInfoHomeModel> locationMyfavorite){
-//        recyclerView.setHasFixedSize(true);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-//        recyclerView.setLayoutManager(linearLayoutManager);
-//        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationMyfavorite, this.getContext());
-//        recyclerView.setAdapter(adapter);
-//
-//        adapter.notifyDataSetChanged();
-//    }
-//
+    public void setMyFavoriteRecyclerView(){
+        recyclerView.setHasFixedSize(false);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        adapter = new rcvAdapterTabsHome(recyclerView, listData, this.getContext());
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                callAPI(getURL("2"));
+                Log.e("ListData", String.valueOf(listData.size()));
+            }
+        });
+    }
+
     // call API get DATA
     private void callAPI(String url){
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -102,11 +111,19 @@ public class tabMyFavoriteHome extends Fragment {
                         ,location.getInt("Viewed")
                         ,location.getString("ImagePath")));
             }
-            //setHomeRecyclerView(listData);
+            if(listData.size() > 0){
+                adapter.locationDatas = listData;
+                onDataChanged();
+            }
 
         } catch (JSONException e) {
 
         }
+    }
+
+    private void onDataChanged(){
+        adapter.notifyDataSetChanged();
+        adapter.loaded();
     }
 
     private String getURL(String currentPage){

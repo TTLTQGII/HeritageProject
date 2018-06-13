@@ -49,7 +49,6 @@ public class heritageInfoHomeModel {
         this.ID = ID;
         this.locationName = locationName;
         this.liked = liked;
-
         this.viewed = viewed;
         this.imagePath = imagePath;
     }

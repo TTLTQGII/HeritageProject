@@ -18,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
 import com.hrtgo.heritagego.heritagego.Interface.Json;
+import com.hrtgo.heritagego.heritagego.Interface.OnLoadMoreListener;
 import com.hrtgo.heritagego.heritagego.Model.heritageInfoHomeModel;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 public class tabMostViewedHome extends Fragment{
     RecyclerView recyclerView;
     ArrayList<heritageInfoHomeModel> listData;
+    rcvAdapterTabsHome adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,12 +52,13 @@ public class tabMostViewedHome extends Fragment{
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        initView(view);
         callAPI(getURL("2"));
     }
 
     private void initView(View view){
         recyclerView = view.findViewById(R.id.recycler_view_home_tab_most_viewed);
+        setMostViewRecyclerView();
     }
 
     @Override
@@ -64,15 +67,21 @@ public class tabMostViewedHome extends Fragment{
     }
 
     // set adapter for recyclerView at Tab MostViewed
-//    public void setMostViewRecyclerView(ArrayList<heritageInfoHomeModel> locationMostViewed){
-//        recyclerView.setHasFixedSize(true);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-//        recyclerView.setLayoutManager(linearLayoutManager);
-//        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationMostViewed, this.getContext());
-//        recyclerView.setAdapter(adapter);
-//
-//        adapter.notifyDataSetChanged();
-//    }
+    public void setMostViewRecyclerView(){
+        recyclerView.setHasFixedSize(false);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        adapter = new rcvAdapterTabsHome(recyclerView, listData, this.getContext());
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                callAPI(getURL("2"));
+                Log.e("ListData", String.valueOf(listData.size()));
+            }
+        });
+    }
 
     // call API get DATA
     private void callAPI(String url){
@@ -108,11 +117,20 @@ public class tabMostViewedHome extends Fragment{
                         ,location.getInt("Viewed")
                         ,location.getString("ImagePath")));
             }
-            //setMostViewRecyclerView(listData);
+
+            if(listData.size() > 0){
+                adapter.locationDatas = listData;
+                onDataChanged();
+            }
 
         } catch (JSONException e) {
             //Log.e(TAG,e.toString());
         }
+    }
+
+    private void onDataChanged(){
+        adapter.notifyDataSetChanged();
+        adapter.loaded();
     }
 
     private String getURL(String currentPage){

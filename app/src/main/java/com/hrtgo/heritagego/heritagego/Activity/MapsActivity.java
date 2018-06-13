@@ -3,6 +3,7 @@ package com.hrtgo.heritagego.heritagego.Activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -15,8 +16,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,13 +46,14 @@ import com.hrtgo.heritagego.heritagego.DirectionTask.DirectionTask;
 import com.hrtgo.heritagego.heritagego.DirectionTask.DirectionTaskListener;
 import com.hrtgo.heritagego.heritagego.DirectionTask.Route;
 import com.hrtgo.heritagego.heritagego.R;
+import com.hrtgo.heritagego.heritagego.untill.customize;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,DirectionTaskListener {
@@ -55,11 +62,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     String Destination = "";
     double latitude, longitude;
-
+    android.support.v7.widget.Toolbar actionToolBar;
+    ImageView icApplication;
+    TextView txtLocationName, txtLocationAddress, txtAmountOfView;
 
     List<Marker> originMarkers = new ArrayList<>();
     List<Marker> destinationMarkers = new ArrayList<>();
     List<Polyline> polylinePaths = new ArrayList<>();
+    List<Route> localRoute;
     ProgressDialog progressDialog;
 
     LocationRequest mLocationRequest;
@@ -70,8 +80,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
-
-    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,12 +90,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        initView();
+        initMap();
+
+    }
+
+    private void initView(){
+        txtLocationName = findViewById(R.id.txt_location_name);
+        txtLocationAddress = findViewById(R.id.txt_location_address);
+        txtAmountOfView = findViewById(R.id.txt_amount_of_view);
+
+        initCustomizeActionBar();
+        iconBackpress();
         getIntentData();
 
+    }
+
+    @SuppressLint("RestrictedApi")
+    private void initMap(){
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(60000); // 1 minute interval
         mLocationRequest.setFastestInterval(120000);
@@ -108,15 +130,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    // Get data from LocationDetail
     private void getIntentData(){
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
+        Bundle bundle = intent.getBundleExtra("Data");
         if(bundle != null) {
             Destination = bundle.getString("destination");
             CurrentLocation(bundle.getDouble("latitude"), bundle.getDouble("longitude"));
+            txtLocationName.setText(bundle.getString("locationName"));
+            txtLocationAddress.setText(bundle.getString("Address"));
+            txtAmountOfView.setText(bundle.getString("Viewed"));
+
+//            drawPolylinePath(localRoute);
         }
         Log.e("Destination", String.valueOf(Destination));
     }
+
+    private void iconBackpress(){
+        icApplication = findViewById(R.id.logo_application);
+        icApplication.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
+    // customize Action bar
+    private void initCustomizeActionBar(){
+        actionToolBar = findViewById(R.id.action_tool_bar_custom_location_detail);
+        if(actionToolBar != null) {
+            setSupportActionBar(actionToolBar);
+            ActionBar actionBar = getSupportActionBar();
+            LayoutInflater inflater = (LayoutInflater) MapsActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View customAcionBar = inflater.inflate(R.layout.tool_action_bar_customize, null);
+            actionBar.setCustomView(customAcionBar);
+            customize.customizeActionBar(actionToolBar, actionBar, customAcionBar);
+        }
+    }
+
+
 
     @Override
     protected void onPause() {
@@ -182,9 +235,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 longitude = location.getLongitude();
                 latitude = location.getLatitude();
 
-
-
-
                 //Place current location marker
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
@@ -199,7 +249,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public String CurrentLocation(double CuLagitudeA, double CulongiatudeB)
     {
-
         Log.e("asb",String.valueOf(latitude)+String.valueOf(longitude));
         return CuLagitudeA + " " + CulongiatudeB;
     }
@@ -268,6 +317,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onDirectionFinderSuccess (List<Route> routes) {
+        drawPolylinePath(routes);
+    }
+
+    private void drawPolylinePath(List<Route> routes){
         polylinePaths = new ArrayList<>();
         originMarkers = new ArrayList<>();
         destinationMarkers = new ArrayList<>();
@@ -291,7 +344,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             polylinePaths.add(mMap.addPolyline(polylineOptions));
         }
     }
-
 
     @Override
     public void onLocationChanged(Location location) {

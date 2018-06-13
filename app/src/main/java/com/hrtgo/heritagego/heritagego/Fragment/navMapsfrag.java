@@ -53,7 +53,7 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback {
         mMapView = view.findViewById(R.id.Fragment_map);
         if (mMapView != null){
             mMapView.onCreate(null);
-            mMapView.onPause();
+            mMapView.onResume();
             mMapView.getMapAsync(this);
         }
     }

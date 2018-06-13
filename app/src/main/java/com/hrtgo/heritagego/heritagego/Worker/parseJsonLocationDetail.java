@@ -15,10 +15,13 @@ import java.util.ArrayList;
 public class parseJsonLocationDetail extends AsyncTask<String, Void, ArrayList<heritageLocationDetail>> {
 
     LocationDetail locationDetail;
+    String currentLocation;
 
-    public parseJsonLocationDetail(LocationDetail locationDetail) {
+    public parseJsonLocationDetail(LocationDetail locationDetail, String currentLocation) {
         this.locationDetail = locationDetail;
+        this.currentLocation = currentLocation;
     }
+
 
     @Override
     protected ArrayList<heritageLocationDetail> doInBackground(String... strings) {
@@ -29,21 +32,24 @@ public class parseJsonLocationDetail extends AsyncTask<String, Void, ArrayList<h
             JSONObject root = new JSONObject(strings[0]);
 
             JSONArray imageData = root.getJSONArray("imagedata");
-            for (int i = 0; i< imageData.length(); i ++) {
+            for (int i = 0; i < imageData.length(); i ++) {
                 JSONObject ImagePath = imageData.getJSONObject(i);
                 imgPaths.add(ImagePath.getString("ImagePath"));
             }
+
+            String destination = root.getString("Latitude") + " " + root.getString("Longtitude");
+            Log.e("destination", destination);
 
             listData.add(new heritageLocationDetail(root.getString("Name"),
                     root.getString("TimeofBuild"),
                     root.getString("Address"),
                     root.getString("Contents"),
                     root.getString("Description"),
-                    root.getString("Distance"),
                     root.getInt("Liked"),
                     root.getInt("Viewed"),
                     root.getInt("Commented"),
-                    imgPaths));
+                    imgPaths,
+                    destination));
 
             Log.e("ListDetail", listData.get(0).toString());
 
@@ -63,7 +69,8 @@ public class parseJsonLocationDetail extends AsyncTask<String, Void, ArrayList<h
         locationDetail.eventViewPager(heritageLocationDetails.get(0).getImagePath());
         locationDetail.bindData(heritageLocationDetails.get(0).getName(),
                 heritageLocationDetails.get(0).getAddress(),
-                heritageLocationDetails.get(0).getDistance(),
                 heritageLocationDetails.get(0).getViewed());
+        locationDetail.sendRequest(currentLocation, heritageLocationDetails.get(0).getDestination());
+        locationDetail.getDirection();
     }
 }

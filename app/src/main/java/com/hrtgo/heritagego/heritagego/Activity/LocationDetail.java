@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -39,7 +40,11 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.Marker;
+import com.hrtgo.heritagego.heritagego.DirectionTask.DirectionTask;
+import com.hrtgo.heritagego.heritagego.DirectionTask.DirectionTaskListener;
+import com.hrtgo.heritagego.heritagego.DirectionTask.Route;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
 
@@ -47,6 +52,7 @@ import com.hrtgo.heritagego.heritagego.Worker.parseJsonLocationDetail;
 import com.hrtgo.heritagego.heritagego.untill.customize;
 import com.hrtgo.heritagego.heritagego.Adapter.imgListAdapterLocationDetail;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -56,7 +62,8 @@ import at.blogc.android.views.ExpandableTextView;
 
 public class LocationDetail extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener{
+        LocationListener, DirectionTaskListener{
+
 
     android.support.v7.widget.Toolbar actionToolBar;
     int locationID = 0;
@@ -66,11 +73,14 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
 
+
     LocationRequest mLocationRequest;
     Location mLastLocation;
     Marker mCurrLocationMarker;
     FusedLocationProviderClient mFusedLocationClient;
     double latitude, longitude;
+//    List<Route> localRoute = new ArrayList<Route>();
+
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -79,12 +89,11 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         setContentView(R.layout.location_detail);
         //Create Action bar
         getUserLocation();
-        //new getCurrentLocation().execute();
         initCustomizeActionBar();
         getIntentData();
         initView();
         iconBackpress();
-        getDirection();
+
     }
 
     // customize Action bar
@@ -105,10 +114,10 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         txtLocationDistance = findViewById(R.id.txt_location_distance);
         txtLocationAddress = findViewById(R.id.txt_location_address);
         txtAmountOfView = findViewById(R.id.txt_amount_of_view);
-        icApplication = findViewById(R.id.logo_application);
     }
 
     private void iconBackpress(){
+        icApplication = findViewById(R.id.logo_application);
         icApplication.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,30 +126,36 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         });
     }
 
-    private void getDirection(){
+    public void getDirection(){
         DirectionMap = findViewById(R.id.derection_container);
 
-        DirectionMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity();
-            }
-        });
+            DirectionMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity();
+                }
+            });
+
 
     }
 
+    // start Maps Activity
     private void startActivity(){
         Intent DirectionMap = new Intent(this, MapsActivity.class);
-        DirectionMap.putExtra("destination", "10.780153, 106.700063");
-        DirectionMap.putExtra("latitude", latitude);
-        DirectionMap.putExtra("longitude", longitude);
+        Bundle bundle = new Bundle();
+        bundle.putString("destination", "10.780153, 106.700063");
+        bundle.putDouble("latitude", latitude);
+        bundle.putDouble("longitude", longitude);
+        bundle.putString("locationName", String.valueOf(txtLocationName.getText()));
+        bundle.putString("Address", String.valueOf(txtLocationAddress.getText()));
+        bundle.putString("Viewed", String.valueOf(txtAmountOfView.getText()));
+        DirectionMap.putExtra("Data", bundle);
         startActivity(DirectionMap);
     }
 
-    public void bindData(String locationName, String address, String distance, int Viewed){
+    public void bindData(String locationName, String address, int Viewed){
         txtLocationName.setText(locationName);
         txtLocationAddress.setText(address);
-        txtLocationDistance.setText(distance);
         txtAmountOfView.setText(String.valueOf(Viewed));
     }
 
@@ -160,7 +175,6 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     public void eventViewPager(ArrayList<String> imgLocationDetails){
         ViewPager imgViewPager;
         imgViewPager = findViewById(R.id.img_location_container_detail);
-
         imgListAdapterLocationDetail imgAdapter = new imgListAdapterLocationDetail(imgLocationDetails, this, imgViewPager);
         imgViewPager.setAdapter(imgAdapter);
 
@@ -186,6 +200,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
             public void onClick(View v) {
                 txtAmountOfLike.setText(String.valueOf(Liked + 1));
                 imgLike.setImageResource(R.drawable.ic_like_active_32dp);
+                likeEvent();
                 imgBtnLike.setClickable(false);
             }
         });
@@ -201,6 +216,12 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         });
     }
 
+    private void likeEvent(){
+        String anroidVersion = Build.VERSION.RELEASE;
+        int sdkVersion = Build.VERSION.SDK_INT;
+        String a = Build.MODEL;
+        Log.e("baseos", anroidVersion + ", " + String.valueOf(sdkVersion) + ", " + a);
+    }
 
     // expand and collapse the location content
     // goi qua -> worker asyntask
@@ -224,18 +245,18 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     }
 
 
-    private void parseJson(String json){
-        new parseJsonLocationDetail(this).execute(json);
+    private void parseJson(String json, String currentLocation){
+        new parseJsonLocationDetail(this, currentLocation ).execute(json);
     }
 
-    private void callAPI(String currentPage, double latitude, double longitude){
+    private void callAPI(String currentPage, double latitude, double longitude, final String currentLocation){
         String url = getURL(currentPage, latitude, longitude);
         Log.e("URLDetail", url);
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.e("LocationDetail", response);
-                parseJson(response);
+                parseJson(response, currentLocation);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -247,6 +268,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         VolleySingleton.getInStance(this).getRequestQueue().add(jsonRequest);
     }
 
+    // encode user current location
     private String getEncodedLocation(double latitude, double longitude){
         String encodedLocation = "";
 
@@ -289,14 +311,29 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
                 latitude = location.getLatitude();
 
                 Log.e("asc",String.valueOf(longitude)+","+String.valueOf(latitude));
-
-
             }
-            callAPI(String.valueOf(locationID), latitude, longitude);
+            callAPI(String.valueOf(locationID), latitude, longitude, CurrentLocation(latitude,longitude));
 
         }
     };
 
+    public String CurrentLocation(double CuLagitudeA, double CulongiatudeB)
+    {
+        Log.e("asb",String.valueOf(latitude)+String.valueOf(longitude));
+        return CuLagitudeA + " " + CulongiatudeB;
+    }
+
+
+    public void sendRequest(String origin, String destination) {
+        // String origin = CurrentLocation(latitude,longitude);
+        Log.e("abc",String.valueOf(latitude) +" "+String.valueOf(longitude));
+        //String destination = "10.774604, 106.689337";
+        try {
+            new DirectionTask( this, origin, destination).execute();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
 
     @SuppressLint("RestrictedApi")
     public void getUserLocation(){
@@ -388,6 +425,19 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public void onDirectionFinderStart() {
+
+    }
+
+    @Override
+    public void onDirectionFinderSuccess(List<Route> routes) {
+        for (Route route : routes) {
+            ((TextView) findViewById(R.id.txt_location_distance)).setText(route.distance.text);
+        }
+//        localRoute = routes;
     }
 
 }

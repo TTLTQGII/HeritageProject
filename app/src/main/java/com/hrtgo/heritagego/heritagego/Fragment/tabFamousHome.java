@@ -63,17 +63,17 @@ public class tabFamousHome extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         listData = new ArrayList<>();
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment_tab_famous, container, false);
-        callAPI(getURL(String.valueOf(currentPage)));
-        callAPI(getURL(String.valueOf(currentPage)));
         initView(view);
+        callAPI(getURL(String.valueOf(currentPage)));
+        callAPI(getURL(String.valueOf(currentPage)));
         return  view;
     }
 
@@ -87,6 +87,8 @@ public class tabFamousHome extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+
     }
 
     // set adapter for recyclerView at Tab Famous
@@ -100,10 +102,18 @@ public class tabFamousHome extends Fragment {
         adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                callAPI(getURL("2"));
-                onDataChanged();
-                adapter.loaded();
+//                adapter.locationDatas.add(null);
+//                adapter.notifyItemInserted(adapter.locationDatas.size() - 1);
+                currentPage++;
+                if(currentPage <3) {
+                    callAPI(getURL(String.valueOf(currentPage)));
+                }
+//                adapter.locationDatas.remove(adapter.locationDatas.size() - 1);
+//                adapter.notifyItemRemoved(adapter.locationDatas.size());
+
+                Log.e("ListData", String.valueOf(listData.size()));
             }
+
         });
     }
 
@@ -128,6 +138,7 @@ public class tabFamousHome extends Fragment {
     }
 
     public void parseJson(String result){
+
         try {
             JSONObject root = new JSONObject(result);
 
@@ -141,16 +152,21 @@ public class tabFamousHome extends Fragment {
                         ,location.getInt("Liked")
                         ,location.getInt("Viewed")
                         ,location.getString("ImagePath")));
+            }
+
+            if(listData.size() > 0){
+                adapter.locationDatas = listData;
                 onDataChanged();
             }
+
         } catch (JSONException e) {
             Log.e(TAG,e.toString());
         }
     }
 
     private void onDataChanged(){
-        adapter.locationDatas = listData;
-        adapter.notifyItemInserted(listData.size()+1);
+        adapter.notifyDataSetChanged();
+        adapter.loaded();
     }
 
     private String getURL(String currentPage){

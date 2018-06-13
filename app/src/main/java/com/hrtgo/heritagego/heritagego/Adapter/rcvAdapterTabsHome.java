@@ -28,8 +28,8 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
     private final int view_type_item = 0;
     private final int view_type_loading = 1;
     private OnLoadMoreListener onLoadMoreListener;
-    private boolean isLoading;
-    private int visibleThreshold = 5;
+    public boolean isLoading = false;
+    private int visibleThreshold = 4;
     private int lastVisibleItem, totalItemCount;
 
 //    public rcvAdapterTabsHome(ArrayList<heritageInfoHomeModel> locationDatas, Context context) {
@@ -40,7 +40,6 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
     public rcvAdapterTabsHome(RecyclerView recyclerView, ArrayList<heritageInfoHomeModel> locationDatas, Context context) {
         this.locationDatas = locationDatas;
         this.context = context;
-
         final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -49,13 +48,15 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 totalItemCount = linearLayoutManager.getItemCount();
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                if(!isLoading & totalItemCount <= (lastVisibleItem + visibleThreshold)){
+                if(!isLoading & totalItemCount == (lastVisibleItem + visibleThreshold) & totalItemCount != 0){
                     if(onLoadMoreListener != null){
+                        isLoading = true;
                         onLoadMoreListener.onLoadMore();
                     }
-                    isLoading = true;
                 }
+
             }
+
 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {

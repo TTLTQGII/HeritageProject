@@ -18,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
 import com.hrtgo.heritagego.heritagego.Interface.Json;
+import com.hrtgo.heritagego.heritagego.Interface.OnLoadMoreListener;
 import com.hrtgo.heritagego.heritagego.Model.heritageInfoHomeModel;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
@@ -32,6 +33,7 @@ public class tabNearHome extends Fragment{
 
     RecyclerView recyclerView;
     ArrayList<heritageInfoHomeModel> listData;
+    rcvAdapterTabsHome adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class tabNearHome extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         callAPI(getURL("1"));
+        callAPI(getURL("1"));
     }
 
     @Override
@@ -62,18 +65,25 @@ public class tabNearHome extends Fragment{
     // create instance view
     private void initView(View view){
         recyclerView = view.findViewById(R.id.recycler_view_home_tab_near);
+        setNearRecyclerView();
     }
 
     // set adapter for recyclerView at Tab Near
-//    public void setNearRecyclerView(ArrayList<heritageInfoHomeModel> locationNear){
-//        recyclerView.setHasFixedSize(true);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-//        recyclerView.setLayoutManager(linearLayoutManager);
-//        final rcvAdapterTabsHome adapter = new rcvAdapterTabsHome(locationNear, this.getContext());
-//        recyclerView.setAdapter(adapter);
-//
-//        adapter.notifyDataSetChanged();
-//    }
+    public void setNearRecyclerView(){
+        recyclerView.setHasFixedSize(false);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        adapter = new rcvAdapterTabsHome(recyclerView, listData, this.getContext());
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                callAPI(getURL("2"));
+                Log.e("ListData", String.valueOf(listData.size()));
+            }
+        });
+    }
 
     // call API get DATA
     private void callAPI(String url){
@@ -107,10 +117,19 @@ public class tabNearHome extends Fragment{
                         ,location.getInt("Viewed")
                         ,location.getString("ImagePath")));
             }
-            //setNearRecyclerView(listData);
+
+            if(listData.size() > 0){
+                adapter.locationDatas = listData;
+                onDataChanged();
+            }
 
         } catch (JSONException e) {
         }
+    }
+
+    private void onDataChanged(){
+        adapter.notifyDataSetChanged();
+        adapter.loaded();
     }
 
     private String getURL(String currentPage){
