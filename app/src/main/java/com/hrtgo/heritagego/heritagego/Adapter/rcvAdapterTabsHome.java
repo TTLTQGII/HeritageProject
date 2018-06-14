@@ -29,7 +29,7 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
     private final int view_type_loading = 1;
     private OnLoadMoreListener onLoadMoreListener;
     public boolean isLoading = false;
-    private int visibleThreshold = 4;
+    private int visibleThreshold = 2;
     private int lastVisibleItem, totalItemCount;
 
 //    public rcvAdapterTabsHome(ArrayList<heritageInfoHomeModel> locationDatas, Context context) {
@@ -48,6 +48,7 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 totalItemCount = linearLayoutManager.getItemCount();
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+                //????????
                 if(!isLoading & totalItemCount == (lastVisibleItem + visibleThreshold) & totalItemCount != 0){
                     if(onLoadMoreListener != null){
                         isLoading = true;

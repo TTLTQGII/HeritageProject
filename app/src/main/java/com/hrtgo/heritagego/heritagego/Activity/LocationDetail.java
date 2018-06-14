@@ -79,6 +79,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     Marker mCurrLocationMarker;
     FusedLocationProviderClient mFusedLocationClient;
     double latitude, longitude;
+    public String Destination;
 //    List<Route> localRoute = new ArrayList<Route>();
 
 
@@ -143,7 +144,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     private void startActivity(){
         Intent DirectionMap = new Intent(this, MapsActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("destination", "10.780153, 106.700063");
+        bundle.putString("destination", Destination);
         bundle.putDouble("latitude", latitude);
         bundle.putDouble("longitude", longitude);
         bundle.putString("locationName", String.valueOf(txtLocationName.getText()));
@@ -200,7 +201,8 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
             public void onClick(View v) {
                 txtAmountOfLike.setText(String.valueOf(Liked + 1));
                 imgLike.setImageResource(R.drawable.ic_like_active_32dp);
-                likeEvent();
+                //likeEvent();
+                Log.e("OSdevice", inforPlatform() + ", " + userLocation());
                 imgBtnLike.setClickable(false);
             }
         });
@@ -219,8 +221,42 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     private void likeEvent(){
         String anroidVersion = Build.VERSION.RELEASE;
         int sdkVersion = Build.VERSION.SDK_INT;
-        String a = Build.MODEL;
-        Log.e("baseos", anroidVersion + ", " + String.valueOf(sdkVersion) + ", " + a);
+        String modelDevice = Build.MODEL;
+        Log.e("baseos","android: " + anroidVersion + ", " + "API level: "+ String.valueOf(sdkVersion) + ", " + "Model: " + modelDevice);
+    }
+
+    private String inforPlatform(){
+        String anroidVersion = Build.VERSION.RELEASE;
+        int sdkVersion = Build.VERSION.SDK_INT;
+        String modelDevice = Build.MODEL;
+
+        return "android: " + anroidVersion + ", " + "API level: "+ String.valueOf(sdkVersion) + ", " + "Model: " + modelDevice;
+    }
+
+    private String userLocation(){
+        return "Point("+ latitude +", "+ longitude + ")";
+
+    }
+
+    private Integer callLikeAPI(){
+        int result = -1;
+
+        String url = getString(R.string.request_like);
+
+        StringRequest likeRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+
+        return result;
     }
 
     // expand and collapse the location content

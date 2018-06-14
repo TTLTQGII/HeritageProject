@@ -38,6 +38,7 @@ public class DirectionTask {
     public void execute() throws UnsupportedEncodingException {
         listener.onDirectionFinderStart();
         new DownloadRawData().execute(createUrl());
+        Log.e("abcs", DIRECTION_URL_API);
     }
     //tạo URL
     private String createUrl() throws UnsupportedEncodingException {
@@ -45,6 +46,7 @@ public class DirectionTask {
         String urlDestination = URLEncoder.encode(destination, "utf-8");
 
         return DIRECTION_URL_API + "origin=" + urlOrigin + "&destination=" + urlDestination + "&key=" + GOOGLE_API_KEY;
+
     }
     //download đoạn json về
     private class DownloadRawData extends AsyncTask<String, Void, String> {

@@ -104,8 +104,8 @@ public class tabFamousHome extends Fragment {
             public void onLoadMore() {
 //                adapter.locationDatas.add(null);
 //                adapter.notifyItemInserted(adapter.locationDatas.size() - 1);
-                currentPage++;
-                if(currentPage <3) {
+                //currentPage++;
+                if(listData.size() < 24) {
                     callAPI(getURL(String.valueOf(currentPage)));
                 }
 //                adapter.locationDatas.remove(adapter.locationDatas.size() - 1);
