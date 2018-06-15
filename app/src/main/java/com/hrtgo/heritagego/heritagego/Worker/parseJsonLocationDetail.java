@@ -37,7 +37,7 @@ public class parseJsonLocationDetail extends AsyncTask<String, Void, ArrayList<h
                 imgPaths.add(ImagePath.getString("ImagePath"));
             }
 
-            String destination = root.getString("Latitude") + " " + root.getString("Longtitude");
+            String destination = root.getString("Latitude") + " " + root.getString("Longitude");
             Log.e("destination", destination);
 
             listData.add(new heritageLocationDetail(root.getString("Name"),
@@ -64,7 +64,7 @@ public class parseJsonLocationDetail extends AsyncTask<String, Void, ArrayList<h
     protected void onPostExecute(ArrayList<heritageLocationDetail> heritageLocationDetails) {
         super.onPostExecute(heritageLocationDetails);
 
-        locationDetail.eventExpandableTextView(heritageLocationDetails.get(0).getDescription(), heritageLocationDetails.get(0).getContents());
+        locationDetail.eventExpandableTextView(heritageLocationDetails.get(0).getContents(),heritageLocationDetails.get(0).getDescription());
         locationDetail.eventLikeComment(heritageLocationDetails.get(0).getLiked(), heritageLocationDetails.get(0).getAmountOfComment());
         locationDetail.eventViewPager(heritageLocationDetails.get(0).getImagePath());
         locationDetail.bindData(heritageLocationDetails.get(0).getName(),

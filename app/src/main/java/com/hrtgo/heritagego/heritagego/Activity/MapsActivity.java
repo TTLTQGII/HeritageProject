@@ -120,13 +120,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 //Location Permission already granted
-                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocation, Looper.myLooper());
 
             } else {
                 //Request Location Permission
             }
         } else {
-            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocation, Looper.myLooper());
         }
     }
 
@@ -206,20 +206,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 //Location Permission already granted
-                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocation, Looper.myLooper());
                 googleMap.setMyLocationEnabled(true);
             } else {
                 //Request Location Permission
             }
         } else {
-            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocation, Looper.myLooper());
             googleMap.setMyLocationEnabled(true);
         }
 
     }
 
     //Lấy vị trí hiện tại của thiết bị
-    LocationCallback mLocationCallback = new LocationCallback() {
+    LocationCallback mLocation = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
             List<Location> locationList = locationResult.getLocations();
@@ -283,7 +283,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
 
-                        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocation, Looper.myLooper());
                         mMap.setMyLocationEnabled(true);
                     }
 

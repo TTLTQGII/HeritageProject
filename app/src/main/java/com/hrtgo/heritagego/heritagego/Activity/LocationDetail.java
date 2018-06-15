@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +31,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -45,6 +49,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.hrtgo.heritagego.heritagego.DirectionTask.DirectionTask;
 import com.hrtgo.heritagego.heritagego.DirectionTask.DirectionTaskListener;
 import com.hrtgo.heritagego.heritagego.DirectionTask.Route;
+import com.hrtgo.heritagego.heritagego.Interface.getParams;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
 
@@ -56,7 +61,9 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import at.blogc.android.views.ExpandableTextView;
 
@@ -68,10 +75,12 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     android.support.v7.widget.Toolbar actionToolBar;
     int locationID = 0;
     TextView txtLocationName, txtLocationDistance, txtLocationAddress, txtAmountOfView;
+    TextView txtAmountOfLike, txtAmountOfComment;
+    RelativeLayout imgBtnLike, imgBtnComment;
+    ImageView imgLike, imgComment;
     ImageView icApplication;
     RelativeLayout DirectionMap;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-
 
 
     LocationRequest mLocationRequest;
@@ -89,12 +98,11 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         super.onCreate(savedInstanceState);
         setContentView(R.layout.location_detail);
         //Create Action bar
+        initView();
         getUserLocation();
         initCustomizeActionBar();
         getIntentData();
-        initView();
         iconBackpress();
-
     }
 
     // customize Action bar
@@ -115,6 +123,13 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         txtLocationDistance = findViewById(R.id.txt_location_distance);
         txtLocationAddress = findViewById(R.id.txt_location_address);
         txtAmountOfView = findViewById(R.id.txt_amount_of_view);
+
+        txtAmountOfLike = findViewById(R.id.txt_amount_of_like);
+        txtAmountOfComment = findViewById(R.id.txt_amount_of_comment);
+        imgLike = findViewById(R.id.img_like);
+
+        imgBtnLike = findViewById(R.id.btn_like);
+        imgBtnComment = findViewById(R.id.btn_comment);
     }
 
     private void iconBackpress(){
@@ -184,26 +199,27 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
     // create like and comment event
     public void eventLikeComment(final int Liked, int Comment){
-        final TextView txtAmountOfLike, txtAmountOfComment;
-        final RelativeLayout imgBtnLike, imgBtnComment;
-        final ImageView imgLike, imgComment;
-        txtAmountOfLike = findViewById(R.id.txt_amount_of_like);
-        txtAmountOfComment = findViewById(R.id.txt_amount_of_comment);
-        imgLike = findViewById(R.id.img_like);
         txtAmountOfLike.setText(String.valueOf(Liked));
         txtAmountOfComment.setText(String.valueOf(Comment));
-
-        imgBtnLike = findViewById(R.id.btn_like);
-        imgBtnComment = findViewById(R.id.btn_comment);
 
         imgBtnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 txtAmountOfLike.setText(String.valueOf(Liked + 1));
                 imgLike.setImageResource(R.drawable.ic_like_active_32dp);
-                //likeEvent();
-                Log.e("OSdevice", inforPlatform() + ", " + userLocation());
                 imgBtnLike.setClickable(false);
+
+                callLikeAPI(new getParams() {
+                    @Override
+                    public void setParams(Map<String, String> params) {
+                        params.put("HerID", String.valueOf(locationID));
+                        params.put("Latitude", String.valueOf(latitude));
+                        params.put("Longitude", String.valueOf(longitude));
+                        params.put("UserName", "Ẩn Danh");
+                        params.put("InforPlatform", getInfoPlatform());
+                    }
+                });
             }
         });
 
@@ -218,63 +234,66 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         });
     }
 
-    private void likeEvent(){
+    private String getInfoPlatform(){
         String anroidVersion = Build.VERSION.RELEASE;
         int sdkVersion = Build.VERSION.SDK_INT;
         String modelDevice = Build.MODEL;
-        Log.e("baseos","android: " + anroidVersion + ", " + "API level: "+ String.valueOf(sdkVersion) + ", " + "Model: " + modelDevice);
+        return "android: " + anroidVersion  + " API level: "+ String.valueOf(sdkVersion) + " Model: " + modelDevice;
     }
 
-    private String inforPlatform(){
-        String anroidVersion = Build.VERSION.RELEASE;
-        int sdkVersion = Build.VERSION.SDK_INT;
-        String modelDevice = Build.MODEL;
 
-        return "android: " + anroidVersion + ", " + "API level: "+ String.valueOf(sdkVersion) + ", " + "Model: " + modelDevice;
-    }
-
-    private String userLocation(){
-        return "Point("+ latitude +", "+ longitude + ")";
-
-    }
-
-    private Integer callLikeAPI(){
-        int result = -1;
-
+    private void callLikeAPI(final getParams getParams){
         String url = getString(R.string.request_like);
-
         StringRequest likeRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-
+//                Toast.makeText(LocationDetail.this, response, Toast.LENGTH_SHORT).show();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.e("likeError", error.toString());
+//                Toast.makeText(LocationDetail.this, error.toString(), Toast.LENGTH_SHORT).show();
             }
-        });
+        }){
+            @Override
+            public Map<String, String> getHeaders(){
+                Map<String,String> headers = new HashMap<>();
+                return headers;
+            }
+            @Override
+            protected Map<String, String> getParams(){
+                Map<String, String> params = new HashMap<>();
+                getParams.setParams(params);
+                Log.e("put",params.toString());
+                return params;
+            }
+        };
 
-
-        return result;
+        likeRequest.setRetryPolicy(new DefaultRetryPolicy(
+                60000,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInStance(this).getRequestQueue().add(likeRequest);
     }
+
 
     // expand and collapse the location content
     // goi qua -> worker asyntask
     public void eventExpandableTextView(final String description, final String content){
         final ExpandableTextView txtDescription = findViewById(R.id.expTxt_description_location_detail);
-        txtDescription.setText(description);
+        txtDescription.setText(Html.fromHtml(description));
 
         txtDescription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(txtDescription.isExpanded()){
                     txtDescription.collapse();
-                    txtDescription.setText(description);
+                    txtDescription.setText(Html.fromHtml(description));
                 }
                 else {
                     txtDescription.expand();
-                    txtDescription.setText(content);
+                    txtDescription.setText(Html.fromHtml(content));
                 }
             }
         });
@@ -291,7 +310,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.e("LocationDetail", response);
+                Log.e("LocationDetail response", response);
                 parseJson(response, currentLocation);
             }
         }, new Response.ErrorListener() {
@@ -346,7 +365,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
                 longitude = location.getLongitude();
                 latitude = location.getLatitude();
 
-                Log.e("asc",String.valueOf(longitude)+","+String.valueOf(latitude));
+                Log.e("asc","longitude: "+ String.valueOf(longitude)+","  +"latitude: "+String.valueOf(latitude));
             }
             callAPI(String.valueOf(locationID), latitude, longitude, CurrentLocation(latitude,longitude));
 
@@ -376,8 +395,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(60000); // 1 minute interval
-        mLocationRequest.setFastestInterval(120000);
+       // setInterval...
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

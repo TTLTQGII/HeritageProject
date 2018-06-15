@@ -18,7 +18,6 @@
             android:id="@+id/img_recycler_view_home_item"
             android:layout_width="match_parent"
             android:layout_height="400px"
-            android:scaleType="fitXY"
             />
 
         <RelativeLayout

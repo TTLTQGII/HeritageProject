@@ -91,7 +91,6 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
             Picasso.get()
                     .load(context.getResources().getString(R.string.request_image) + locationDatas.get(position).getLocationImagePath())
                     .fit()
-                    .centerCrop()
                     .into(item.imgLocation);
         }
         if(holder instanceof LoadingViewHolder){
