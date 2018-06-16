@@ -89,10 +89,9 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     FusedLocationProviderClient mFusedLocationClient;
     double latitude, longitude;
     public String Destination;
-//    List<Route> localRoute = new ArrayList<Route>();
 
 
-    @SuppressLint("RestrictedApi")
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,7 +147,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
             DirectionMap.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivity();
+                    startActivity1();
                 }
             });
 
@@ -156,7 +155,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     }
 
     // start Maps Activity
-    private void startActivity(){
+    private void startActivity1(){
         Intent DirectionMap = new Intent(this, MapsActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("destination", Destination);

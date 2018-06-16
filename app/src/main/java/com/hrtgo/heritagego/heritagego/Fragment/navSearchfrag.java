@@ -88,7 +88,10 @@ public class navSearchfrag extends Fragment {
 
                 if(actionId == EditorInfo.IME_ACTION_SEARCH){
                     listData.clear();
-                    //setSearchRecyclerView(listData);
+                    adapter.locationDatas = listData;
+                    onDataChanged();
+                    InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(edtSearch.getWindowToken(), 0);
                     callAPI(getURL("1", edtSearch.getText().toString()));
                     return true;
                 }

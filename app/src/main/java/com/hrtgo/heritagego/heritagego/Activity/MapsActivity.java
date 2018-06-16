@@ -140,7 +140,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             txtLocationName.setText(bundle.getString("locationName"));
             txtLocationAddress.setText(bundle.getString("Address"));
             txtAmountOfView.setText(bundle.getString("Viewed"));
-
+//            localRoute = (List<Route>) bundle.getSerializable("route");
 //            drawPolylinePath(localRoute);
         }
         Log.e("Destination", String.valueOf(Destination));
