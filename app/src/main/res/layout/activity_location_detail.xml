@@ -257,18 +257,8 @@
                     android:textSize="15sp"
                     app:animation_duration="10"
                     android:ellipsize="end"
+                    android:text="Sau khi bản vẽ chính thức được tuyển chọn, vấn đề vị trí của ngôi nhà thờ mới cũng từng bước được đặt ra và lựa chọn. Trước hết, vị trí Trường Thi cũ, nằm ở góc đường Lê Duẩn - Hai Bà Trưng, hiện nay là Tòa lãnh sự Pháp. Nơi thứ 2 là vị trí nhà thờ cũ ở bên dòng Kênh Lớn (nay là quảng trường phố đi bộ Nguyễn Huệ). Nhưng cuối cùng, vị trí hiện tại được chọn và nhà thờ Đức Bà hiện diện sống động giữa trung tâm Sài Gòn - TP.HCM suốt 138 năm qua"
                     />
         </ScrollView>
-
-        <android.support.v7.widget.RecyclerView
-            android:layout_alignParentBottom="true"
-            android:layout_below="@+id/description_location_container"
-            android:id="@+id/list_comment"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
     </RelativeLayout>
 </RelativeLayout>

@@ -2,18 +2,14 @@ package com.hrtgo.heritagego.heritagego.Activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -25,13 +21,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -44,7 +37,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.Marker;
 import com.hrtgo.heritagego.heritagego.DirectionTask.DirectionTask;
 import com.hrtgo.heritagego.heritagego.DirectionTask.DirectionTaskListener;
@@ -57,7 +49,6 @@ import com.hrtgo.heritagego.heritagego.Worker.parseJsonLocationDetail;
 import com.hrtgo.heritagego.heritagego.untill.customize;
 import com.hrtgo.heritagego.heritagego.Adapter.imgListAdapterLocationDetail;
 
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -77,8 +68,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     TextView txtLocationName, txtLocationDistance, txtLocationAddress, txtAmountOfView;
     TextView txtAmountOfLike, txtAmountOfComment;
     RelativeLayout imgBtnLike, imgBtnComment;
-    ImageView imgLike, imgComment;
-    ImageView icApplication;
+    ImageView imgLike, imgComment, icApplication;
     RelativeLayout DirectionMap;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
@@ -95,13 +85,12 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.location_detail);
+        setContentView(R.layout.activity_location_detail);
         //Create Action bar
         initView();
         getUserLocation();
         initCustomizeActionBar();
         getIntentData();
-        iconBackpress();
     }
 
     // customize Action bar
@@ -114,6 +103,8 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
             View customAcionBar = inflater.inflate(R.layout.tool_action_bar_customize, null);
             actionBar.setCustomView(customAcionBar);
             customize.customizeActionBar(actionToolBar, actionBar, customAcionBar);
+
+            iconBackpress();
         }
     }
 
@@ -150,8 +141,6 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
                     startActivity1();
                 }
             });
-
-
     }
 
     // start Maps Activity

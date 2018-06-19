@@ -49,7 +49,7 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
                 totalItemCount = linearLayoutManager.getItemCount();
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
                 //????????
-                if(!isLoading & totalItemCount == (lastVisibleItem + visibleThreshold) & totalItemCount != 0){
+                if(!isLoading & totalItemCount <= (lastVisibleItem + visibleThreshold) & totalItemCount >= 7){
                     if(onLoadMoreListener != null){
                         isLoading = true;
                         onLoadMoreListener.onLoadMore();

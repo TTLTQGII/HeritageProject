@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_height="match_parent" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/action_tool_bar_custom_comment"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimary"
+        />
+
+    <RelativeLayout
+        android:id="@+id/infomation_location"
+        android:layout_below="@+id/action_tool_bar_custom_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#f1ecec"
+        >
+
+        <!--1 Location name, distance and address, amount of view container-->
+        <RelativeLayout
+            android:layout_alignParentTop="true"
+            android:id="@+id/topPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:paddingBottom="5dp">
+
+            <!--location name and user distance-->
+
+                <TextView
+                    android:id="@+id/txt_location_name"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:gravity="start|center"
+                    android:text="Location Name"
+                    android:textSize="35sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="2"/>
+
+            <!--address and amount of view container-->
+            <LinearLayout
+                android:layout_below="@id/txt_location_name"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:orientation="horizontal"
+                android:weightSum="10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <ImageView
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_place_black_24dp"
+                    android:layout_weight="0.7"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:gravity="center|start"
+                    android:layout_gravity="center"
+                    android:id="@+id/txt_location_address"
+                    android:textStyle="normal|italic"
+                    android:textSize="15sp"
+                    android:text=""
+                    android:layout_weight="7"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    />
+
+                <ImageView
+                    android:layout_gravity="center|end"
+                    android:src="@drawable/ic_comment"
+                    android:layout_weight="0.6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="25dp"
+                    android:minWidth="25dp"/>
+
+                <TextView
+                    android:id="@+id/txt_amount_of_comment"
+                    android:gravity="center|left"
+                    android:layout_gravity="center|right"
+                    android:text=""
+                    android:layout_weight="1.7"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@id/infomation_location"
+        android:id="@+id/rcv_comment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/tool_bar_comment"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        />
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:id="@+id/tool_bar_comment"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        />
+
+</RelativeLayout>

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -102,14 +103,13 @@ public class tabFamousHome extends Fragment {
         adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-//                adapter.locationDatas.add(null);
-//                adapter.notifyItemInserted(adapter.locationDatas.size() - 1);
                 currentPage++;
                 if(currentPage < 4) {
+                    listData.add(null);
+                    adapter.locationDatas = listData;
+                    adapter.notifyItemInserted(adapter.locationDatas.size() - 1);
                     callAPI(getURL(String.valueOf(currentPage)));
                 }
-//                adapter.locationDatas.remove(adapter.locationDatas.size() - 1);
-//                adapter.notifyItemRemoved(adapter.locationDatas.size());
 
                 Log.e("ListData", String.valueOf(listData.size()));
             }
@@ -131,6 +131,11 @@ public class tabFamousHome extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 // control error in here
                 //stopOverLay();
+                if(listData.size() != 0){
+                    listData.remove(listData.size()-1);
+                    adapter.locationDatas = listData;
+                    adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
+                }
                 Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
             }
         });
@@ -138,6 +143,12 @@ public class tabFamousHome extends Fragment {
     }
 
     public void parseJson(String result){
+
+        if(listData.size() != 0){
+            listData.remove(listData.size()-1);
+            adapter.locationDatas = listData;
+            adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
+        }
 
         try {
             JSONObject root = new JSONObject(result);

@@ -79,6 +79,9 @@ public class tabNearHome extends Fragment{
         adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
+                listData.add(null);
+                adapter.locationDatas = listData;
+                adapter.notifyItemInserted(adapter.locationDatas.size() - 1);
                 callAPI(getURL("2"));
                 Log.e("ListData", String.valueOf(listData.size()));
             }
@@ -103,6 +106,13 @@ public class tabNearHome extends Fragment{
     }
 
     public void parseJson(String result){
+
+        if(listData.size() != 0){
+            listData.remove(listData.size()-1);
+            adapter.locationDatas = listData;
+            adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
+        }
+
         try {
             JSONObject root = new JSONObject(result);
 

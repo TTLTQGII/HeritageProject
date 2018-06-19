@@ -14,30 +14,46 @@ import com.hrtgo.heritagego.heritagego.R;
 
 import java.util.ArrayList;
 
-public class rcvCmtAdapterLocationDetail extends RecyclerView.Adapter<rcvCmtAdapterLocationDetail.viewHoler> {
+public class rcvCmtAdapterLocationDetail extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     ArrayList<userComment> userComments;
     Context context;
+
+    private final int view_type_item = 0;
+    private final int view_type_loadmore = 1;
 
     public rcvCmtAdapterLocationDetail(ArrayList<userComment> userComments, Context context) {
         this.userComments = userComments;
         this.context = context;
     }
 
+
     @NonNull
     @Override
-    public viewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View itemView = inflater.inflate(R.layout.user_comment, parent, false);
+        View itemView = inflater.inflate(R.layout.user_comment, null);
 
-        return new viewHoler(itemView);
+        return new commentHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull viewHoler holder, int position) {
-        holder.txtUserID.setText(userComments.get(position).getUserName());
-        holder.txtContent.setText(userComments.get(position).getContent());
-        holder.txtCommentPostTime.setText(userComments.get(position).getPostTime());
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
+        if(holder instanceof commentHolder){
+            commentHolder commentHolder = (rcvCmtAdapterLocationDetail.commentHolder) holder;
+            commentHolder.txtUserID.setText(userComments.get(position).getUserName());
+            commentHolder.txtContent.setText(userComments.get(position).getContent());
+            commentHolder.txtCommentPostTime.setText(userComments.get(position).getPostTime());
+        }
+
+    }
+
+
+
+    @Override
+    public int getItemViewType(int position) {
+        return position == (userComments.size() - 1) ? view_type_loadmore : view_type_item;
     }
 
     @Override
@@ -45,11 +61,11 @@ public class rcvCmtAdapterLocationDetail extends RecyclerView.Adapter<rcvCmtAdap
         return userComments.size();
     }
 
-    public class viewHoler extends RecyclerView.ViewHolder{
+    public class commentHolder extends RecyclerView.ViewHolder{
 
         TextView txtUserID, txtContent, txtCommentPostTime;
 
-        public viewHoler(View itemView) {
+        public commentHolder(View itemView) {
             super(itemView);
 
             txtUserID = itemView.findViewById(R.id.txt_comment_user_ID);

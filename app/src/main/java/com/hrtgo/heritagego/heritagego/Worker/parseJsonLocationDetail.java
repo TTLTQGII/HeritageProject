@@ -75,3 +75,4 @@ public class parseJsonLocationDetail extends AsyncTask<String, Void, ArrayList<h
         locationDetail.getDirection();
     }
 }
+
