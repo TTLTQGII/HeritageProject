@@ -14,8 +14,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_comment" />
-                            <entry key="sourceFile" value="D:\Hinh anh\ic_comment.svg" />
+                            <entry key="height" value="20" />
+                            <entry key="outputName" value="ic_comment_20" />
+                            <entry key="overrideSize" value="true" />
+                            <entry key="sourceFile" value="D:\Hinh anh\ic_comment_20.svg" />
+                            <entry key="width" value="20" />
                           </map>
                         </option>
                       </PersistentState>

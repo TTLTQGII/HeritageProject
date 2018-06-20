@@ -15,6 +15,7 @@
         app:tabTextColor="#c2f5f5"
         app:tabIndicatorColor="#ffff"
         app:tabPadding="2dp"
+
        />
     <android.support.v4.view.ViewPager
         android:layout_below="@+id/home_fragment_tab_Layout"

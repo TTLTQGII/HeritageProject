@@ -42,12 +42,17 @@ import com.hrtgo.heritagego.heritagego.DirectionTask.DirectionTask;
 import com.hrtgo.heritagego.heritagego.DirectionTask.DirectionTaskListener;
 import com.hrtgo.heritagego.heritagego.DirectionTask.Route;
 import com.hrtgo.heritagego.heritagego.Interface.getParams;
+import com.hrtgo.heritagego.heritagego.Model.userComment;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
 
 import com.hrtgo.heritagego.heritagego.Worker.parseJsonLocationDetail;
 import com.hrtgo.heritagego.heritagego.untill.customize;
 import com.hrtgo.heritagego.heritagego.Adapter.imgListAdapterLocationDetail;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -69,6 +74,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     TextView txtAmountOfLike, txtAmountOfComment;
     RelativeLayout imgBtnLike, imgBtnComment;
     ImageView imgLike, imgComment, icApplication;
+    ArrayList<userComment> commentsList;
     RelativeLayout DirectionMap;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
@@ -79,6 +85,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     FusedLocationProviderClient mFusedLocationClient;
     double latitude, longitude;
     public String Destination;
+    int i = 0;
 
 
 
@@ -89,8 +96,8 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         //Create Action bar
         initView();
         getUserLocation();
+        getListCommentAPI();
         initCustomizeActionBar();
-        getIntentData();
     }
 
     // customize Action bar
@@ -109,6 +116,8 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     }
 
     private void initView(){
+        getIntentData();
+
         txtLocationName = findViewById(R.id.txt_location_name);
         txtLocationDistance = findViewById(R.id.txt_location_distance);
         txtLocationAddress = findViewById(R.id.txt_location_address);
@@ -120,6 +129,8 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
         imgBtnLike = findViewById(R.id.btn_like);
         imgBtnComment = findViewById(R.id.btn_comment);
+
+        commentsList = new ArrayList<>();
     }
 
     private void iconBackpress(){
@@ -132,9 +143,8 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         });
     }
 
-    public void getDirection(){
+    public void getDirectionActivity(){
         DirectionMap = findViewById(R.id.derection_container);
-
             DirectionMap.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -185,6 +195,27 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         //int imgCount = imgAdapter.getCount();
     }
 
+
+    public void eventExpandableTextView(final String content, final String description){
+        final ExpandableTextView txtDescription = findViewById(R.id.expTxt_description_location_detail);
+        txtDescription.setText(Html.fromHtml(content));
+
+        txtDescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(txtDescription.isExpanded()){
+                    txtDescription.collapse();
+                    txtDescription.setText(Html.fromHtml(content));
+                }
+                else {
+                    txtDescription.expand();
+                    txtDescription.setText(Html.fromHtml(description));
+                }
+            }
+        });
+    }
+
+
     // create like and comment event
     public void eventLikeComment(final int Liked, int Comment){
         txtAmountOfLike.setText(String.valueOf(Liked));
@@ -195,7 +226,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
             public void onClick(View v) {
 
                 txtAmountOfLike.setText(String.valueOf(Liked + 1));
-                imgLike.setImageResource(R.drawable.ic_like_active_32dp);
+                imgLike.setImageResource(R.drawable.ic_heart_active);
                 imgBtnLike.setClickable(false);
 
                 callLikeAPI(new getParams() {
@@ -222,6 +253,8 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         });
     }
 
+
+//  Get info of device
     private String getInfoPlatform(){
         String anroidVersion = Build.VERSION.RELEASE;
         int sdkVersion = Build.VERSION.SDK_INT;
@@ -229,7 +262,46 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         return "android: " + anroidVersion  + " API level: "+ String.valueOf(sdkVersion) + " Model: " + modelDevice;
     }
 
+//    Get comment data
 
+    private void getListCommentAPI(){
+        String url = getCommentURL();
+        Log.e("CommentURL", url);
+        StringRequest commentRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                parseComment(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        VolleySingleton.getInStance(this).getRequestQueue().add(commentRequest);
+    }
+
+    private void parseComment(String json){
+        try {
+            JSONObject root = new JSONObject(json);
+
+            JSONArray pdata = root.getJSONArray("pdata");
+            for (int i = 0; i< pdata.length(); i++){
+                JSONObject element = pdata.getJSONObject(i);
+
+                commentsList.add(new userComment(element.getString("UserName"),
+                        element.getString("Contents"),
+                        element.getString("PostTime")));
+            }
+
+            Log.e("CommentList", String.valueOf(commentsList.size()));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    request like API
     private void callLikeAPI(final getParams getParams){
         String url = getString(R.string.request_like);
         StringRequest likeRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -268,30 +340,12 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
     // expand and collapse the location content
     // goi qua -> worker asyntask
-    public void eventExpandableTextView(final String description, final String content){
-        final ExpandableTextView txtDescription = findViewById(R.id.expTxt_description_location_detail);
-        txtDescription.setText(Html.fromHtml(description));
-
-        txtDescription.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(txtDescription.isExpanded()){
-                    txtDescription.collapse();
-                    txtDescription.setText(Html.fromHtml(description));
-                }
-                else {
-                    txtDescription.expand();
-                    txtDescription.setText(Html.fromHtml(content));
-                }
-            }
-        });
-    }
-
 
     private void parseJson(String json, String currentLocation){
         new parseJsonLocationDetail(this, currentLocation ).execute(json);
     }
 
+//    request location detail data
     private void callAPI(String currentPage, double latitude, double longitude, final String currentLocation){
         String url = getURL(currentPage, latitude, longitude);
         Log.e("URLDetail", url);
@@ -309,6 +363,18 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         });
 
         VolleySingleton.getInStance(this).getRequestQueue().add(jsonRequest);
+    }
+
+
+//  URL for location detail data
+    private String getURL(String currentPage, double latitude, double longitude){
+        String url = getString(R.string.request_heritage_location_detail) + currentPage + "/" + getEncodedLocation(latitude, longitude);
+        return url;
+    }
+//  URL comment
+    private String getCommentURL(){
+        String url = getString(R.string.request_get_commented) + String.valueOf(locationID) + "/" + "1";
+        return url;
     }
 
     // encode user current location
@@ -330,11 +396,6 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         }
 
         return encodedLocation;
-    }
-
-    private String getURL(String currentPage, double latitude, double longitude){
-        String url = getString(R.string.request_heritage_location_detail) + currentPage + "/" + getEncodedLocation(latitude, longitude);
-        return url;
     }
 
     public LocationCallback mLocationCallback = new LocationCallback() {
