@@ -25,7 +25,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.LocationDetail" />
+        <activity android:name=".Activity.LocationDetail"/>
+        <activity android:name=".Activity.CommentActivity"/>
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

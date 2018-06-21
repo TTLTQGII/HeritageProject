@@ -14,9 +14,9 @@
     <string name="request_heritage_location_detail">http://e567fdy2.somee.com/api/HeritagerInfor/GetHeritagerInfoByID/</string>
     <string name="request_search">http://e567fdy2.somee.com/api/HeritagerInfor/SearchHeritager/</string>
     <string name="request_like">http://e567fdy2.somee.com/api/Liked/LikeID</string>
-    <string name="request_get_commented">http://e567fdy2.somee.com/api/GetCommentaryByHerID/</string>
+    <string name="request_get_commented">http://e567fdy2.somee.com/api/Commentary/GetCommentaryByHerID/</string>
     <string name="request_image">http://</string>
-    <string name="request_markers">http://e567fdy2.somee.com/api/HeritagerInfor/GetMarkersList</string>
+    <string name="request_markers">http://e567fdy2.somee.com/api/HeritagerInfor/GetMarkersList/</string>
 
 
     <string name="title_activity_maps">Map</string>

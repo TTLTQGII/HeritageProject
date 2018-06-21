@@ -20,8 +20,8 @@
 
     <!--item home-->
     <!--background of Home item in navigation bottom-->
-    <color name="home_background">#60c4c1c1</color>
-    <!--background of the location items border in home-->
+    <color name="home_background">#cfffffff</color>
+
 
 
 
@@ -35,4 +35,7 @@
     <color name="customize_like_comment_border">#bebebe</color>
     <!--background of comment items-->
     <color name="background_of_comment">#4da9a9a9</color>
+
+    <!--divider comment color-->
+    <color name="divider_comment">#6ad7d5d5</color>
 </resources>

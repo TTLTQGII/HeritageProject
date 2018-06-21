@@ -16,10 +16,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,6 +41,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.Marker;
+import com.hrtgo.heritagego.heritagego.Adapter.rcvCommentAdapter;
 import com.hrtgo.heritagego.heritagego.DirectionTask.DirectionTask;
 import com.hrtgo.heritagego.heritagego.DirectionTask.DirectionTaskListener;
 import com.hrtgo.heritagego.heritagego.DirectionTask.Route;
@@ -69,23 +73,25 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
 
     android.support.v7.widget.Toolbar actionToolBar;
-    int locationID = 0;
+    String locationID = "";
     TextView txtLocationName, txtLocationDistance, txtLocationAddress, txtAmountOfView;
     TextView txtAmountOfLike, txtAmountOfComment;
     RelativeLayout imgBtnLike, imgBtnComment;
     ImageView imgLike, imgComment, icApplication;
     ArrayList<userComment> commentsList;
+
+    final int commentPage = 1;
+    RecyclerView recyclerViewComment;
+    rcvCommentAdapter commentAdapter;
+
     RelativeLayout DirectionMap;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-
-
     LocationRequest mLocationRequest;
     Location mLastLocation;
     Marker mCurrLocationMarker;
     FusedLocationProviderClient mFusedLocationClient;
     double latitude, longitude;
     public String Destination;
-    int i = 0;
 
 
 
@@ -96,8 +102,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         //Create Action bar
         initView();
         getUserLocation();
-        getListCommentAPI();
-        initCustomizeActionBar();
+        //getListCommentAPI();
     }
 
     // customize Action bar
@@ -117,7 +122,6 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
     private void initView(){
         getIntentData();
-
         txtLocationName = findViewById(R.id.txt_location_name);
         txtLocationDistance = findViewById(R.id.txt_location_distance);
         txtLocationAddress = findViewById(R.id.txt_location_address);
@@ -130,7 +134,12 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         imgBtnLike = findViewById(R.id.btn_like);
         imgBtnComment = findViewById(R.id.btn_comment);
 
-        commentsList = new ArrayList<>();
+        initCustomizeActionBar();
+
+//        recyclerViewComment = findViewById(R.id.rcv_comment_list_lc);
+//        commentsList = new ArrayList<>();
+
+//        setCommentListAdapter();
     }
 
     private void iconBackpress(){
@@ -148,13 +157,13 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
             DirectionMap.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivity1();
+                    startDerectionActivity();
                 }
             });
     }
 
     // start Maps Activity
-    private void startActivity1(){
+    private void startDerectionActivity(){
         Intent DirectionMap = new Intent(this, MapsActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("destination", Destination);
@@ -178,9 +187,9 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if(bundle != null) {
-            locationID = bundle.getInt("ID");
+            locationID = bundle.getString("ID");
         }
-        Log.e("locationID", String.valueOf(locationID));
+        Log.e("locationID", locationID);
     }
 
 
@@ -195,10 +204,13 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         //int imgCount = imgAdapter.getCount();
     }
 
-
+//  expandable text
     public void eventExpandableTextView(final String content, final String description){
         final ExpandableTextView txtDescription = findViewById(R.id.expTxt_description_location_detail);
+        final ImageView imgExpandArrow = findViewById(R.id.expand_button);
         txtDescription.setText(Html.fromHtml(content));
+
+        txtDescription.setExpandInterpolator(new OvershootInterpolator());
 
         txtDescription.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,18 +218,35 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
                 if(txtDescription.isExpanded()){
                     txtDescription.collapse();
                     txtDescription.setText(Html.fromHtml(content));
+                    imgExpandArrow.setImageResource(R.drawable.ic_arrow_down_20);
                 }
                 else {
                     txtDescription.expand();
                     txtDescription.setText(Html.fromHtml(description));
+                    imgExpandArrow.setImageResource(R.drawable.ic_arrow_up_20);
+                }
+            }
+        });
+
+        imgExpandArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(txtDescription.isExpanded()){
+                    txtDescription.collapse();
+                    txtDescription.setText(Html.fromHtml(content));
+                    imgExpandArrow.setImageResource(R.drawable.ic_arrow_down_20);
+                }
+                else {
+                    txtDescription.expand();
+                    txtDescription.setText(Html.fromHtml(description));
+                    imgExpandArrow.setImageResource(R.drawable.ic_arrow_up_20);
                 }
             }
         });
     }
 
-
-    // create like and comment event
-    public void eventLikeComment(final int Liked, int Comment){
+//    like and comment event
+    public void eventLikeComment(final int Liked, final int Comment, final String LocationName, final String Address){
         txtAmountOfLike.setText(String.valueOf(Liked));
         txtAmountOfComment.setText(String.valueOf(Comment));
 
@@ -227,12 +256,12 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
                 txtAmountOfLike.setText(String.valueOf(Liked + 1));
                 imgLike.setImageResource(R.drawable.ic_heart_active);
-                imgBtnLike.setClickable(false);
+                //imgBtnLike.setClickable(false);
 
                 callLikeAPI(new getParams() {
                     @Override
                     public void setParams(Map<String, String> params) {
-                        params.put("HerID", String.valueOf(locationID));
+                        params.put("HerID", locationID);
                         params.put("Latitude", String.valueOf(latitude));
                         params.put("Longitude", String.valueOf(longitude));
                         params.put("UserName", "Ẩn Danh");
@@ -245,12 +274,23 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         imgBtnComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // temp function
-                int amountOfComent = Integer.valueOf((String)txtAmountOfComment.getText());
-                amountOfComent = amountOfComent + 1;
-                txtAmountOfComment.setText(String.valueOf(amountOfComent));
+               getCommentActivity(Comment, LocationName, Address);
             }
         });
+    }
+
+//    go to comment activity
+    private void getCommentActivity(int comment, String LocationName, String  Address){
+        Intent commentActivity = new Intent(this, CommentActivity.class);
+
+        Bundle commentBundle = new Bundle();
+        commentBundle.putString("ID", locationID);
+        commentBundle.putString("LocationName", LocationName);
+        commentBundle.putString("Address", Address);
+        commentBundle.putInt("Commented", comment);
+        commentBundle.putInt("CurrentPage", commentPage);
+        commentActivity.putExtra("Data", commentBundle);
+        startActivity(commentActivity);
     }
 
 
@@ -263,14 +303,13 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     }
 
 //    Get comment data
-
     private void getListCommentAPI(){
         String url = getCommentURL();
         Log.e("CommentURL", url);
         StringRequest commentRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                parseComment(response);
+                //parseComment(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -281,25 +320,38 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         VolleySingleton.getInStance(this).getRequestQueue().add(commentRequest);
     }
 
-    private void parseComment(String json){
-        try {
-            JSONObject root = new JSONObject(json);
+//    private void parseComment(String json){
+//        Log.e("jsonComent", json);
+//        try {
+//            JSONObject root = new JSONObject(json);
+//
+//            JSONArray pdata = root.getJSONArray("pdata");
+//            for (int i = 0; i< pdata.length(); i++){
+//                JSONObject element = pdata.getJSONObject(i);
+//
+//                commentsList.add(new userComment(element.getString("UserName"),
+//                        element.getString("Contents"),
+//                        element.getString("PostTime")));
+//            }
+//
+//            if(commentsList.size() > 0) {
+//                commentAdapter.userComments = commentsList;
+//                Log.e("size", String.valueOf(commentAdapter.getItemCount()) + " " + String.valueOf(commentAdapter.getItemViewType(1)));
+//                commentAdapter.notifyItemInserted(0);
+//            }
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            Log.e("ListCommentResponse", "parse failse");
+//        }
+//    }
 
-            JSONArray pdata = root.getJSONArray("pdata");
-            for (int i = 0; i< pdata.length(); i++){
-                JSONObject element = pdata.getJSONObject(i);
-
-                commentsList.add(new userComment(element.getString("UserName"),
-                        element.getString("Contents"),
-                        element.getString("PostTime")));
-            }
-
-            Log.e("CommentList", String.valueOf(commentsList.size()));
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
+    // init comment adapter
+//    private void setCommentListAdapter(){
+//        recyclerViewComment.setHasFixedSize(true);
+//        commentAdapter = new rcvCommentAdapter(commentsList, this, "LocationDetail");
+//        recyclerViewComment.setAdapter(commentAdapter);
+//    }
 
 //    request like API
     private void callLikeAPI(final getParams getParams){
@@ -346,8 +398,8 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     }
 
 //    request location detail data
-    private void callAPI(String currentPage, double latitude, double longitude, final String currentLocation){
-        String url = getURL(currentPage, latitude, longitude);
+    private void callAPI(String LocationID, double latitude, double longitude, final String currentLocation){
+        String url = getURL(LocationID);
         Log.e("URLDetail", url);
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -361,42 +413,23 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
                 // control error in here
             }
         });
-
         VolleySingleton.getInStance(this).getRequestQueue().add(jsonRequest);
     }
 
 
 //  URL for location detail data
-    private String getURL(String currentPage, double latitude, double longitude){
-        String url = getString(R.string.request_heritage_location_detail) + currentPage + "/" + getEncodedLocation(latitude, longitude);
+    private String getURL(String currentPage){
+        String url = getString(R.string.request_heritage_location_detail) + currentPage;
         return url;
     }
 //  URL comment
     private String getCommentURL(){
-        String url = getString(R.string.request_get_commented) + String.valueOf(locationID) + "/" + "1";
+        String url = getString(R.string.request_get_commented) + locationID + "/" + commentPage;
         return url;
     }
 
     // encode user current location
-    private String getEncodedLocation(double latitude, double longitude){
-        String encodedLocation = "";
 
-        String tempLatitude = String.valueOf(latitude).trim();
-        String tempLongitude = String.valueOf(longitude).trim();
-
-        String Latitude = tempLatitude.replace(".", ",");
-        String Longitude = tempLongitude.replace(".", ",");
-
-        try {
-            String encodedLatitude = URLEncoder.encode(Latitude, "UTF-8");
-            String encodedLongitude = URLEncoder.encode(Longitude, "UTF-8");
-            encodedLocation = encodedLatitude + "/" + encodedLongitude;
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        return encodedLocation;
-    }
 
     public LocationCallback mLocationCallback = new LocationCallback() {
         @Override
@@ -416,7 +449,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
                 Log.e("asc","longitude: "+ String.valueOf(longitude)+","  +"latitude: "+String.valueOf(latitude));
             }
-            callAPI(String.valueOf(locationID), latitude, longitude, CurrentLocation(latitude,longitude));
+            callAPI(locationID, latitude, longitude, CurrentLocation(latitude,longitude));
 
         }
     };
@@ -462,6 +495,8 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
         }
     }
+
+
     //Connect to API get json and parse json in Asyntask
 
 

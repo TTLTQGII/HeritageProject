@@ -54,7 +54,7 @@ public class tabNearHome extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         callAPI(getURL("1"));
-        callAPI(getURL("1"));
+
     }
 
     @Override

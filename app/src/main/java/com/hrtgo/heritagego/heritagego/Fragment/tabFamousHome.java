@@ -74,7 +74,6 @@ public class tabFamousHome extends Fragment {
         View view = inflater.inflate(R.layout.home_fragment_tab_famous, container, false);
         initView(view);
         callAPI(getURL(String.valueOf(currentPage)));
-        callAPI(getURL(String.valueOf(currentPage)));
         return  view;
     }
 
@@ -123,7 +122,7 @@ public class tabFamousHome extends Fragment {
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.e(TAG, response);
+                Log.e("StringResponse", response);
                 parseJson(response);
             }
         }, new Response.ErrorListener() {

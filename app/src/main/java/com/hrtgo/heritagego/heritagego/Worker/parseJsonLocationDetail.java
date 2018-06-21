@@ -64,12 +64,19 @@ public class parseJsonLocationDetail extends AsyncTask<String, Void, ArrayList<h
     protected void onPostExecute(ArrayList<heritageLocationDetail> heritageLocationDetails) {
         super.onPostExecute(heritageLocationDetails);
 
-        locationDetail.eventExpandableTextView(heritageLocationDetails.get(0).getContents(),heritageLocationDetails.get(0).getDescription());
-        locationDetail.eventLikeComment(heritageLocationDetails.get(0).getLiked(), heritageLocationDetails.get(0).getAmountOfComment());
-        locationDetail.eventViewPager(heritageLocationDetails.get(0).getImagePath());
         locationDetail.bindData(heritageLocationDetails.get(0).getName(),
                 heritageLocationDetails.get(0).getAddress(),
                 heritageLocationDetails.get(0).getViewed());
+
+        locationDetail.eventViewPager(heritageLocationDetails.get(0).getImagePath());
+
+        locationDetail.eventLikeComment(heritageLocationDetails.get(0).getLiked(),
+                heritageLocationDetails.get(0).getAmountOfComment(),
+                heritageLocationDetails.get(0).getName(),
+                heritageLocationDetails.get(0).getAddress());
+
+        locationDetail.eventExpandableTextView(heritageLocationDetails.get(0).getContents(),heritageLocationDetails.get(0).getDescription());
+
         locationDetail.sendRequest(currentLocation, heritageLocationDetails.get(0).getDestination());
         locationDetail.Destination = heritageLocationDetails.get(0).getDestination();
         locationDetail.getDirectionActivity();

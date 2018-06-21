@@ -32,10 +32,6 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int visibleThreshold = 2;
     private int lastVisibleItem, totalItemCount;
 
-//    public rcvAdapterTabsHome(ArrayList<heritageInfoHomeModel> locationDatas, Context context) {
-//        this.locationDatas = locationDatas;
-//        this.context = context;
-//    }
 
     public rcvAdapterTabsHome(RecyclerView recyclerView, ArrayList<heritageInfoHomeModel> locationDatas, Context context) {
         this.locationDatas = locationDatas;
@@ -49,7 +45,7 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
                 totalItemCount = linearLayoutManager.getItemCount();
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
                 //????????
-                if(!isLoading & totalItemCount <= (lastVisibleItem + visibleThreshold) & totalItemCount >= 7){
+                if(!isLoading & totalItemCount <= (lastVisibleItem + visibleThreshold) & totalItemCount >= 10){
                     if(onLoadMoreListener != null){
                         isLoading = true;
                         onLoadMoreListener.onLoadMore();
@@ -57,7 +53,6 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
                 }
 
             }
-
 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -87,10 +82,11 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
             itemHolder item = (rcvAdapterTabsHome.itemHolder) holder;
             item.txtLocationName.setText(locationDatas.get(position).getLocationName());
 //            item.txtAmountOfLocationView.setText(String.valueOf(locationDatas.get(position).getLocationViewed()));
-            item.txtAmountOfLocationView.setText(String.valueOf(locationDatas.size()));
+            item.txtAmountOfLocationView.setText(String.valueOf(locationDatas.get(position).getLocationLiked()));
             Picasso.get()
                     .load(context.getResources().getString(R.string.request_image) + locationDatas.get(position).getLocationImagePath())
                     .fit()
+                    .centerCrop()
                     .into(item.imgLocation);
         }
         if(holder instanceof LoadingViewHolder){
@@ -131,8 +127,7 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(itemView.getContext(), LocationDetail.class);
-
-                    intent.putExtra("ID", locationDatas.get(getAdapterPosition()).getID());
+                    intent.putExtra("ID", String.valueOf(locationDatas.get(getAdapterPosition()).getID()));
                     itemView.getContext().startActivity(intent);
                 }
             });

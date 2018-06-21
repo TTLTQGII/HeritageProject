@@ -184,7 +184,7 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
                         @Override
                         public void onInfoWindowClick(Marker marker) {
                             Intent intent = new Intent(getContext(), LocationDetail.class);
-                            intent.putExtra("ID", Integer.valueOf(marker.getSnippet()));
+                            intent.putExtra("ID", marker.getSnippet());
                             Log.e("markers", marker.getSnippet());
                             startActivity(intent);
                         }
