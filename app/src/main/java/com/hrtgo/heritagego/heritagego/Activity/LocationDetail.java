@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Build;
@@ -16,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -58,6 +60,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -78,11 +81,12 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     TextView txtAmountOfLike, txtAmountOfComment;
     RelativeLayout imgBtnLike, imgBtnComment;
     ImageView imgLike, imgComment, icApplication;
-    ArrayList<userComment> commentsList;
+
 
     final int commentPage = 1;
-    RecyclerView recyclerViewComment;
+    ArrayList<userComment> commentList;
     rcvCommentAdapter commentAdapter;
+    RecyclerView recyclerViewComment;
 
     RelativeLayout DirectionMap;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -91,7 +95,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     Marker mCurrLocationMarker;
     FusedLocationProviderClient mFusedLocationClient;
     double latitude, longitude;
-    public String Destination;
+    public String Destination = "";
 
 
 
@@ -102,7 +106,6 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         //Create Action bar
         initView();
         getUserLocation();
-        //getListCommentAPI();
     }
 
     // customize Action bar
@@ -136,10 +139,10 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
         initCustomizeActionBar();
 
-//        recyclerViewComment = findViewById(R.id.rcv_comment_list_lc);
-//        commentsList = new ArrayList<>();
+        recyclerViewComment = findViewById(R.id.rcv_comment_list_lc);
+        commentList = new ArrayList<>();
 
-//        setCommentListAdapter();
+        setCommentAdapter();
     }
 
     private void iconBackpress(){
@@ -164,16 +167,24 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
     // start Maps Activity
     private void startDerectionActivity(){
-        Intent DirectionMap = new Intent(this, MapsActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("destination", Destination);
-        bundle.putDouble("latitude", latitude);
-        bundle.putDouble("longitude", longitude);
-        bundle.putString("locationName", String.valueOf(txtLocationName.getText()));
-        bundle.putString("Address", String.valueOf(txtLocationAddress.getText()));
-        bundle.putString("Viewed", String.valueOf(txtAmountOfView.getText()));
-        DirectionMap.putExtra("Data", bundle);
-        startActivity(DirectionMap);
+        if(latitude != 0.00 & longitude != 0.00 & Destination != "") {
+            Intent DirectionMap = new Intent(this, MapsActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("destination", Destination);
+            bundle.putDouble("latitude", latitude);
+            bundle.putDouble("longitude", longitude);
+            bundle.putString("locationName", String.valueOf(txtLocationName.getText()));
+            bundle.putString("Address", String.valueOf(txtLocationAddress.getText()));
+            bundle.putString("Viewed", String.valueOf(txtAmountOfView.getText()));
+            DirectionMap.putExtra("Data", bundle);
+            startActivity(DirectionMap);
+        }
+        else if(latitude == 0.00 || longitude == 0.00){
+            Toast.makeText(this, "Can't access your location", Toast.LENGTH_SHORT).show();
+        }
+        else if(Destination == ""){
+            Toast.makeText(this, "Destination isn't found", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void bindData(String locationName, String address, int Viewed){
@@ -281,14 +292,15 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
 //    go to comment activity
     private void getCommentActivity(int comment, String LocationName, String  Address){
-        Intent commentActivity = new Intent(this, CommentActivity.class);
 
+        Intent commentActivity = new Intent(this, CommentActivity.class);
         Bundle commentBundle = new Bundle();
         commentBundle.putString("ID", locationID);
         commentBundle.putString("LocationName", LocationName);
         commentBundle.putString("Address", Address);
         commentBundle.putInt("Commented", comment);
         commentBundle.putInt("CurrentPage", commentPage);
+        commentBundle.putSerializable("List", commentList);
         commentActivity.putExtra("Data", commentBundle);
         startActivity(commentActivity);
     }
@@ -303,55 +315,65 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     }
 
 //    Get comment data
-    private void getListCommentAPI(){
+    public void getListCommentAPI(){
         String url = getCommentURL();
         Log.e("CommentURL", url);
         StringRequest commentRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //parseComment(response);
+                parseComment(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
             }
         });
         VolleySingleton.getInStance(this).getRequestQueue().add(commentRequest);
     }
 
-//    private void parseComment(String json){
-//        Log.e("jsonComent", json);
-//        try {
-//            JSONObject root = new JSONObject(json);
-//
-//            JSONArray pdata = root.getJSONArray("pdata");
-//            for (int i = 0; i< pdata.length(); i++){
-//                JSONObject element = pdata.getJSONObject(i);
-//
-//                commentsList.add(new userComment(element.getString("UserName"),
-//                        element.getString("Contents"),
-//                        element.getString("PostTime")));
-//            }
-//
-//            if(commentsList.size() > 0) {
-//                commentAdapter.userComments = commentsList;
-//                Log.e("size", String.valueOf(commentAdapter.getItemCount()) + " " + String.valueOf(commentAdapter.getItemViewType(1)));
-//                commentAdapter.notifyItemInserted(0);
-//            }
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//            Log.e("ListCommentResponse", "parse failse");
-//        }
-//    }
+    private void parseComment(String json){
+        Log.e("jsonComent", json);
+        try {
+            JSONObject root = new JSONObject(json);
+
+            JSONArray pdata = root.getJSONArray("pdata");
+            for (int i = 0; i< pdata.length(); i++){
+                JSONObject element = pdata.getJSONObject(i);
+
+                commentList.add(new userComment(element.getString("UserName"),
+                        element.getString("Contents"),
+                        element.getString("PostTime")));
+            }
+
+            if(commentList.size() > 0) {
+                commentAdapter.userComments = commentList;
+                Log.e("size", String.valueOf(commentAdapter.getItemCount()) + " " + String.valueOf(commentAdapter.getItemViewType(1)));
+                commentAdapter.notifyDataSetChanged();
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ListCommentResponse", "parse failse");
+        }
+    }
 
     // init comment adapter
-//    private void setCommentListAdapter(){
-//        recyclerViewComment.setHasFixedSize(true);
-//        commentAdapter = new rcvCommentAdapter(commentsList, this, "LocationDetail");
-//        recyclerViewComment.setAdapter(commentAdapter);
-//    }
+    private void setCommentAdapter(){
+
+        recyclerViewComment.setHasFixedSize(true);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerViewComment.setLayoutManager(linearLayoutManager);
+
+        //divider recycler item list
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewComment.getContext(), DividerItemDecoration.VERTICAL);
+        Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.comment_divider);
+        dividerItemDecoration.setDrawable(drawable);
+        recyclerViewComment.addItemDecoration(dividerItemDecoration);
+
+        commentAdapter = new rcvCommentAdapter(commentList, this, "LocationDetail");
+        recyclerViewComment.setAdapter(commentAdapter);
+
+    }
 
 //    request like API
     private void callLikeAPI(final getParams getParams){

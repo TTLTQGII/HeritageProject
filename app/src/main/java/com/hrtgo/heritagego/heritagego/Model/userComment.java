@@ -1,6 +1,7 @@
 package com.hrtgo.heritagego.heritagego.Model;
+import java.io.Serializable;
 
-public class userComment {
+public class userComment implements Serializable {
 
     String userName, content, postTime;
 

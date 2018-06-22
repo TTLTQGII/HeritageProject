@@ -33,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 
 public class CommentActivity extends AppCompatActivity {
 
@@ -43,6 +44,7 @@ public class CommentActivity extends AppCompatActivity {
     ImageView icApplication;
 
     String LocationID;
+    int listSize;
     // currentPage loaded is 1
     int AmountOfComment = 0, currentPage = 0;
     String locationName, address;
@@ -56,8 +58,6 @@ public class CommentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comment);
 
         initView();
-
-        callAPI(getURL(currentPage));
     }
 
     private void initView(){
@@ -69,7 +69,8 @@ public class CommentActivity extends AppCompatActivity {
         txtAmountOfComment = findViewById(R.id.txt_amount_of_comment_activity);
         rcvComment = findViewById(R.id.rcv_comment_activity);
         edtComment = findViewById(R.id.txt_input_comment);
-        commentList = new ArrayList<>();
+
+        setCommentAdapter();
 
         getIntentData();
     }
@@ -123,10 +124,19 @@ public class CommentActivity extends AppCompatActivity {
 
             AmountOfComment = bundle.getInt("Commented");
             txtAmountOfComment.setText(String.valueOf(AmountOfComment));
+            if( bundle.getSerializable("List") != null){
+                commentList = (ArrayList<userComment>) bundle.getSerializable("List");
+                adapter.userComments = commentList;
+                adapter.notifyDataSetChanged();
+            }
+            else {
+                commentList = new ArrayList<>();
+                callAPI(getURL(currentPage));
+            }
         }
     }
 
-    private void setCommentAdapter(ArrayList<userComment> commentList){
+    private void setCommentAdapter(){
 
         rcvComment.setHasFixedSize(true);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -151,7 +161,7 @@ public class CommentActivity extends AppCompatActivity {
     private void callAPI(String URL){
         String url = URL;
 
-        StringRequest commentRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+        StringRequest commentRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 parseJson(response);
@@ -179,12 +189,11 @@ public class CommentActivity extends AppCompatActivity {
                         element.getString("PostTime")));
             }
 
-//            if(commentList.size() > 0) {
-//                adapter.userComments = commentList;
-//                Log.e("size", String.valueOf(adapter.getItemCount()) + " " + String.valueOf(adapter.getItemViewType(1)));
-//                adapter.notifyItemInserted(0);
-//            }
-            setCommentAdapter(commentList);
+            if(commentList.size() > 0) {
+                adapter.userComments = commentList;
+                Log.e("size", String.valueOf(adapter.getItemCount()) + " " + String.valueOf(adapter.getItemViewType(1)));
+                adapter.notifyItemInserted(0);
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();

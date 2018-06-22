@@ -64,7 +64,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     double latitude, longitude;
     android.support.v7.widget.Toolbar actionToolBar;
     ImageView icApplication;
-    TextView txtLocationName, txtLocationAddress, txtAmountOfView;
+    TextView txtLocationName, txtLocationAddress, txtMovementTime;
 
     List<Marker> originMarkers = new ArrayList<>();
     List<Marker> destinationMarkers = new ArrayList<>();
@@ -98,10 +98,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initView(){
         txtLocationName = findViewById(R.id.txt_location_name);
         txtLocationAddress = findViewById(R.id.txt_location_address);
-        txtAmountOfView = findViewById(R.id.txt_amount_of_view);
+        txtMovementTime = findViewById(R.id.txt_location_duration);
 
         initCustomizeActionBar();
-        iconBackpress();
         getIntentData();
 
     }
@@ -139,9 +138,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             CurrentLocation(bundle.getDouble("latitude"), bundle.getDouble("longitude"));
             txtLocationName.setText(bundle.getString("locationName"));
             txtLocationAddress.setText(bundle.getString("Address"));
-            txtAmountOfView.setText(bundle.getString("Viewed"));
-//            localRoute = (List<Route>) bundle.getSerializable("route");
-//            drawPolylinePath(localRoute);
         }
         Log.e("Destination", String.valueOf(Destination));
     }
@@ -166,6 +162,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             View customAcionBar = inflater.inflate(R.layout.tool_action_bar_customize, null);
             actionBar.setCustomView(customAcionBar);
             customize.customizeActionBar(actionToolBar, actionBar, customAcionBar);
+
+            iconBackpress();
         }
     }
 
@@ -328,6 +326,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         for (Route route : routes) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
             ((TextView) findViewById(R.id.txt_location_distance)).setText(route.distance.text);
+            txtMovementTime.setText(route.duration.text);
 
             destinationMarkers.add(mMap.addMarker(new MarkerOptions()
                     .title(route.endAddress)

@@ -274,11 +274,11 @@
             android:clickable="true"/>
 
 
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:layout_below="@id/expand_button"-->
-            <!--android:id="@+id/rcv_comment_list_lc"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"/>-->
+        <android.support.v7.widget.RecyclerView
+            android:layout_below="@id/expand_button"
+            android:id="@+id/rcv_comment_list_lc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </RelativeLayout>
 </RelativeLayout>
