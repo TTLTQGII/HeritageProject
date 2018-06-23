@@ -60,6 +60,8 @@ public class navSearchfrag extends Fragment {
     ArrayList<heritageInfoHomeModel> listData;
     rcvAdapterTabsHome adapter;
 
+    int currentPage = 1;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,7 +126,14 @@ public class navSearchfrag extends Fragment {
         adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                callAPI(getURL("2", edtSearch.getText().toString()));
+
+                currentPage++;
+                //if(currentPage < 5) {
+                listData.add(null);
+                adapter.locationDatas = listData;
+                adapter.notifyItemInserted(adapter.locationDatas.size() - 1);
+                //}
+                callAPI(getURL(String.valueOf(currentPage), edtSearch.getText().toString()));
                 Log.e("ListData", String.valueOf(listData.size()));
             }
         });
@@ -154,6 +163,15 @@ public class navSearchfrag extends Fragment {
             JSONObject root = new JSONObject(result);
 
             JSONArray pdataArray = root.getJSONArray("pdata");
+
+            if(listData.size() != 0){
+                listData.remove(listData.size()-1);
+                adapter.locationDatas = listData;
+                adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
+            }
+            else if(pdataArray.length() == 0){
+                return;
+            }
 
             for (int i = 0; i < pdataArray.length(); i++){
                 JSONObject location = pdataArray.getJSONObject(i);

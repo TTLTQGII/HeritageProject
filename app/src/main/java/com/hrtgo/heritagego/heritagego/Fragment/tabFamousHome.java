@@ -103,12 +103,12 @@ public class tabFamousHome extends Fragment {
             @Override
             public void onLoadMore() {
                 currentPage++;
-                if(currentPage < 5) {
+                //if(currentPage < 5) {
                     listData.add(null);
                     adapter.locationDatas = listData;
                     adapter.notifyItemInserted(adapter.locationDatas.size() - 1);
                     callAPI(getURL(String.valueOf(currentPage)));
-                }
+                //}
 
                 Log.e("ListData", String.valueOf(listData.size()));
             }
@@ -142,17 +142,19 @@ public class tabFamousHome extends Fragment {
     }
 
     public void parseJson(String result){
-
-        if(listData.size() != 0){
-            listData.remove(listData.size()-1);
-            adapter.locationDatas = listData;
-            adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
-        }
-
         try {
             JSONObject root = new JSONObject(result);
 
             JSONArray pdataArray = root.getJSONArray("pdata");
+
+            if(listData.size() != 0){
+                listData.remove(listData.size()-1);
+                adapter.locationDatas = listData;
+                adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
+            }
+            else if(pdataArray.length() == 0){
+                return;
+            }
 
             for (int i = 0; i < pdataArray.length(); i++){
                 JSONObject location = pdataArray.getJSONObject(i);

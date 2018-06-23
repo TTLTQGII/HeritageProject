@@ -96,7 +96,6 @@ public class imgListAdapterLocationDetail extends PagerAdapter {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             imgByte = stream.toByteArray();
-            bitmap.recycle();
             return imgByte;
         }else {
             Log.e("returnBitmap", "null");

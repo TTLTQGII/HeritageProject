@@ -35,6 +35,8 @@ public class tabNearHome extends Fragment{
     ArrayList<heritageInfoHomeModel> listData;
     rcvAdapterTabsHome adapter;
 
+    int currentPage = 1;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,10 +81,11 @@ public class tabNearHome extends Fragment{
         adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
+                currentPage++;
                 listData.add(null);
                 adapter.locationDatas = listData;
                 adapter.notifyItemInserted(adapter.locationDatas.size() - 1);
-                callAPI(getURL("2"));
+                callAPI(getURL(String.valueOf(currentPage)));
                 Log.e("ListData", String.valueOf(listData.size()));
             }
         });
@@ -106,17 +109,19 @@ public class tabNearHome extends Fragment{
     }
 
     public void parseJson(String result){
-
-        if(listData.size() != 0){
-            listData.remove(listData.size()-1);
-            adapter.locationDatas = listData;
-            adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
-        }
-
         try {
             JSONObject root = new JSONObject(result);
 
             JSONArray pdataArray = root.getJSONArray("pdata");
+
+            if(listData.size() != 0){
+                listData.remove(listData.size()-1);
+                adapter.locationDatas = listData;
+                adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
+            }
+            else if(pdataArray.length() == 0){
+                return;
+            }
 
             for (int i = 0; i < pdataArray.length(); i++){
                 JSONObject location = pdataArray.getJSONObject(i);

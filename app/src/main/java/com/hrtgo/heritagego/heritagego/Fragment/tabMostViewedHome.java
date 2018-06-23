@@ -33,6 +33,7 @@ public class tabMostViewedHome extends Fragment{
     RecyclerView recyclerView;
     ArrayList<heritageInfoHomeModel> listData;
     rcvAdapterTabsHome adapter;
+    int currentPage = 1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class tabMostViewedHome extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
-        callAPI(getURL("2"));
+        callAPI(getURL("1"));
     }
 
     private void initView(View view){
@@ -77,8 +78,11 @@ public class tabMostViewedHome extends Fragment{
         adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                callAPI(getURL("2"));
-                Log.e("ListData", String.valueOf(listData.size()));
+                currentPage++;
+                listData.add(null);
+                adapter.locationDatas = listData;
+                adapter.notifyItemInserted(adapter.locationDatas.size() - 1);
+                callAPI(getURL(String.valueOf(currentPage)));
             }
         });
     }
@@ -103,10 +107,21 @@ public class tabMostViewedHome extends Fragment{
     }
 
     public void parseJson(String result){
+
+
         try {
             JSONObject root = new JSONObject(result);
 
             JSONArray pdataArray = root.getJSONArray("pdata");
+
+            if(listData.size() != 0){
+                listData.remove(listData.size()-1);
+                adapter.locationDatas = listData;
+                adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
+            }
+            else if(pdataArray.length() == 0){
+                return;
+            }
 
             for (int i = 0; i < pdataArray.length(); i++){
                 JSONObject location = pdataArray.getJSONObject(i);

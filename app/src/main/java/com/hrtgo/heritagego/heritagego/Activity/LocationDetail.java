@@ -80,7 +80,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     TextView txtLocationName, txtLocationDistance, txtLocationAddress, txtAmountOfView;
     TextView txtAmountOfLike, txtAmountOfComment;
     RelativeLayout imgBtnLike, imgBtnComment;
-    ImageView imgLike, imgComment, icApplication;
+    ImageView imgLike, imgComment, icApplication, icBackpress;
 
 
     final int commentPage = 1;
@@ -146,8 +146,8 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     }
 
     private void iconBackpress(){
-        icApplication = findViewById(R.id.logo_application);
-        icApplication.setOnClickListener(new View.OnClickListener() {
+        icBackpress = findViewById(R.id.ic_img_backpress);
+        icBackpress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();

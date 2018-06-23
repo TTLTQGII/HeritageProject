@@ -41,7 +41,7 @@ public class CommentActivity extends AppCompatActivity {
     RecyclerView rcvComment;
     TextView txtLocationName, txtLocationAdress, txtAmountOfComment;
     EditText edtComment;
-    ImageView icApplication;
+    ImageView icApplication, icBackpress;
 
     String LocationID;
     int listSize;
@@ -100,8 +100,8 @@ public class CommentActivity extends AppCompatActivity {
     }
 
     private void iconBackpress(){
-        icApplication = findViewById(R.id.logo_application);
-        icApplication.setOnClickListener(new View.OnClickListener() {
+        icBackpress = findViewById(R.id.ic_img_backpress);
+        icBackpress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();

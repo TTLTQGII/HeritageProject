@@ -21,7 +21,7 @@ import com.hrtgo.heritagego.heritagego.untill.customize;
 public class photoViewActivity extends AppCompatActivity {
 
     android.support.v7.widget.Toolbar actionToolBar;
-    ImageView icApplication;
+    ImageView icBackpress;
     PhotoView imgView;
 
 
@@ -36,6 +36,7 @@ public class photoViewActivity extends AppCompatActivity {
     private void initView(){
         initCustomizeActionBar();
         imgView = findViewById(R.id.image_photo_view);
+//        imgLocation = findViewById(R.id.image_photo_view);
         getIntentData();
     }
 
@@ -46,7 +47,7 @@ public class photoViewActivity extends AppCompatActivity {
             setSupportActionBar(actionToolBar);
             ActionBar actionBar = getSupportActionBar();
             LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View customAcionBar = inflater.inflate(R.layout.tool_action_bar_customize, null);
+            View customAcionBar = inflater.inflate(R.layout.tool_action_bar_photo_view, null);
             actionBar.setCustomView(customAcionBar);
             customize.customizeActionBar(actionToolBar, actionBar, customAcionBar);
 
@@ -55,8 +56,8 @@ public class photoViewActivity extends AppCompatActivity {
     }
 
     private void iconBackpress(){
-        icApplication = findViewById(R.id.logo_application);
-        icApplication.setOnClickListener(new View.OnClickListener() {
+        icBackpress = findViewById(R.id.ic_img_backpress);
+        icBackpress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();

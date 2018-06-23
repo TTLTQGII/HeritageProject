@@ -191,7 +191,10 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
                     });
                 }
                 else {
-                   Toast.makeText(getActivity(), "Can't access Your location", Toast.LENGTH_SHORT).show();
+                    Latitude = currlatitude;
+                    Longitude = currlongitude;
+                    LatLng coordinate = new LatLng(Latitude, Longitude);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinate, 15));
                 }
 
             }

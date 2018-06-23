@@ -63,7 +63,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     String Destination = "";
     double latitude, longitude;
     android.support.v7.widget.Toolbar actionToolBar;
-    ImageView icApplication;
+    ImageView icApplication, icBackpress;
     TextView txtLocationName, txtLocationAddress, txtMovementTime;
 
     List<Marker> originMarkers = new ArrayList<>();
@@ -143,8 +143,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void iconBackpress(){
-        icApplication = findViewById(R.id.logo_application);
-        icApplication.setOnClickListener(new View.OnClickListener() {
+        icBackpress = findViewById(R.id.ic_img_backpress);
+        icBackpress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
