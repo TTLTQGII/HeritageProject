@@ -94,7 +94,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     Location mLastLocation;
     Marker mCurrLocationMarker;
     FusedLocationProviderClient mFusedLocationClient;
-    double latitude, longitude;
+    double latitude = 0.00, longitude = 0.00;
     public String Destination = "";
 
 
@@ -160,13 +160,13 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
             DirectionMap.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startDerectionActivity();
+                    startDirectionActivity();
                 }
             });
     }
 
     // start Maps Activity
-    private void startDerectionActivity(){
+    private void startDirectionActivity(){
         if(latitude != 0.00 & longitude != 0.00 & Destination != "") {
             Intent DirectionMap = new Intent(this, MapsActivity.class);
             Bundle bundle = new Bundle();
@@ -179,7 +179,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
             DirectionMap.putExtra("Data", bundle);
             startActivity(DirectionMap);
         }
-        else if(latitude == 0.00 || longitude == 0.00){
+        else if(latitude == 0.00 | longitude == 0.00){
             Toast.makeText(this, "Can't access your location", Toast.LENGTH_SHORT).show();
         }
         else if(Destination == ""){
@@ -290,9 +290,44 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         });
     }
 
+    //    request like API
+    private void callLikeAPI(final getParams getParams){
+        String url = getResources().getString(R.string.request_like);
+        StringRequest likeRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+//                Toast.makeText(LocationDetail.this, response, Toast.LENGTH_SHORT).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("likeError", error.toString());
+//                Toast.makeText(LocationDetail.this, error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders(){
+                Map<String,String> headers = new HashMap<>();
+                return headers;
+            }
+            @Override
+            protected Map<String, String> getParams(){
+                Map<String, String> params = new HashMap<>();
+                getParams.setParams(params);
+                Log.e("put",params.toString());
+                return params;
+            }
+        };
+
+        likeRequest.setRetryPolicy(new DefaultRetryPolicy(
+                60000,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInStance(this).getRequestQueue().add(likeRequest);
+    }
+
 //    go to comment activity
     private void getCommentActivity(int comment, String LocationName, String  Address){
-
         Intent commentActivity = new Intent(this, CommentActivity.class);
         Bundle commentBundle = new Bundle();
         commentBundle.putString("ID", locationID);
@@ -301,6 +336,9 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         commentBundle.putInt("Commented", comment);
         commentBundle.putInt("CurrentPage", commentPage);
         commentBundle.putSerializable("List", commentList);
+        commentBundle.putDouble("latitude", latitude);
+        commentBundle.putDouble("longitude", longitude);
+        commentBundle.putString("infoPlatform", getInfoPlatform());
         commentActivity.putExtra("Data", commentBundle);
         startActivity(commentActivity);
     }
@@ -374,43 +412,6 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         recyclerViewComment.setAdapter(commentAdapter);
 
     }
-
-//    request like API
-    private void callLikeAPI(final getParams getParams){
-        String url = getString(R.string.request_like);
-        StringRequest likeRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-//                Toast.makeText(LocationDetail.this, response, Toast.LENGTH_SHORT).show();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("likeError", error.toString());
-//                Toast.makeText(LocationDetail.this, error.toString(), Toast.LENGTH_SHORT).show();
-            }
-        }){
-            @Override
-            public Map<String, String> getHeaders(){
-                Map<String,String> headers = new HashMap<>();
-                return headers;
-            }
-            @Override
-            protected Map<String, String> getParams(){
-                Map<String, String> params = new HashMap<>();
-                getParams.setParams(params);
-                Log.e("put",params.toString());
-                return params;
-            }
-        };
-
-        likeRequest.setRetryPolicy(new DefaultRetryPolicy(
-                60000,
-                0,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        VolleySingleton.getInStance(this).getRequestQueue().add(likeRequest);
-    }
-
 
     // expand and collapse the location content
     // goi qua -> worker asyntask

@@ -71,6 +71,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     List<Polyline> polylinePaths = new ArrayList<>();
     List<Route> localRoute;
     ProgressDialog progressDialog;
+    LatLng coordinate;
 
     LocationRequest mLocationRequest;
     Location mLastLocation;
@@ -214,6 +215,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             googleMap.setMyLocationEnabled(true);
         }
 
+
+        coordinate = new LatLng(16.460293, 107.590843);
+        //move map camera
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinate, 5));
+
     }
 
     //Lấy vị trí hiện tại của thiết bị
@@ -234,10 +240,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 latitude = location.getLatitude();
 
                 //Place current location marker
-                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                //LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+                coordinate= new LatLng(location.getLatitude(), location.getLongitude());
 
                 //move map camera
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinate, 11));
             }
             sendRequest(CurrentLocation(latitude,longitude),Destination );
 
