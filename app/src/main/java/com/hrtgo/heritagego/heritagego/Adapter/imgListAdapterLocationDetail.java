@@ -54,8 +54,6 @@ public class imgListAdapterLocationDetail extends PagerAdapter {
         final ImageView imgLocationDetail = view.findViewById(R.id.img_viewpager_location_detail);
         // do du lieu
 
-
-
         String Url = context.getResources().getString(R.string.request_image) + mImagePath(imgPath.get(position));
         //Log.e("imgListAdapter", Url);
         final int width = imgContainer.getWidth();
