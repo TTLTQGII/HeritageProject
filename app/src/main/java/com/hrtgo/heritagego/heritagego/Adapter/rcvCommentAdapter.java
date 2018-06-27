@@ -64,7 +64,13 @@ public class rcvCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public int getItemCount() {
         if (userComments.size() != 0){
             if (contextFlag == "LocationDetail"){
-                return 3;
+                if(userComments.size() == 1){
+                    return 1;
+                }else if(userComments.size() == 2){
+                    return 2;
+                }else{
+                    return 3;
+                }
             }
             else if(contextFlag == "CommentActivity"){
                 return userComments.size();
