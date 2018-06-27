@@ -60,7 +60,7 @@ public class imgListAdapterLocationDetail extends PagerAdapter {
         //Log.e("imgListAdapter", Url);
         final int width = imgContainer.getWidth();
         final int height = imgContainer.getHeight();
-        Picasso.get().load(Url).resize(width, height).placeholder(R.drawable.image_place_holder_2).into(imgLocationDetail);
+        Picasso.get().load(Url).resize(width, height).placeholder(R.drawable.image_place_holder).into(imgLocationDetail);
         // add view child to Viewgroup
         container.addView(view);
 
