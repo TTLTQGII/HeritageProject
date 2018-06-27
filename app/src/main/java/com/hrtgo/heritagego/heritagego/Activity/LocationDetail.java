@@ -355,7 +355,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 //    Get comment data
     public void getListCommentAPI(){
         String url = getCommentURL();
-        Log.e("CommentURL", url);
+        //Log.e("CommentURL", url);
         StringRequest commentRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -423,7 +423,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 //    request location detail data
     private void callAPI(String LocationID, double latitude, double longitude, final String currentLocation){
         String url = getURL(LocationID);
-        Log.e("URLDetail", url);
+        //Log.e("URLDetail", url);
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

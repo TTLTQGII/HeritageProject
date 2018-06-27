@@ -130,7 +130,7 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
 
     private void callAPUMarker(){
         String url = getURL();
-        Log.e("URLMap", url);
+        //Log.e("navMapsFrag", url);
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

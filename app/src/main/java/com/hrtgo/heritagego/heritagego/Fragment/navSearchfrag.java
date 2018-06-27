@@ -87,7 +87,6 @@ public class navSearchfrag extends Fragment {
         edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-
                 if(actionId == EditorInfo.IME_ACTION_SEARCH){
                     listData.clear();
                     adapter.locationDatas = listData;

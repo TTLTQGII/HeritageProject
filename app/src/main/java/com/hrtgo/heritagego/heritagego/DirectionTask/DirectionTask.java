@@ -38,7 +38,7 @@ public class DirectionTask {
     public void execute() throws UnsupportedEncodingException {
         listener.onDirectionFinderStart();
         new DownloadRawData().execute(createUrl());
-        Log.e("abcs", DIRECTION_URL_API);
+        //Log.e("DirectionTask", DIRECTION_URL_API);
     }
     //tạo URL
     private String createUrl() throws UnsupportedEncodingException {

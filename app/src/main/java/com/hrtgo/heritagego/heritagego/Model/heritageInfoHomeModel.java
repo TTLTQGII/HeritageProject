@@ -1,5 +1,7 @@
 package com.hrtgo.heritagego.heritagego.Model;
 
+import android.util.Log;
+
 public class heritageInfoHomeModel {
     String locationName, imagePath;
     int ID, liked, viewed;
@@ -22,7 +24,16 @@ public class heritageInfoHomeModel {
 
 
     public String getLocationImagePath() {
-        return imagePath;
+
+        String original1 = imagePath;
+        String original2 = imagePath;
+        String temp1 = original1.substring(0, 14);
+        String temp2 = original2.substring(14);
+        Log.e("temp2", temp2);
+        String url = temp1 + "hergo" + "/" + temp2;
+        Log.e("imagePatch", url);
+        return  url;
+//        return imagePath;
     }
 
     public void setLocationImagePath(String imagePath) {

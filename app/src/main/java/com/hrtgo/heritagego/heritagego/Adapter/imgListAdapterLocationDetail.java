@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.hrtgo.heritagego.heritagego.R;
 import com.squareup.picasso.Picasso;
@@ -52,11 +53,14 @@ public class imgListAdapterLocationDetail extends PagerAdapter {
         // anh xa
         final ImageView imgLocationDetail = view.findViewById(R.id.img_viewpager_location_detail);
         // do du lieu
-        String Url = context.getResources().getString(R.string.request_image) + imgPath.get(position);
-        Log.e("lcDetailImg", Url);
+
+
+
+        String Url = context.getResources().getString(R.string.request_image) + mImagePath(imgPath.get(position));
+        //Log.e("imgListAdapter", Url);
         final int width = imgContainer.getWidth();
         final int height = imgContainer.getHeight();
-        Picasso.get().load(Url).resize(width, height).placeholder(R.drawable.image_place_holder).into(imgLocationDetail);
+        Picasso.get().load(Url).resize(width, height).placeholder(R.drawable.image_place_holder_2).into(imgLocationDetail);
         // add view child to Viewgroup
         container.addView(view);
 
@@ -69,16 +73,28 @@ public class imgListAdapterLocationDetail extends PagerAdapter {
 
                 Intent photoViewActivity = new Intent(context, photoViewActivity.class);
                 Bundle bundle = new Bundle();
-//                bundle.putString("url", imgPath.get(position));
-//                bundle.putInt("width", width);
-//                bundle.putInt("height", height);
                 bundle.putByteArray("imageByte", imageByte);
                 photoViewActivity.putExtra("image", bundle);
                 v.getContext().startActivity(photoViewActivity);
+
+//                bundle.putString("url", imgPath.get(position));
+//                bundle.putInt("width", width);
+//                bundle.putInt("height", height);
             }
         });
 
         return view;
+    }
+
+    private String mImagePath(String path){
+        String original1 = path;
+        String original2 = path;
+        String temp1 = original1.substring(0, 14);
+        String temp2 = original2.substring(14);
+        Log.e("temp2", temp2);
+        String url = temp1 + "hergo" + "/" + temp2;
+        Log.e("imagePatch", url);
+        return url;
     }
 
     @Override
@@ -88,17 +104,23 @@ public class imgListAdapterLocationDetail extends PagerAdapter {
 
     private byte[] getImageByte(ImageView imgLocation){
         byte[] imgByte;
-
-        BitmapDrawable bitmapDrawable = (BitmapDrawable) imgLocation.getDrawable();
-        Bitmap bitmap;
-        if(bitmapDrawable != null){
-            bitmap = bitmapDrawable.getBitmap();
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            imgByte = stream.toByteArray();
-            return imgByte;
-        }else {
-            Log.e("returnBitmap", "null");
+        
+        if(imgLocation.getDrawable() != null) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) imgLocation.getDrawable();
+            Bitmap bitmap;
+            if (bitmapDrawable != null) {
+                bitmap = bitmapDrawable.getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                imgByte = stream.toByteArray();
+                return imgByte;
+            } else {
+                Log.e("returnBitmap", "null");
+                return null;
+            }
+        }
+        else {
+            Toast.makeText(context, "Image isn't loaded", Toast.LENGTH_SHORT).show();
             return null;
         }
     }
