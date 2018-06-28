@@ -168,7 +168,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
     // start Maps Activity
     private void startDirectionActivity(){
-        if(latitude != 0.00 & longitude != 0.00 & Destination != "") {
+        if(latitude != 0.00 & longitude != 0.00 & !Destination.equals("0.0 0.0")) {
             Intent DirectionMap = new Intent(this, MapsActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString("destination", Destination);
@@ -184,7 +184,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         else if(latitude == 0.00 | longitude == 0.00){
             Toast.makeText(this, "Can't access your location", Toast.LENGTH_SHORT).show();
         }
-        else if(Destination == ""){
+        else if(Destination.equals("0.0 0.0")){
             Toast.makeText(this, "Destination isn't found", Toast.LENGTH_SHORT).show();
         }
     }
