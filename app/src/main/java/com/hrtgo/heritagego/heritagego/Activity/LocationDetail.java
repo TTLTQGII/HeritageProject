@@ -96,6 +96,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     FusedLocationProviderClient mFusedLocationClient;
     double latitude = 0.00, longitude = 0.00;
     public String Destination = "";
+//    List<Route> localRoute;
 
 
 
@@ -105,7 +106,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         setContentView(R.layout.activity_location_detail);
         //Create Action bar
         initView();
-        getUserLocation();
+        callAPI(locationID);
     }
 
     // customize Action bar
@@ -176,6 +177,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
             bundle.putString("locationName", String.valueOf(txtLocationName.getText()));
             bundle.putString("Address", String.valueOf(txtLocationAddress.getText()));
             bundle.putString("Viewed", String.valueOf(txtAmountOfView.getText()));
+//            bundle.putSerializable("ListRoute", (Serializable) localRoute);
             DirectionMap.putExtra("Data", bundle);
             startActivity(DirectionMap);
         }
@@ -290,6 +292,23 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         });
     }
 
+    //    go to comment activity
+    private void getCommentActivity(int comment, String LocationName, String  Address){
+        Intent commentActivity = new Intent(this, CommentActivity.class);
+        Bundle commentBundle = new Bundle();
+        commentBundle.putString("ID", locationID);
+        commentBundle.putString("LocationName", LocationName);
+        commentBundle.putString("Address", Address);
+        commentBundle.putInt("Commented", comment);
+        commentBundle.putInt("CurrentPage", commentPage);
+        commentBundle.putSerializable("List", commentList);
+        commentBundle.putDouble("latitude", latitude);
+        commentBundle.putDouble("longitude", longitude);
+        commentBundle.putString("infoPlatform", getInfoPlatform());
+        commentActivity.putExtra("Data", commentBundle);
+        startActivity(commentActivity);
+    }
+
     //    request like API
     private void callLikeAPI(final getParams getParams){
         String url = getResources().getString(R.string.request_like);
@@ -324,23 +343,6 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
                 0,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         VolleySingleton.getInStance(this).getRequestQueue().add(likeRequest);
-    }
-
-//    go to comment activity
-    private void getCommentActivity(int comment, String LocationName, String  Address){
-        Intent commentActivity = new Intent(this, CommentActivity.class);
-        Bundle commentBundle = new Bundle();
-        commentBundle.putString("ID", locationID);
-        commentBundle.putString("LocationName", LocationName);
-        commentBundle.putString("Address", Address);
-        commentBundle.putInt("Commented", comment);
-        commentBundle.putInt("CurrentPage", commentPage);
-        commentBundle.putSerializable("List", commentList);
-        commentBundle.putDouble("latitude", latitude);
-        commentBundle.putDouble("longitude", longitude);
-        commentBundle.putString("infoPlatform", getInfoPlatform());
-        commentActivity.putExtra("Data", commentBundle);
-        startActivity(commentActivity);
     }
 
 
@@ -416,19 +418,19 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     // expand and collapse the location content
     // goi qua -> worker asyntask
 
-    private void parseJson(String json, String currentLocation){
-        new parseJsonLocationDetail(this, currentLocation ).execute(json);
+    private void parseJson(String json){
+        new parseJsonLocationDetail(this).execute(json);
     }
 
 //    request location detail data
-    private void callAPI(String LocationID, double latitude, double longitude, final String currentLocation){
+    private void callAPI(String LocationID){
         String url = getURL(LocationID);
         //Log.e("URLDetail", url);
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.e("LocationDetail response", response);
-                parseJson(response, currentLocation);
+                parseJson(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -471,8 +473,9 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
                 latitude = location.getLatitude();
 
                 Log.e("asc","longitude: "+ String.valueOf(longitude)+","  +"latitude: "+String.valueOf(latitude));
+
+                sendRequest(CurrentLocation(latitude,longitude), Destination);
             }
-            callAPI(locationID, latitude, longitude, CurrentLocation(latitude,longitude));
 
         }
     };
@@ -596,8 +599,9 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     @Override
     public void onDirectionFinderSuccess(List<Route> routes) {
         for (Route route : routes) {
-            ((TextView) findViewById(R.id.txt_location_distance)).setText(route.distance.text);
+            txtLocationDistance.setText(route.distance.text);
         }
+//        localRoute = new ArrayList<>();
 //        localRoute = routes;
     }
 
