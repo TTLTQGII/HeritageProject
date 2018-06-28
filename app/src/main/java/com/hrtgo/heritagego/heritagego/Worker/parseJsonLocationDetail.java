@@ -15,11 +15,9 @@ import java.util.ArrayList;
 public class parseJsonLocationDetail extends AsyncTask<String, Void, ArrayList<heritageLocationDetail>> {
 
     LocationDetail locationDetail;
-    String currentLocation;
 
-    public parseJsonLocationDetail(LocationDetail locationDetail, String currentLocation) {
+    public parseJsonLocationDetail(LocationDetail locationDetail) {
         this.locationDetail = locationDetail;
-        this.currentLocation = currentLocation;
     }
 
 
@@ -77,8 +75,8 @@ public class parseJsonLocationDetail extends AsyncTask<String, Void, ArrayList<h
 
         locationDetail.eventExpandableTextView(heritageLocationDetails.get(0).getContents(),heritageLocationDetails.get(0).getDescription());
 
-        locationDetail.sendRequest(currentLocation, heritageLocationDetails.get(0).getDestination());
         locationDetail.Destination = heritageLocationDetails.get(0).getDestination();
+        locationDetail.getUserLocation();
         locationDetail.getDirectionActivity();
 
         locationDetail.getListCommentAPI();
