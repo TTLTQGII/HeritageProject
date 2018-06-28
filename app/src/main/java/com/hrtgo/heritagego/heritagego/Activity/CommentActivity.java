@@ -99,14 +99,14 @@ public class CommentActivity extends AppCompatActivity {
         }
     }
 
-//    private void initComnmentBar(){
+    private void initComnmentBar(){
 //        commentBar = findViewById(R.id.tool_bar_comment);
 //        if(commentBar != null){
 //            LayoutInflater inflater = LayoutInflater.from(this);
 //            View layoutCommentBar = inflater.inflate(R.layout.tool_bar_comment, null);
 //            commentBar.addView(layoutCommentBar);
 //        }
-//    }
+    }
 
     private void iconBackpress(){
         icBackpress = findViewById(R.id.ic_img_backpress);
