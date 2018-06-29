@@ -128,7 +128,7 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
         }
     }
 
-    private void callAPUMarker(){
+    private void callAPIMarker(){
         String url = getURL();
         //Log.e("navMapsFrag", url);
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -282,7 +282,7 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
                 Log.e("asc","longitude: "+ String.valueOf(currlongitude)+","  +"latitude: "+String.valueOf(currlatitude));
             }
 
-            callAPUMarker();
+            callAPIMarker();
 
         }
     };

@@ -3,8 +3,10 @@ package com.hrtgo.heritagego.heritagego.Model;
 import android.util.Log;
 
 public class heritageInfoHomeModel {
+
     String locationName, imagePath;
-    int ID, liked, viewed;
+    int ID;
+    long  liked, viewed;
 
     public int getID() {
         return ID;
@@ -25,30 +27,30 @@ public class heritageInfoHomeModel {
 
     public String getLocationImagePath() {
 
-        String original1 = imagePath;
-        String original2 = imagePath;
-        String temp1 = original1.substring(0, 14);
-        String temp2 = original2.substring(14);
-        Log.e("temp2", temp2);
-        String url = temp1 + "hergo" + "/" + temp2;
-        Log.e("imagePatch", url);
-        return  url;
-//        return imagePath;
+//        String original1 = imagePath;
+//        String original2 = imagePath;
+//        String temp1 = original1.substring(0, 14);
+//        String temp2 = original2.substring(14);
+//        Log.e("temp2", temp2);
+//        String url = temp1 + "hergo" + "/" + temp2;
+//        Log.e("imagePatch", url);
+//        return  url;
+        return imagePath;
     }
 
     public void setLocationImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
 
-    public int getLocationLiked() {
+    public long getLocationLiked() {
         return liked;
     }
 
-    public void setLocationLiked(int liked) {
+    public void setLocationLiked(long liked) {
         this.liked = liked;
     }
 
-    public int getLocationViewed() {
+    public long getLocationViewed() {
         return viewed;
     }
 
@@ -56,7 +58,7 @@ public class heritageInfoHomeModel {
         this.viewed = viewed;
     }
 
-    public heritageInfoHomeModel(int ID, String locationName, int liked, int  viewed, String imagePath) {
+    public heritageInfoHomeModel(int ID, String locationName, long liked, long  viewed, String imagePath) {
         this.ID = ID;
         this.locationName = locationName;
         this.liked = liked;

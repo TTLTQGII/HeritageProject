@@ -54,7 +54,8 @@ public class CommentActivity extends AppCompatActivity {
     String LocationID;
     int listSize;
     // currentPage loaded is 1
-    int AmountOfComment = 0, currentPage = 0;
+    long AmountOfComment = 0;
+    int currentPage = 0;
     String locationName, address, infoPlatform;
     double latitude, longitude;
 
@@ -99,14 +100,14 @@ public class CommentActivity extends AppCompatActivity {
         }
     }
 
-    private void initComnmentBar(){
+//    private void initComnmentBar(){
 //        commentBar = findViewById(R.id.tool_bar_comment);
 //        if(commentBar != null){
 //            LayoutInflater inflater = LayoutInflater.from(this);
 //            View layoutCommentBar = inflater.inflate(R.layout.tool_bar_comment, null);
 //            commentBar.addView(layoutCommentBar);
 //        }
-    }
+//    }
 
     private void iconBackpress(){
         icBackpress = findViewById(R.id.ic_img_backpress);
@@ -136,7 +137,7 @@ public class CommentActivity extends AppCompatActivity {
 
             infoPlatform = bundle.getString("infoPlatform");
 
-            AmountOfComment = bundle.getInt("Commented");
+            AmountOfComment = bundle.getLong("Commented");
             txtAmountOfComment.setText(String.valueOf(AmountOfComment));
             if( bundle.getSerializable("List") != null){
                 commentList = (ArrayList<userComment>) bundle.getSerializable("List");

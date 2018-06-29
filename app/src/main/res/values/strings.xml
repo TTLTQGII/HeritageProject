@@ -9,13 +9,15 @@
 
     <!--URL request api-->
     <!--Link server: http://14.161.14.131/hergo -->
-    <string name="request_heritage_info_home_like">http://14.161.14.131/hergo/api/HeritagerInfor/GetHeritagerInfoHomeLike/</string>
-    <string name="request_heritage_info_home_view">http://14.161.14.131/hergo/api/HeritagerInfor/GetHeritagerInfoHomeView/</string>
-    <string name="request_heritage_location_detail">http://14.161.14.131/hergo/api/HeritagerInfor/GetHeritagerInfoByID/</string>
-    <string name="request_search">http://14.161.14.131/hergo/api/HeritagerInfor/SearchHeritager/</string>
-    <string name="request_like">http://14.161.14.131/hergo/api/Liked/LikeID</string>
-    <string name="request_get_commented">http://14.161.14.131/hergo/api/Commentary/GetCommentaryByHerID/</string>
-    <string name="request_insert_comment">http://14.161.14.131/hergo/api/Commentary/SaveComment</string>
+    <!--http://e567fdy2.somee.com-->
+    <string name="request_heritage_info_home_like">http://e567fdy2.somee.com/api/HeritagerInfor/GetHeritagerInfoHomeLike/</string>
+    <string name="request_heritage_info_home_view">http://e567fdy2.somee.com/api/HeritagerInfor/GetHeritagerInfoHomeView/</string>
+    <string name="request_heritage_location_detail">http://e567fdy2.somee.com/api/HeritagerInfor/GetHeritagerInfoByID/</string>
+    <string name="request_search">http://e567fdy2.somee.com/api/HeritagerInfor/SearchHeritager/</string>
+    <string name="request_like">http://e567fdy2.somee.com/api/Liked/LikeID</string>
+    <string name="request_view">http://e567fdy2.somee.com/api/Viewed/ViewID</string>
+    <string name="request_get_commented">http://e567fdy2.somee.com/api/Commentary/GetCommentaryByHerID/</string>
+    <string name="request_insert_comment">http://e567fdy2.somee.com/api/Commentary/SaveComment</string>
     <string name="request_image">http://</string>
     <string name="request_markers">http://14.161.14.131/hergo/api/HeritagerInfor/GetMarkersList/</string>
 

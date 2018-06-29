@@ -78,7 +78,6 @@ public class parseJsonLocationDetail extends AsyncTask<String, Void, ArrayList<h
         locationDetail.Destination = heritageLocationDetails.get(0).getDestination();
         locationDetail.getUserLocation();
         locationDetail.getDirectionActivity();
-
         locationDetail.getListCommentAPI();
     }
 }

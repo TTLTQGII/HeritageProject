@@ -76,11 +76,12 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
 
     android.support.v7.widget.Toolbar actionToolBar;
-    String locationID = "";
+    String locationID = "", infoPlatform = "";
     TextView txtLocationName, txtLocationDistance, txtLocationAddress, txtAmountOfView;
     TextView txtAmountOfLike, txtAmountOfComment;
     RelativeLayout imgBtnLike, imgBtnComment;
     ImageView imgLike, imgComment, icApplication, icBackpress;
+    boolean viewFlag = false;
 
 
     final int commentPage = 1;
@@ -107,6 +108,29 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         //Create Action bar
         initView();
         callAPI(locationID);
+        infoPlatform = getInfoPlatform();
+        viewFlag = false;
+//        Log.e("viewFlag", String.valueOf(viewFlag));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(!viewFlag){
+            callViewAPI();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     // customize Action bar
@@ -151,6 +175,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         icBackpress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                viewFlag = false;
                 onBackPressed();
             }
         });
@@ -205,6 +230,64 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         Log.e("locationID", locationID);
     }
 
+    public void callViewAPI(){
+        sendViewRequest(new getParams() {
+            @Override
+            public void setParams(Map<String, String> params) {
+                params.put("HerID", locationID);
+                params.put("Latitude", String.valueOf(latitude));
+                params.put("Longitude", String.valueOf(longitude));
+                params.put("UserName", "Ẩn Danh");
+                params.put("InforPlatform", infoPlatform);
+            }
+        });
+    }
+
+    private void sendViewRequest(final getParams getParams){
+        String url = getViewURL();
+        Log.e("LocationDetailViewURL", url);
+        StringRequest viewRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.e("responseView", response);
+                if(response.equals("1")){
+                    viewFlag = true;
+                }else {
+                    viewFlag = false;
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                viewFlag = false;
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders(){
+                Map<String,String> headers = new HashMap<>();
+                return headers;
+            }
+            @Override
+            protected Map<String, String> getParams(){
+                Map<String, String> params = new HashMap<>();
+                getParams.setParams(params);
+                Log.e("putView",params.toString());
+                return params;
+            }
+        };
+
+        viewRequest.setRetryPolicy(new DefaultRetryPolicy(
+                60000,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        VolleySingleton.getInStance(this).getRequestQueue().add(viewRequest);
+    }
+
+    private String getViewURL(){
+        String url = getString(R.string.request_view);
+        return url;
+    }
 
     // gọi qua worker -> worker asyntask
     // push image into viewpager
@@ -259,7 +342,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     }
 
 //    like and comment event
-    public void eventLikeComment(final int Liked, final int Comment, final String LocationName, final String Address){
+    public void eventLikeComment(final long Liked, final long Comment, final String LocationName, final String Address){
         txtAmountOfLike.setText(String.valueOf(Liked));
         txtAmountOfComment.setText(String.valueOf(Comment));
 
@@ -269,18 +352,43 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
                 txtAmountOfLike.setText(String.valueOf(Liked + 1));
                 imgLike.setImageResource(R.drawable.ic_heart_active);
-                //imgBtnLike.setClickable(false);
+                imgBtnLike.setClickable(false);
 
-                callLikeAPI(new getParams() {
-                    @Override
-                    public void setParams(Map<String, String> params) {
-                        params.put("HerID", locationID);
-                        params.put("Latitude", String.valueOf(latitude));
-                        params.put("Longitude", String.valueOf(longitude));
-                        params.put("UserName", "Ẩn Danh");
-                        params.put("InforPlatform", getInfoPlatform());
-                    }
-                });
+                if(latitude != 0.00 & longitude != 0.00 & !infoPlatform.equals("")) {
+                    callLikeAPI(new getParams() {
+                        @Override
+                        public void setParams(Map<String, String> params) {
+                            params.put("HerID", locationID);
+                            params.put("Latitude", String.valueOf(latitude));
+                            params.put("Longitude", String.valueOf(longitude));
+                            params.put("UserName", "Ẩn Danh");
+                            params.put("InforPlatform", infoPlatform);
+                        }
+                    });
+                }else if(latitude == 0.00 | longitude == 0.00){
+                    callLikeAPI(new getParams() {
+                        @Override
+                        public void setParams(Map<String, String> params) {
+                            params.put("HerID", locationID);
+                            params.put("Latitude", "Null");
+                            params.put("Longitude", "Null");
+                            params.put("UserName", "Ẩn Danh");
+                            params.put("InforPlatform", infoPlatform);
+                        }
+                    });
+                }else if(infoPlatform.equals("")){
+
+                    callLikeAPI(new getParams() {
+                        @Override
+                        public void setParams(Map<String, String> params) {
+                            params.put("HerID", locationID);
+                            params.put("Latitude", String.valueOf(latitude));
+                            params.put("Longitude", String.valueOf(longitude));
+                            params.put("UserName", "Ẩn Danh");
+                            params.put("InforPlatform", "Không lấy được thông tin thiết bị");
+                        }
+                    });
+                }
             }
         });
 
@@ -293,20 +401,20 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     }
 
     //    go to comment activity
-    private void getCommentActivity(int comment, String LocationName, String  Address){
-        Intent commentActivity = new Intent(this, CommentActivity.class);
-        Bundle commentBundle = new Bundle();
-        commentBundle.putString("ID", locationID);
-        commentBundle.putString("LocationName", LocationName);
-        commentBundle.putString("Address", Address);
-        commentBundle.putInt("Commented", comment);
-        commentBundle.putInt("CurrentPage", commentPage);
-        commentBundle.putSerializable("List", commentList);
-        commentBundle.putDouble("latitude", latitude);
-        commentBundle.putDouble("longitude", longitude);
-        commentBundle.putString("infoPlatform", getInfoPlatform());
-        commentActivity.putExtra("Data", commentBundle);
-        startActivity(commentActivity);
+    private void getCommentActivity(long comment, String LocationName, String  Address){
+            Intent commentActivity = new Intent(this, CommentActivity.class);
+            Bundle commentBundle = new Bundle();
+            commentBundle.putString("ID", locationID);
+            commentBundle.putString("LocationName", LocationName);
+            commentBundle.putString("Address", Address);
+            commentBundle.putLong("Commented", comment);
+            commentBundle.putInt("CurrentPage", commentPage);
+            commentBundle.putSerializable("List", commentList);
+            commentBundle.putDouble("latitude", latitude);
+            commentBundle.putDouble("longitude", longitude);
+            commentBundle.putString("infoPlatform", getInfoPlatform());
+            commentActivity.putExtra("Data", commentBundle);
+            startActivity(commentActivity);
     }
 
     //    request like API
@@ -472,8 +580,8 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
                 longitude = location.getLongitude();
                 latitude = location.getLatitude();
 
-                Log.e("asc","longitude: "+ String.valueOf(longitude)+","  +"latitude: "+String.valueOf(latitude));
-
+//                Log.e("asc","longitude: "+ String.valueOf(longitude)+","  +"latitude: "+String.valueOf(latitude));
+                callViewAPI();
                 sendRequest(CurrentLocation(latitude,longitude), Destination);
             }
 
@@ -521,7 +629,6 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
         }
     }
-
 
     //Connect to API get json and parse json in Asyntask
 

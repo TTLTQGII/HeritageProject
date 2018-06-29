@@ -81,8 +81,8 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
         if(holder instanceof itemHolder){
             itemHolder item = (rcvAdapterTabsHome.itemHolder) holder;
             item.txtLocationName.setText(locationDatas.get(position).getLocationName());
-//            item.txtAmountOfLocationView.setText(String.valueOf(locationDatas.get(position).getLocationViewed()));
-            item.txtAmountOfLocationView.setText(String.valueOf(locationDatas.get(position).getLocationLiked()));
+            item.txtAmountOfLocationView.setText(String.valueOf(locationDatas.get(position).getLocationViewed()));
+//            item.txtAmountOfLocationView.setText(String.valueOf(locationDatas.get(position).getLocationLiked()));
             Picasso.get()
                     .load(context.getResources().getString(R.string.request_image) + locationDatas.get(position).getLocationImagePath())
                     .fit()
