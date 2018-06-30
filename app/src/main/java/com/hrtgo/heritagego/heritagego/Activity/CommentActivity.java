@@ -29,6 +29,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvCommentAdapter;
+import com.hrtgo.heritagego.heritagego.Interface.OnLoadMoreListener;
 import com.hrtgo.heritagego.heritagego.Interface.getParams;
 import com.hrtgo.heritagego.heritagego.Model.userComment;
 import com.hrtgo.heritagego.heritagego.R;
@@ -114,7 +115,8 @@ public class CommentActivity extends AppCompatActivity {
         icBackpress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                //onBackPressed();
+                changeViewTypeAdapter(adapter.view_type_trigger_load);
             }
         });
     }
@@ -142,7 +144,13 @@ public class CommentActivity extends AppCompatActivity {
             if( bundle.getSerializable("List") != null){
                 commentList = (ArrayList<userComment>) bundle.getSerializable("List");
                 adapter.userComments = commentList;
+                adapter.setType(adapter.view_type_trigger_load);
                 adapter.notifyDataSetChanged();
+                commentList.add(null);
+                Log.e("CommentSize_Activity", String.valueOf(commentList.size()));
+                Log.e("CommentSize_Adapter", String.valueOf(adapter.userComments.size()));
+                adapter.setType(adapter.view_type_trigger_load);
+                adapter.notifyItemInserted(adapter.userComments.size() -1);
             }
             else {
                 commentList = new ArrayList<>();
@@ -166,6 +174,7 @@ public class CommentActivity extends AppCompatActivity {
         adapter = new rcvCommentAdapter(commentList, this, "CommentActivity");
         rcvComment.setAdapter(adapter);
 
+        onLoadmoreRCV();
     }
 
     private String getURL(int currentPage){
@@ -206,7 +215,6 @@ public class CommentActivity extends AppCompatActivity {
 
             if(commentList.size() > 0) {
                 adapter.userComments = commentList;
-                Log.e("size", String.valueOf(adapter.getItemCount()) + " " + String.valueOf(adapter.getItemViewType(1)));
                 adapter.notifyDataSetChanged();
             }
 
@@ -282,5 +290,20 @@ public class CommentActivity extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         VolleySingleton.getInStance(this).getRequestQueue().add(insertComment);
+    }
+
+    private void onLoadmoreRCV(){
+        adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+               changeViewTypeAdapter(adapter.view_type_loadmore);
+            }
+        });
+    }
+
+    private void changeViewTypeAdapter(int viewType){
+        adapter.notifyItemRemoved(adapter.userComments.size() - 1);
+        adapter.setType(viewType);
+        adapter.notifyItemInserted(adapter.userComments.size() - 1);
     }
 }

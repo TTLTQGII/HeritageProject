@@ -6,12 +6,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.hrtgo.heritagego.heritagego.Interface.OnLoadMoreListener;
 import com.hrtgo.heritagego.heritagego.Model.userComment;
 import com.hrtgo.heritagego.heritagego.R;
 
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 
 public class rcvCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -19,8 +22,31 @@ public class rcvCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     Context context;
     private String contextFlag;
 
+    private OnLoadMoreListener onLoadMoreListener;
+
     private final int view_type_item = 0;
-    private final int view_type_loadmore = 1;
+    public final int view_type_loadmore = 1;
+    public final int view_type_trigger_load = 2;
+
+    private int AmountOfComementLeft;
+
+    public int getAmountOfComementLeft() {
+        return AmountOfComementLeft;
+    }
+
+    public void setAmountOfComementLeft(int amountOfComementLeft) {
+        AmountOfComementLeft = amountOfComementLeft;
+    }
+
+    private int type;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public rcvCommentAdapter(ArrayList<userComment> userComments, Context context, String activity) {
         this.userComments = userComments;
@@ -35,8 +61,15 @@ public class rcvCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
        if (viewType == view_type_item) {
            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
            View itemView = inflater.inflate(R.layout.user_comment, parent, false);
-
            return new commentHolder(itemView);
+       }else if (viewType == view_type_loadmore){
+           LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+           View itemView = inflater.inflate(R.layout.item_loading_layout, parent, false);
+           return new loadingHolder(itemView);
+       }else if (viewType == view_type_trigger_load){
+           LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+           View itemView = inflater.inflate(R.layout.m_item_trigger_load, parent, false);
+           return new triggerLoadHolder(itemView);
        }
        return null;
     }
@@ -51,12 +84,40 @@ public class rcvCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 commentHolder.txtContent.setText(userComments.get(position).getContent());
                 commentHolder.txtCommentPostTime.setText(userComments.get(position).getPostTime());
         }
+        if (holder instanceof loadingHolder){
+            rcvCommentAdapter.loadingHolder loadingViewHolder = (rcvCommentAdapter.loadingHolder) holder;
+            loadingViewHolder.progressBar.setIndeterminate(true);
+        }
+        if (holder instanceof triggerLoadHolder){
+            rcvCommentAdapter.triggerLoadHolder triggerLoadHolder = (rcvCommentAdapter.triggerLoadHolder) holder;
+            triggerLoadHolder.txtAmountOfCommentLeft.setText(String.valueOf(getAmountOfComementLeft()));
+        }
     }
 
     @Override
     public int getItemViewType(int position) {
-        return  view_type_item;
+        if(contextFlag == "LocationDetail"){
+            return view_type_item;
+        }else if(contextFlag == "CommentActivity"){
+            if(userComments.get(position) == null) {
+                if (getType() == view_type_item) {
+                    return view_type_item;
+                } else if (getType() == view_type_loadmore) {
+                    return view_type_loadmore;
+                } else if (getType() == view_type_trigger_load) {
+                    return view_type_trigger_load;
+                } else {
+                    return view_type_item;
+                }
+            }
+            else {
+                return view_type_item;
+            }
+        }else {
+            throw new EmptyStackException();
+        }
     }
+
 
 //    position == (userComments.size() - 1) ? view_type_loadmore :
 
@@ -95,5 +156,37 @@ public class rcvCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             txtContent = itemView.findViewById(R.id.txt_comment_contents);
             txtCommentPostTime = itemView.findViewById(R.id.txt_comment_postTime);
         }
+    }
+
+    public class loadingHolder extends RecyclerView.ViewHolder{
+
+        ProgressBar progressBar;
+
+        public loadingHolder(View itemView) {
+            super(itemView);
+            progressBar = itemView.findViewById(R.id.progressBarLoading);
+        }
+    }
+
+    public class triggerLoadHolder extends RecyclerView.ViewHolder{
+        TextView txtAmountOfCommentLeft;
+
+        public triggerLoadHolder(View itemView) {
+            super(itemView);
+            txtAmountOfCommentLeft = itemView.findViewById(R.id.txt_amount_of_comment_left);
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (onLoadMoreListener != null) {
+                            onLoadMoreListener.onLoadMore();
+                        }
+                    }
+                });
+        }
+    }
+
+    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener){
+        this.onLoadMoreListener = onLoadMoreListener;
     }
 }

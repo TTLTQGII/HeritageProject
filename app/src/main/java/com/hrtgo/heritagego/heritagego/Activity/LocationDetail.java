@@ -109,7 +109,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         initView();
         callAPI(locationID);
         infoPlatform = getInfoPlatform();
-        viewFlag = false;
+        //viewFlag = false;
 //        Log.e("viewFlag", String.valueOf(viewFlag));
     }
 
@@ -122,10 +122,6 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     @Override
     protected void onPause() {
         super.onPause();
-
-        if(!viewFlag){
-            callViewAPI();
-        }
     }
 
     @Override
@@ -483,6 +479,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
         Log.e("jsonComent", json);
         try {
             JSONObject root = new JSONObject(json);
+            Log.e("CommentLocationDetail", json);
 
             JSONArray pdata = root.getJSONArray("pdata");
             for (int i = 0; i< pdata.length(); i++){

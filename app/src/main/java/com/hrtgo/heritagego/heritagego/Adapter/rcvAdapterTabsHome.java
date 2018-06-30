@@ -70,7 +70,7 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
             return new itemHolder(itemView);
         }else if(viewType == view_type_loading){
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            View loadingView = inflater.inflate(R.layout.recycler_view_home_item_loading_layout, parent, false);
+            View loadingView = inflater.inflate(R.layout.item_loading_layout, parent, false);
             return new LoadingViewHolder(loadingView);
         }
         return null;
@@ -135,7 +135,7 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    private class LoadingViewHolder extends RecyclerView.ViewHolder{
+    public class LoadingViewHolder extends RecyclerView.ViewHolder{
         ProgressBar progressBar;
 
         public LoadingViewHolder(View itemView) {
