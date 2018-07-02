@@ -3,6 +3,7 @@ package com.hrtgo.heritagego.heritagego.Adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,20 +22,20 @@ public class rcvCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public ArrayList<userComment> userComments;
     Context context;
     private String contextFlag;
-
+    private long totalComment;
     private OnLoadMoreListener onLoadMoreListener;
 
     private final int view_type_item = 0;
     public final int view_type_loadmore = 1;
     public final int view_type_trigger_load = 2;
 
-    private int AmountOfComementLeft;
+    private long AmountOfComementLeft;
 
-    public int getAmountOfComementLeft() {
-        return AmountOfComementLeft;
+    public long getAmountOfComementLeft() {
+        return totalComment - (userComments.size()-1);
     }
 
-    public void setAmountOfComementLeft(int amountOfComementLeft) {
+    public void setAmountOfComementLeft(long amountOfComementLeft) {
         AmountOfComementLeft = amountOfComementLeft;
     }
 
@@ -48,13 +49,18 @@ public class rcvCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.type = type;
     }
 
+    public rcvCommentAdapter(ArrayList<userComment> userComments, Context context, String activity, long totalComment) {
+        this.userComments = userComments;
+        this.context = context;
+        this.contextFlag = activity;
+        this.totalComment = totalComment;
+    }
+
     public rcvCommentAdapter(ArrayList<userComment> userComments, Context context, String activity) {
         this.userComments = userComments;
         this.context = context;
         this.contextFlag = activity;
     }
-
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -78,11 +84,14 @@ public class rcvCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
         if(holder instanceof commentHolder){
-                commentHolder commentHolder = (rcvCommentAdapter.commentHolder) holder;
+            commentHolder commentHolder = (rcvCommentAdapter.commentHolder) holder;
 
-                commentHolder.txtUserName.setText(userComments.get(position).getUserName());
-                commentHolder.txtContent.setText(userComments.get(position).getContent());
-                commentHolder.txtCommentPostTime.setText(userComments.get(position).getPostTime());
+            commentHolder.txtUserName.setText(userComments.get(position).getUserName());
+            commentHolder.txtContent.setText(userComments.get(position).getContent());
+            commentHolder.txtCommentPostTime.setText(userComments.get(position).getPostTime());
+
+            Log.e("commentListSizeAdatper", String.valueOf(userComments.size()));
+            Log.e("commentListSizeTotal", String.valueOf(totalComment));
         }
         if (holder instanceof loadingHolder){
             rcvCommentAdapter.loadingHolder loadingViewHolder = (rcvCommentAdapter.loadingHolder) holder;
@@ -90,8 +99,26 @@ public class rcvCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
         if (holder instanceof triggerLoadHolder){
             rcvCommentAdapter.triggerLoadHolder triggerLoadHolder = (rcvCommentAdapter.triggerLoadHolder) holder;
-            triggerLoadHolder.txtAmountOfCommentLeft.setText(String.valueOf(getAmountOfComementLeft()));
+            triggerLoadHolder.txtAmountOfCommentLeft.setText(String.valueOf(countNumberAmount()));
+
+//            if(countNumberAmount() == 0){
+//                userComments.remove(userComments.size() - 1);
+//                notifyItemRemoved(userComments.size() - 1);
+//            }
         }
+    }
+
+    public long countNumberAmount(){
+        long result = 0;
+
+        if(getAmountOfComementLeft() > 10){
+            result = 10;
+        }
+        else{
+            result = getAmountOfComementLeft();
+        }
+
+        return result;
     }
 
     @Override

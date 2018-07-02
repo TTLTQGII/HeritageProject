@@ -103,12 +103,10 @@ public class tabFamousHome extends Fragment {
             @Override
             public void onLoadMore() {
                 currentPage++;
-                //if(currentPage < 5) {
-                    listData.add(null);
-                    adapter.locationDatas = listData;
-                    adapter.notifyItemInserted(adapter.locationDatas.size() - 1);
-                    callAPI(getURL(String.valueOf(currentPage)));
-                //}
+                listData.add(null);
+                adapter.locationDatas = listData;
+                adapter.notifyItemInserted(adapter.locationDatas.size() - 1);
+                callAPI(getURL(String.valueOf(currentPage)));
 
                 Log.e("ListData", String.valueOf(listData.size()));
             }

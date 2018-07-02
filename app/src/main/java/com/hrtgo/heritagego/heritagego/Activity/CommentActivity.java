@@ -55,7 +55,7 @@ public class CommentActivity extends AppCompatActivity {
     String LocationID;
     int listSize;
     // currentPage loaded is 1
-    long AmountOfComment = 0;
+    long totalComment = 0;
     int currentPage = 0;
     String locationName, address, infoPlatform;
     double latitude, longitude;
@@ -80,10 +80,9 @@ public class CommentActivity extends AppCompatActivity {
         txtAmountOfComment = findViewById(R.id.txt_amount_of_comment_activity);
         rcvComment = findViewById(R.id.rcv_comment_activity);
 
-        setCommentAdapter();
-
         getIntentData();
         insertComment();
+
     }
 
     // customize Action bar
@@ -115,8 +114,7 @@ public class CommentActivity extends AppCompatActivity {
         icBackpress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //onBackPressed();
-                changeViewTypeAdapter(adapter.view_type_trigger_load);
+                onBackPressed();
             }
         });
     }
@@ -136,25 +134,24 @@ public class CommentActivity extends AppCompatActivity {
 
             latitude = bundle.getDouble("latitude");
             longitude = bundle.getDouble("longitude");
+            Log.e("commentActivity", String.valueOf(latitude) + ", " + String.valueOf(longitude));
 
             infoPlatform = bundle.getString("infoPlatform");
 
-            AmountOfComment = bundle.getLong("Commented");
-            txtAmountOfComment.setText(String.valueOf(AmountOfComment));
-            if( bundle.getSerializable("List") != null){
-                commentList = (ArrayList<userComment>) bundle.getSerializable("List");
+            totalComment = bundle.getLong("Commented");
+            txtAmountOfComment.setText(String.valueOf(totalComment));
+            commentList = (ArrayList<userComment>) bundle.getSerializable("List");
+            setCommentAdapter();
+            if( commentList.size() > 0){
                 adapter.userComments = commentList;
                 adapter.setType(adapter.view_type_trigger_load);
                 adapter.notifyDataSetChanged();
-                commentList.add(null);
-                Log.e("CommentSize_Activity", String.valueOf(commentList.size()));
-                Log.e("CommentSize_Adapter", String.valueOf(adapter.userComments.size()));
-                adapter.setType(adapter.view_type_trigger_load);
-                adapter.notifyItemInserted(adapter.userComments.size() -1);
+
+                addTriggerBottomList();
             }
             else {
                 commentList = new ArrayList<>();
-                callComentAPI(getURL(currentPage));
+                callComentAPI(getCommentURL(currentPage));
             }
         }
     }
@@ -171,13 +168,13 @@ public class CommentActivity extends AppCompatActivity {
         dividerItemDecoration.setDrawable(drawable);
         rcvComment.addItemDecoration(dividerItemDecoration);
 
-        adapter = new rcvCommentAdapter(commentList, this, "CommentActivity");
+        adapter = new rcvCommentAdapter(commentList, this, "CommentActivity", totalComment);
         rcvComment.setAdapter(adapter);
 
         onLoadmoreRCV();
     }
 
-    private String getURL(int currentPage){
+    private String getCommentURL(int currentPage){
         String url =  getString(R.string.request_get_commented) + LocationID + "/" + currentPage;
         return url;
     }
@@ -205,6 +202,11 @@ public class CommentActivity extends AppCompatActivity {
             JSONObject root = new JSONObject(json);
 
             JSONArray pdata = root.getJSONArray("pdata");
+
+            if(commentList.size() != 0){
+                removeTriggerBottomList();
+            }
+
             for (int i = 0; i< pdata.length(); i++){
                 JSONObject element = pdata.getJSONObject(i);
 
@@ -216,6 +218,7 @@ public class CommentActivity extends AppCompatActivity {
             if(commentList.size() > 0) {
                 adapter.userComments = commentList;
                 adapter.notifyDataSetChanged();
+                addTriggerBottomList();
             }
 
         } catch (JSONException e) {
@@ -267,8 +270,9 @@ public class CommentActivity extends AppCompatActivity {
         StringRequest insertComment = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                commentList.clear();
-                callComentAPI(getURL(1));
+//                commentList.clear();
+//                adapter.userComments.clear();
+                callComentAPI(getCommentURL(1));
             }
         }, new Response.ErrorListener() {
             @Override
@@ -297,6 +301,8 @@ public class CommentActivity extends AppCompatActivity {
             @Override
             public void onLoadMore() {
                changeViewTypeAdapter(adapter.view_type_loadmore);
+               currentPage++;
+               callComentAPI(getCommentURL(currentPage));
             }
         });
     }
@@ -305,5 +311,17 @@ public class CommentActivity extends AppCompatActivity {
         adapter.notifyItemRemoved(adapter.userComments.size() - 1);
         adapter.setType(viewType);
         adapter.notifyItemInserted(adapter.userComments.size() - 1);
+    }
+
+    private void addTriggerBottomList(){
+        commentList.add(null);
+        adapter.setType(adapter.view_type_trigger_load);
+        adapter.notifyItemInserted(adapter.userComments.size() - 1);
+    }
+
+    private void removeTriggerBottomList(){
+        commentList.remove(commentList.size() - 1);
+        adapter.userComments = commentList;
+        adapter.notifyItemRemoved(adapter.userComments.size() - 1);
     }
 }
