@@ -15,20 +15,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
-import com.hrtgo.heritagego.heritagego.Interface.Json;
 import com.hrtgo.heritagego.heritagego.Interface.OnLoadMoreListener;
 import com.hrtgo.heritagego.heritagego.Model.heritageInfoHomeModel;
 import com.hrtgo.heritagego.heritagego.R;
@@ -36,20 +30,12 @@ import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
 import com.hrtgo.heritagego.heritagego.untill.customize;
 
 
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import com.hrtgo.heritagego.heritagego.API.API;
 
 public class tabFamousHome extends Fragment {
 
@@ -180,7 +166,7 @@ public class tabFamousHome extends Fragment {
     }
 
     private String getURL(String currentPage){
-        String url = getActivity().getResources().getString(R.string.request_heritage_info_home_like) + currentPage.trim();
+        String url = API.HOME_LIKE() + currentPage.trim();
         return url;
     }
 

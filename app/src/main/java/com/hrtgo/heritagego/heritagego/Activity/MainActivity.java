@@ -88,10 +88,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private void initData() {
-        fragmentList.add(this.getResources().getString(R.string.navigation_bottom_home));
-        fragmentList.add(this.getResources().getString(R.string.navigation_bottom_Maps));
-        fragmentList.add(this.getResources().getString(R.string.naviagtion_bottom_setting));
-        fragmentList.add(this.getResources().getString(R.string.navigation_bottom_search));
+        fragmentList.add(this.getResources().getString(R.string.navigation_bottom_home_en));
+        fragmentList.add(this.getResources().getString(R.string.navigation_bottom_Maps_en));
+//        fragmentList.add(this.getResources().getString(R.string.naviagtion_bottom_setting_en));
+        fragmentList.add(this.getResources().getString(R.string.navigation_bottom_search_en));
     }
 
 
@@ -112,11 +112,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 title = item.getTitle().toString();
                 item.setChecked(true);
                 break;
-            case R.id.nav_action_bottom_setting:
-                fragment = new navSettingfrag();
-                title = item.getTitle().toString();
-                item.setChecked(true);
-                break;
+//            case R.id.nav_action_bottom_setting:
+//                fragment = new navSettingfrag();
+//                title = item.getTitle().toString();
+//                item.setChecked(true);
+//                break;
             case R.id.nav_action_bottom_search:
                 fragment = new navSearchfrag();
                 title = item.getTitle().toString();
@@ -141,9 +141,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 case "Maps":
                     fragmentTransaction.add(R.id.fragment_main_LL_Container, fragment, fragmentName).addToBackStack(fragmentName);
                     break;
-                case "Setting":
-                    fragmentTransaction.add(R.id.fragment_main_LL_Container, fragment, fragmentName).addToBackStack(fragmentName);
-                    break;
+//                case "Setting":
+//                    fragmentTransaction.add(R.id.fragment_main_LL_Container, fragment, fragmentName).addToBackStack(fragmentName);
+//                    break;
                 case "Search":
                     fragmentTransaction.add(R.id.fragment_main_LL_Container, fragment, fragmentName).addToBackStack(fragmentName);
                     break;

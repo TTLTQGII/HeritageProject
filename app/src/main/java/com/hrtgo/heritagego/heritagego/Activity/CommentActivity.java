@@ -28,6 +28,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.hrtgo.heritagego.heritagego.API.API;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvCommentAdapter;
 import com.hrtgo.heritagego.heritagego.Interface.OnLoadMoreListener;
 import com.hrtgo.heritagego.heritagego.Interface.getParams;
@@ -47,11 +48,10 @@ import java.util.Map;
 
 public class CommentActivity extends AppCompatActivity {
 
-    android.support.v7.widget.Toolbar actionToolBar, commentBar;
+    android.support.v7.widget.Toolbar actionToolBar;
     RecyclerView rcvComment;
     TextView txtLocationName, txtLocationAdress, txtAmountOfComment;
     ImageView icApplication, icBackpress;
-
     String LocationID;
     int listSize;
     // currentPage loaded is 1
@@ -109,6 +109,7 @@ public class CommentActivity extends AppCompatActivity {
 //        }
 //    }
 
+
     private void iconBackpress(){
         icBackpress = findViewById(R.id.ic_img_backpress);
         icBackpress.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +142,8 @@ public class CommentActivity extends AppCompatActivity {
             totalComment = bundle.getLong("Commented");
             txtAmountOfComment.setText(String.valueOf(totalComment));
             commentList = (ArrayList<userComment>) bundle.getSerializable("List");
+
+            //comment list and adapter
             setCommentAdapter();
             if( commentList.size() > 0){
                 adapter.userComments = commentList;
@@ -148,6 +151,10 @@ public class CommentActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
 
                 addTriggerBottomList();
+                // delete bottom item if comment list = 0
+                if(adapter.countNumberAmountLeft() == 0){
+                    removeTriggerBottomList();
+                }
             }
             else {
                 commentList = new ArrayList<>();
@@ -156,6 +163,7 @@ public class CommentActivity extends AppCompatActivity {
         }
     }
 
+    // initial rcvCommentAdapter
     private void setCommentAdapter(){
 
         rcvComment.setHasFixedSize(true);
@@ -174,11 +182,13 @@ public class CommentActivity extends AppCompatActivity {
         onLoadmoreRCV();
     }
 
+//    get comment URL
     private String getCommentURL(int currentPage){
-        String url =  getString(R.string.request_get_commented) + LocationID + "/" + currentPage;
+        String url = API.GET_COMMENTED() + LocationID + "/" + currentPage;
         return url;
     }
 
+//    send request to API
     private void callComentAPI(String URL){
         String url = URL;
 
@@ -203,6 +213,7 @@ public class CommentActivity extends AppCompatActivity {
 
             JSONArray pdata = root.getJSONArray("pdata");
 
+            // delete null element of comment list before add more data to comment list
             if(commentList.size() != 0){
                 removeTriggerBottomList();
             }
@@ -215,10 +226,18 @@ public class CommentActivity extends AppCompatActivity {
                         element.getString("PostTime")));
             }
 
+            Log.e("sizeList", String.valueOf(pdata.length()) + " " + commentList.size());
+
+            // notify data changed after download and parse json
             if(commentList.size() > 0) {
                 adapter.userComments = commentList;
                 adapter.notifyDataSetChanged();
                 addTriggerBottomList();
+            }
+
+            // delete null element in comment list if there is nothing to download
+            if(adapter.countNumberAmountLeft() <= 0){
+                removeTriggerBottomList();
             }
 
         } catch (JSONException e) {
@@ -266,18 +285,19 @@ public class CommentActivity extends AppCompatActivity {
     }
 
     private void callSaveCommentAPI(final getParams getParams){
-        String url = getResources().getString(R.string.request_insert_comment);
+        String url = API.SAVE_COMMENT();
         StringRequest insertComment = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-//                commentList.clear();
+//                commentList.clear(); Chua load lai list comment sau khi save
 //                adapter.userComments.clear();
-                callComentAPI(getCommentURL(1));
+//                currentPage = 1;
+//                callComentAPI(getCommentURL(1));
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(CommentActivity.this, "Fail to send comment", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CommentActivity.this, "Failed to post comment", Toast.LENGTH_SHORT).show();
             }
         }){
             @Override
@@ -302,6 +322,7 @@ public class CommentActivity extends AppCompatActivity {
             public void onLoadMore() {
                changeViewTypeAdapter(adapter.view_type_loadmore);
                currentPage++;
+               //Log.e("currentPage", String.valueOf(currentPage));
                callComentAPI(getCommentURL(currentPage));
             }
         });

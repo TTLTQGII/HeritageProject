@@ -40,6 +40,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.hrtgo.heritagego.heritagego.API.API;
 import com.hrtgo.heritagego.heritagego.Activity.LocationDetail;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
@@ -209,7 +210,7 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
     }
 
     private String getURL(){
-        String url = getString(R.string.request_markers) + getEncodedLocation(currlatitude, currlongitude);
+        String url = API.MARKER_LIST() + getEncodedLocation(currlatitude, currlongitude);
         return url;
     }
 

@@ -55,6 +55,7 @@ import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
 import com.hrtgo.heritagego.heritagego.Worker.parseJsonLocationDetail;
 import com.hrtgo.heritagego.heritagego.untill.customize;
 import com.hrtgo.heritagego.heritagego.Adapter.imgListAdapterLocationDetail;
+import com.hrtgo.heritagego.heritagego.API.API;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -281,7 +282,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
     }
 
     private String getViewURL(){
-        String url = getString(R.string.request_view);
+        String url = API.VIEWED();
         return url;
     }
 
@@ -415,7 +416,7 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
     //    request like API
     private void callLikeAPI(final getParams getParams){
-        String url = getResources().getString(R.string.request_like);
+        String url = API.LIKED();
         StringRequest likeRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -549,12 +550,12 @@ public class LocationDetail extends AppCompatActivity implements GoogleApiClient
 
 //  URL for location detail data
     private String getURL(String currentPage){
-        String url = getString(R.string.request_heritage_location_detail) + currentPage;
+        String url = API.LOCATION_DETAIL() + currentPage;
         return url;
     }
 //  URL comment
     private String getCommentURL(){
-        String url = getString(R.string.request_get_commented) + locationID + "/" + commentPage;
+        String url = API.GET_COMMENTED() + locationID + "/" + commentPage;
         return url;
     }
 

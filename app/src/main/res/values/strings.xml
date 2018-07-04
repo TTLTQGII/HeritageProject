@@ -1,26 +1,14 @@
 <resources>
     <string name="app_name">Heritage Go</string>
-    <string name="navigation_bottom_home">Home</string>
-    <string name="navigation_bottom_Maps">Maps</string>
-    <string name="naviagtion_bottom_setting">Setting</string>
-    <string name="navigation_bottom_search">Search</string>
-    <string name="home_fragment_tab_name_1"> tab 1</string>
-    <string name="home_fragment_tab_name_2"> tab 2</string>
+    <string name="navigation_bottom_home_en">Home</string>
+    <string name="navigation_bottom_Maps_en">Maps</string>
+    <string name="naviagtion_bottom_setting_en">Setting</string>
+    <string name="navigation_bottom_search_en">Search</string>
 
-    <!--URL request api-->
-    <!--Link server: http://14.161.14.131/hergo -->
-    <!--http://e567fdy2.somee.com-->
-    <string name="request_heritage_info_home_like">http://e567fdy2.somee.com/api/HeritagerInfor/GetHeritagerInfoHomeLike/</string>
-    <string name="request_heritage_info_home_view">http://e567fdy2.somee.com/api/HeritagerInfor/GetHeritagerInfoHomeView/</string>
-    <string name="request_heritage_location_detail">http://e567fdy2.somee.com/api/HeritagerInfor/GetHeritagerInfoByID/</string>
-    <string name="request_search">http://e567fdy2.somee.com/api/HeritagerInfor/SearchHeritager/</string>
-    <string name="request_like">http://e567fdy2.somee.com/api/Liked/LikeID</string>
-    <string name="request_view">http://e567fdy2.somee.com/api/Viewed/ViewID</string>
-    <string name="request_get_commented">http://e567fdy2.somee.com/api/Commentary/GetCommentaryByHerID/</string>
-    <string name="request_insert_comment">http://e567fdy2.somee.com/api/Commentary/SaveComment</string>
-    <string name="request_image">http://</string>
-    <string name="request_markers">http://14.161.14.131/hergo/api/HeritagerInfor/GetMarkersList/</string>
-
+    <string name="home_tab_famous_en">Famous</string>
+    <string name="home_tab_near_en">Near</string>
+    <string name="home_tab_mostview_en">Most viewed</string>
+    <string name="home_tab_myfavorite_en">My favourite</string>
 
     <string name="title_activity_maps">Map</string>
 </resources>

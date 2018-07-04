@@ -1,5 +1,6 @@
 package com.hrtgo.heritagego.heritagego.Adapter;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,12 +12,16 @@ import com.hrtgo.heritagego.heritagego.Fragment.tabFamousHome;
 import com.hrtgo.heritagego.heritagego.Fragment.tabMostViewedHome;
 import com.hrtgo.heritagego.heritagego.Fragment.tabNearHome;
 import com.hrtgo.heritagego.heritagego.Fragment.tabMyFavoriteHome;
+import com.hrtgo.heritagego.heritagego.R;
 
 
 public class navBottomAdapterViewpagerHome extends FragmentPagerAdapter{
 
-    public navBottomAdapterViewpagerHome(FragmentManager fm) {
+    Context context;
+
+    public navBottomAdapterViewpagerHome(FragmentManager fm, Context context) {
         super(fm);
+        this.context = context;
     }
 
     // get position on viewpager
@@ -54,16 +59,16 @@ public class navBottomAdapterViewpagerHome extends FragmentPagerAdapter{
         String title = "";
         switch (position){
             case 0:
-                title = "Famous";
+                title = context.getString(R.string.home_tab_famous_en);
                 break;
             case 1:
-                title = "Near";
+                title = context.getString(R.string.home_tab_near_en);
                 break;
             case 2:
-                title = "Most Viewed";
+                title = context.getString(R.string.home_tab_mostview_en);
                 break;
             case 3:
-                title = "My Favorite";
+                title = context.getString(R.string.home_tab_myfavorite_en);
                 break;
         }
         return title;

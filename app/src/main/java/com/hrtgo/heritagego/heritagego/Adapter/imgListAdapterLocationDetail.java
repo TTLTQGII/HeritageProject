@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.hrtgo.heritagego.heritagego.API.API;
 import com.hrtgo.heritagego.heritagego.R;
 import com.squareup.picasso.Picasso;
 import com.hrtgo.heritagego.heritagego.Activity.photoViewActivity;
@@ -55,7 +56,7 @@ public class imgListAdapterLocationDetail extends PagerAdapter {
         // do du lieu
 
 //        String Url = context.getResources().getString(R.string.request_image) + mImagePath(imgPath.get(position));
-        String Url = context.getResources().getString(R.string.request_image) + imgPath.get(position);
+        String Url = API.IMAGE_LINK() + imgPath.get(position);
         //Log.e("imgListAdapter", Url);
         final int width = imgContainer.getWidth();
         final int height = imgContainer.getHeight();

@@ -22,8 +22,12 @@ public class rcvCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public ArrayList<userComment> userComments;
     Context context;
     private String contextFlag;
-    private long totalComment;
+    public long totalComment;
     private OnLoadMoreListener onLoadMoreListener;
+
+    public int getCurrent_page() {
+        return (userComments.size()-1)/10;
+    }
 
     private final int view_type_item = 0;
     public final int view_type_loadmore = 1;
@@ -99,16 +103,11 @@ public class rcvCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
         if (holder instanceof triggerLoadHolder){
             rcvCommentAdapter.triggerLoadHolder triggerLoadHolder = (rcvCommentAdapter.triggerLoadHolder) holder;
-            triggerLoadHolder.txtAmountOfCommentLeft.setText(String.valueOf(countNumberAmount()));
-
-//            if(countNumberAmount() == 0){
-//                userComments.remove(userComments.size() - 1);
-//                notifyItemRemoved(userComments.size() - 1);
-//            }
+            triggerLoadHolder.txtAmountOfCommentLeft.setText(String.valueOf(countNumberAmountLeft()));
         }
     }
 
-    public long countNumberAmount(){
+    public long countNumberAmountLeft(){
         long result = 0;
 
         if(getAmountOfComementLeft() > 10){
@@ -120,6 +119,8 @@ public class rcvCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         return result;
     }
+
+
 
     @Override
     public int getItemViewType(int position) {

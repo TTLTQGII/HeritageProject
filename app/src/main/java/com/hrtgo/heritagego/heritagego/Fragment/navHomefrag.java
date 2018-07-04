@@ -37,7 +37,7 @@ public class navHomefrag extends Fragment {
         viewPager = view.findViewById(R.id.home_fragment_tab_viewpagger);
 
         //initial Event
-        navBottomAdapterViewpagerHome adapter = new navBottomAdapterViewpagerHome(getActivity().getSupportFragmentManager());
+        navBottomAdapterViewpagerHome adapter = new navBottomAdapterViewpagerHome(getActivity().getSupportFragmentManager(), this.getContext());
         adapter.getItem(0);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);

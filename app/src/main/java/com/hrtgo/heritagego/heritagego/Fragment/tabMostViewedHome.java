@@ -16,6 +16,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.hrtgo.heritagego.heritagego.API.API;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
 import com.hrtgo.heritagego.heritagego.Interface.Json;
 import com.hrtgo.heritagego.heritagego.Interface.OnLoadMoreListener;
@@ -149,7 +150,7 @@ public class tabMostViewedHome extends Fragment{
     }
 
     private String getURL(String currentPage){
-        String url = getActivity().getResources().getString(R.string.request_heritage_info_home_like) + currentPage.trim();
+        String url = API.HOME_LIKE() + currentPage.trim();
         return url;
     }
 }

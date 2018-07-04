@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.hrtgo.heritagego.heritagego.API.API;
 import com.hrtgo.heritagego.heritagego.Activity.LocationDetail;
 import com.hrtgo.heritagego.heritagego.Interface.OnLoadMoreListener;
 import com.hrtgo.heritagego.heritagego.Model.heritageInfoHomeModel;
@@ -84,7 +85,7 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
             item.txtAmountOfLocationView.setText(String.valueOf(locationDatas.get(position).getLocationViewed()));
 //            item.txtAmountOfLocationView.setText(String.valueOf(locationDatas.get(position).getLocationLiked()));
             Picasso.get()
-                    .load(context.getResources().getString(R.string.request_image) + locationDatas.get(position).getLocationImagePath())
+                    .load(API.IMAGE_LINK() + locationDatas.get(position).getLocationImagePath())
                     .fit()
                     .centerCrop()
                     .placeholder(R.drawable.image_place_holder)

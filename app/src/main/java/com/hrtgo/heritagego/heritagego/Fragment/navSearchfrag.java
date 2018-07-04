@@ -32,6 +32,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.hrtgo.heritagego.heritagego.API.API;
 import com.hrtgo.heritagego.heritagego.Activity.LocationDetail;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
 import com.hrtgo.heritagego.heritagego.Interface.Json;
@@ -205,7 +206,7 @@ public class navSearchfrag extends Fragment {
             e.printStackTrace();
         }
 
-        String url = getActivity().getResources().getString(R.string.request_search) + search + "/" + currentPage ;
+        String url = API.SEARCH() + search + "/" + currentPage ;
         Log.e("urlSearch", url);
         return url;
     }
