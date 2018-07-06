@@ -8,8 +8,4 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="Acction_top_bar">
-        <item name="android:background">#616969</item>
-    </style>
-
 </resources>

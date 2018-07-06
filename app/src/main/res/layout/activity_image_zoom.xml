@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#000000"
+    android:background="#dc000000"
     >
 
     <android.support.v7.widget.Toolbar
@@ -15,11 +15,11 @@
     <com.github.chrisbanes.photoview.PhotoView
         android:layout_below="@id/action_tool_bar_custom_photoView"
         android:id="@+id/image_photo_view"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="0.1dp"
+        android:layout_marginRight="0.1dp"
         android:layout_centerInParent="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"  />
+        android:layout_height="match_parent" />
     <!--<ImageView-->
         <!--android:id="@+id/image_photo_view"-->
         <!--android:layout_marginLeft="10dp"-->

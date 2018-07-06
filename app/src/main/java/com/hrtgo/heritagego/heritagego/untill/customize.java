@@ -1,28 +1,14 @@
 package com.hrtgo.heritagego.heritagego.untill;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.graphics.Shader;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ProgressBar;
-
-import com.hrtgo.heritagego.heritagego.Activity.MainActivity;
-import com.hrtgo.heritagego.heritagego.R;
 
 import java.lang.reflect.Field;
 
@@ -61,7 +47,7 @@ public class customize {
 
             actionBar.setCustomView(v);
             toolbar = (Toolbar) v.getParent();
-            toolbar.setPadding(0,0,0,0);
+            toolbar.setPadding(0,0,5,0);
             toolbar.setContentInsetsAbsolute(0,0);
         }
     }

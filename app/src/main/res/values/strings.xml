@@ -11,4 +11,11 @@
     <string name="home_tab_myfavorite_en">My favourite</string>
 
     <string name="title_activity_maps">Map</string>
+
+    <string name="main_title_item_1">Heritage</string>
+    <string name="main_title_item_2">Exhibition</string>
+    <string name="main_title_item_3">Saved</string>
+    <string name="main_title_item_4">Document</string>
+
+    <string name="exit_notification">Press again to exit</string>
 </resources>

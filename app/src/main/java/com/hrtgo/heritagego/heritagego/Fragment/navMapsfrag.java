@@ -64,6 +64,7 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
     View view;
     private Double Latitude = 0.00;
     private Double Longitude = 0.00;
+    private String LocationID;
 
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -176,16 +177,25 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
                         String ID = location.get(i).get("ID").toString();
                         MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_heritage));
                         marker.snippet(ID);
-
                         mMap.addMarker(marker);
                     }
+
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+                            LocationID = marker.getSnippet();
+                            marker.setSnippet("");
+                            return false;
+                        }
+                    });
 
                     // go to Location Detail
                     mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                         @Override
                         public void onInfoWindowClick(Marker marker) {
+                            Log.e("navMap", LocationID);
                             Intent intent = new Intent(getContext(), LocationDetail.class);
-                            intent.putExtra("ID", marker.getSnippet());
+                            intent.putExtra("ID", LocationID);
                             Log.e("markers", marker.getSnippet());
                             startActivity(intent);
                         }
@@ -208,6 +218,8 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
 
         VolleySingleton.getInStance(getActivity()).getRequestQueue().add(jsonRequest);
     }
+
+
 
     private String getURL(){
         String url = API.MARKER_LIST() + getEncodedLocation(currlatitude, currlongitude);

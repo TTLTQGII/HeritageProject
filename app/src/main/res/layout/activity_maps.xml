@@ -9,7 +9,7 @@ android:layout_height="match_parent"
 tools:context=".Activity.MapsActivity">
 
 <android.support.v7.widget.Toolbar
-    android:id="@+id/action_tool_bar_custom_location_detail"
+    android:id="@+id/action_tool_bar_custom_activity_map"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:layout_alignParentTop="true"
@@ -21,7 +21,7 @@ tools:context=".Activity.MapsActivity">
 <RelativeLayout
     android:id="@+id/infomation_location"
     android:orientation="vertical"
-    android:layout_below="@+id/action_tool_bar_custom_location_detail"
+    android:layout_below="@+id/action_tool_bar_custom_activity_map"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 

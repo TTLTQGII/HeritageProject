@@ -4,7 +4,7 @@
     <color name="colorPrimary">#015959</color>
     <color name="colorPrimaryDark">#004040</color>
     <color name="colorAccent">#616969</color>
-
+    <color name="main_activity_item">#016160</color>
     <color name="itemHome_background">#60383636</color>
 
     <!--tabs color at home-->
@@ -12,11 +12,11 @@
 
     <!--navigation bottom -->
     <!--color of item at navigation bottom when it active-->
-    <color name="nav_item_bottom_active">#015959</color>
+    <color name="nav_item_bottom_active">#004040</color>
     <!--color of item at navigation bottom when it non-active-->
-    <color name="nav_item_bottom_nonactive">#6b6a6a</color>
+    <color name="nav_item_bottom_nonactive">#c1109494</color>
     <!--background of navigation bottom-->
-    <color name="nav_bottom_backgroud">#92e1d5d5</color>
+    <color name="nav_bottom_backgroud">#4db3b3b3</color>
 
     <!--item home-->
     <!--background of Home item in navigation bottom-->

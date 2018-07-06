@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-
-    <ImageView
-        android:paddingLeft="10dp"
-        android:paddingStart="10dp"
-        android:paddingRight="10dp"
-        android:paddingEnd="10dp"
-        android:layout_centerVertical="true"
-        android:src="@drawable/ic_back_press_ptv"
-        android:id="@+id/ic_img_backpress"
-        android:layout_alignParentLeft="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:clickable="true"
-        android:layout_alignParentStart="true"
-        />
+    <!--<ImageView-->
+        <!--android:paddingLeft="10dp"-->
+        <!--android:paddingStart="10dp"-->
+        <!--android:paddingRight="10dp"-->
+        <!--android:paddingEnd="10dp"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:src="@drawable/ic_back_press_ptv"-->
+        <!--android:id="@+id/ic_img_backpress"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:clickable="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--/>-->
 
     <TextView
         style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
@@ -31,7 +29,7 @@
         android:layout_gravity="center"
         android:textSize="25sp"
         android:layout_centerInParent="true"
-        android:textColor="#ffff"
+        android:textColor="#c1ab02"
         />
 
     <ImageView
@@ -47,4 +45,5 @@
         android:layout_marginEnd="10dp"
         android:layout_alignParentEnd="true"
         android:focusable="true" />
+
 </RelativeLayout>

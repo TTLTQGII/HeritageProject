@@ -74,4 +74,6 @@ public class navBottomAdapterViewpagerHome extends FragmentPagerAdapter{
         return title;
     }
 
+
+
 }

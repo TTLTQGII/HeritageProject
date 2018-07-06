@@ -155,7 +155,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // customize Action bar
     private void initCustomizeActionBar(){
-        actionToolBar = findViewById(R.id.action_tool_bar_custom_location_detail);
+        actionToolBar = findViewById(R.id.action_tool_bar_custom_activity_map);
         if(actionToolBar != null) {
             setSupportActionBar(actionToolBar);
             ActionBar actionBar = getSupportActionBar();

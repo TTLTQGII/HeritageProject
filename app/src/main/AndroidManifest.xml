@@ -19,12 +19,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".Activity.MainActivity" android:windowSoftInputMode="adjustNothing">
+        <activity android:name=".Activity.MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".Activity.HeritageActivity"
+            android:windowSoftInputMode="adjustNothing"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Activity.LocationDetail"/>
         <activity android:name=".Activity.CommentActivity"/>
         <activity android:name=".Activity.photoViewActivity"/>
