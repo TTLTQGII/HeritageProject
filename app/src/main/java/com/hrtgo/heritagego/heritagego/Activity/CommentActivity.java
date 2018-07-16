@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,21 +32,21 @@ import com.hrtgo.heritagego.heritagego.API.API;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvCommentAdapter;
 import com.hrtgo.heritagego.heritagego.Interface.OnLoadMoreListener;
 import com.hrtgo.heritagego.heritagego.Interface.getParams;
+import com.hrtgo.heritagego.heritagego.Interface.ConnectivityReceiverListener;
 import com.hrtgo.heritagego.heritagego.Model.userComment;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
-import com.hrtgo.heritagego.heritagego.untill.customize;
+import com.hrtgo.heritagego.heritagego.until.customize;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CommentActivity extends AppCompatActivity {
+public class CommentActivity extends BaseActivity{
 
     android.support.v7.widget.Toolbar actionToolBar;
     RecyclerView rcvComment;
@@ -57,7 +57,7 @@ public class CommentActivity extends AppCompatActivity {
     // currentPage loaded is 1
     long totalComment = 0;
     int currentPage = 0;
-    String locationName, address, infoPlatform;
+    String locationName, address, infoPlatform, language;
     double latitude, longitude;
 
     ArrayList<userComment> commentList;
@@ -67,9 +67,11 @@ public class CommentActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
-
+        language = super.mLanguage;
+        Log.e("language", language);
         initView();
     }
+
 
     private void initView(){
         initCustomizeActionBar();
@@ -323,7 +325,12 @@ public class CommentActivity extends AppCompatActivity {
                changeViewTypeAdapter(adapter.view_type_loadmore);
                currentPage++;
                //Log.e("currentPage", String.valueOf(currentPage));
-               callComentAPI(getCommentURL(currentPage));
+               new Handler().postDelayed(new Runnable() {
+                   @Override
+                   public void run() {
+                       callComentAPI(getCommentURL(currentPage));
+                   }
+               }, 2000);
             }
         });
     }
@@ -344,5 +351,10 @@ public class CommentActivity extends AppCompatActivity {
         commentList.remove(commentList.size() - 1);
         adapter.userComments = commentList;
         adapter.notifyItemRemoved(adapter.userComments.size() - 1);
+    }
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+
     }
 }

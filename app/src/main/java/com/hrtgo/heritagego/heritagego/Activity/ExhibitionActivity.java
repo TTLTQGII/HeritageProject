@@ -5,17 +5,29 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
+import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterExhibition;
+import com.hrtgo.heritagego.heritagego.Interface.OnLoadMoreListener;
+import com.hrtgo.heritagego.heritagego.Model.exhibitionInfoHome;
 import com.hrtgo.heritagego.heritagego.R;
-import com.hrtgo.heritagego.heritagego.untill.customize;
+import com.hrtgo.heritagego.heritagego.until.customize;
 
-public class ExhibitionActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class ExhibitionActivity extends BaseActivity {
 
     android.support.v7.widget.Toolbar actionToolBar;
     ImageView icBackpress;
+    RecyclerView mRcvExhibition;
+    int currentPage = 1;
+    rcvAdapterExhibition adapter;
+    ArrayList<exhibitionInfoHome> exhibitionDataList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,6 +38,8 @@ public class ExhibitionActivity extends AppCompatActivity {
 
     private void initView(){
         initCustomizeActionBar();
+
+        mRcvExhibition = findViewById(R.id.rcv_exhibition);
     }
 
     // customize Action bar
@@ -52,4 +66,34 @@ public class ExhibitionActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void setRecyClerView(){
+        mRcvExhibition.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getBaseContext(), LinearLayoutManager.VERTICAL, false);
+        mRcvExhibition.setLayoutManager(linearLayoutManager);
+
+        adapter = new rcvAdapterExhibition(mRcvExhibition, exhibitionDataList, this);
+        mRcvExhibition.setAdapter(adapter);
+
+        mOnLoadMore();
+    }
+
+    private void mOnLoadMore(){
+        adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                currentPage++;
+                exhibitionDataList.add(null);
+                adapter.exhibitionData = exhibitionDataList;
+                adapter.notifyItemInserted(adapter.exhibitionData.size() - 1);
+                // call API get Data
+            }
+        });
+    }
+
+    private void onDataChanged(){
+        adapter.notifyDataSetChanged();
+        adapter.loaded();
+    }
+
 }

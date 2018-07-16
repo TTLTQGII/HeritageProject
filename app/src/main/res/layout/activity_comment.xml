@@ -108,13 +108,6 @@
         android:layout_marginLeft="5dp"
         />
 
-    <!--<android.support.v7.widget.Toolbar-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="46dp"-->
-        <!--android:id="@+id/tool_bar_comment"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:background="@color/colorPrimary"-->
-        <!--/>-->
 
     <LinearLayout
         android:id="@+id/comment_bar"
@@ -143,15 +136,4 @@
             android:textCursorDrawable="@drawable/cursor_edittext"
             />
     </LinearLayout>
-
-    <!--<View-->
-        <!--android:id="@+id/comment_bar"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:weightSum="10"-->
-        <!--android:orientation="horizontal"-->
-        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:background="@color/colorPrimary"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="56dp"/>-->
-
 </RelativeLayout>

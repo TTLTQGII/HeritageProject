@@ -2,6 +2,7 @@ package com.hrtgo.heritagego.heritagego.Fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -20,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -55,6 +57,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@SuppressLint("ValidFragment")
 public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
@@ -62,10 +65,15 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
     GoogleMap mMap;
     MapView mMapView;
     View view;
+    Context context;
     private Double Latitude = 0.00;
     private Double Longitude = 0.00;
     private String LocationID;
+    LatLng coordinate;
 
+    public navMapsfrag(Context context) {
+        this.context = context;
+    }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     LocationRequest mLocationRequest;
@@ -75,9 +83,6 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
 
     double currlatitude, currlongitude;
 
-
-    //ArrayList<HashMap<String, String>> location = new ArrayList<>();
-    HashMap<String, String> map;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,7 +113,7 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
     @SuppressLint("RestrictedApi")
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        MapsInitializer.initialize(getContext());
+        MapsInitializer.initialize(context);
         mMap = googleMap;
 
         mLocationRequest = new LocationRequest();
@@ -128,6 +133,10 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
             mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationMapFrag, Looper.myLooper());
             googleMap.setMyLocationEnabled(true);
         }
+
+        coordinate = new LatLng(16.460293, 107.590843);
+        //move map camera
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinate, 5));
     }
 
     private void callAPIMarker(){
@@ -175,9 +184,16 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
                         Longitude = Double.parseDouble(location.get(i).get("Longitude").toString());
                         String name = location.get(i).get("LocationName").toString();
                         String ID = location.get(i).get("ID").toString();
-                        MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_heritage));
-                        marker.snippet(ID);
-                        mMap.addMarker(marker);
+                        if(i == 0){
+                            MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_heritage));
+                            marker.snippet(ID);
+                            mMap.addMarker(marker);
+                        }
+                        else {
+                            MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_heritage));
+                            marker.snippet(ID);
+                            mMap.addMarker(marker);
+                        }
                     }
 
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -213,9 +229,17 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
             @Override
             public void onErrorResponse(VolleyError error) {
                 // control error in here
+                Latitude = currlatitude;
+                Longitude = currlongitude;
+                LatLng coordinate = new LatLng(Latitude, Longitude);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinate, 15));
             }
         });
 
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+                60000,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         VolleySingleton.getInStance(getActivity()).getRequestQueue().add(jsonRequest);
     }
 

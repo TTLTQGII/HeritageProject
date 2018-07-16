@@ -10,15 +10,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hrtgo.heritagego.heritagego.API.API;
+import com.hrtgo.heritagego.heritagego.Activity.HeritageActivity;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
-import com.hrtgo.heritagego.heritagego.Interface.Json;
 import com.hrtgo.heritagego.heritagego.Interface.OnLoadMoreListener;
 import com.hrtgo.heritagego.heritagego.Model.heritageInfoHomeModel;
 import com.hrtgo.heritagego.heritagego.R;
@@ -42,12 +42,14 @@ public class tabNearHome extends Fragment{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         listData = new ArrayList<>();
+        HeritageActivity activity = (HeritageActivity) getActivity();
+        activity.tabNearHome = this;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.home_fragment_tab_near, container, false);
+        View view = inflater.inflate(R.layout.tab_near, container, false);
 
         initView(view);
         return view;
@@ -103,9 +105,10 @@ public class tabNearHome extends Fragment{
             @Override
             public void onErrorResponse(VolleyError error) {
                 // control error in here
-                Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
             }
         });
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(30000,3,DefaultRetryPolicy.DEFAULT_TIMEOUT_MS));
         VolleySingleton.getInStance(this.getContext()).getRequestQueue().add(jsonRequest);
     }
 
@@ -151,5 +154,13 @@ public class tabNearHome extends Fragment{
     private String getURL(String currentPage){
         String url = API.HOME_LIKE() + currentPage.trim();
         return url;
+    }
+
+    public void getConnect(boolean isConnected){
+        if(isConnected){
+            callAPI(getURL(String.valueOf(currentPage)));
+        }else {
+
+        }
     }
 }

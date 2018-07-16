@@ -10,15 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hrtgo.heritagego.heritagego.API.API;
+import com.hrtgo.heritagego.heritagego.Activity.HeritageActivity;
 import com.hrtgo.heritagego.heritagego.Adapter.rcvAdapterTabsHome;
-import com.hrtgo.heritagego.heritagego.Interface.Json;
 import com.hrtgo.heritagego.heritagego.Interface.OnLoadMoreListener;
 import com.hrtgo.heritagego.heritagego.Model.heritageInfoHomeModel;
 import com.hrtgo.heritagego.heritagego.R;
@@ -39,12 +38,14 @@ public class tabMyFavoriteHome extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         listData = new ArrayList<>();
+        HeritageActivity activity = (HeritageActivity) getActivity();
+        activity.tabMyFavoriteHome = this;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.home_fragment_tab_my_favorite, container, false);
+        View view = inflater.inflate(R.layout.tab_my_favorite, container, false);
 
         initView(view);
         //callAPI("2");
@@ -91,7 +92,7 @@ public class tabMyFavoriteHome extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // control error in here
-                Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
             }
         });
         VolleySingleton.getInStance(this.getContext()).getRequestQueue().add(jsonRequest);
@@ -130,5 +131,9 @@ public class tabMyFavoriteHome extends Fragment {
     private String getURL(String currentPage){
         String url = API.HOME_LIKE() + currentPage.trim();
         return url;
+    }
+
+    public void getConnect(boolean isConnected){
+
     }
 }

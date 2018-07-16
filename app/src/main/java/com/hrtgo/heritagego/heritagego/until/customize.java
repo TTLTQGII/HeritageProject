@@ -1,4 +1,4 @@
-package com.hrtgo.heritagego.heritagego.untill;
+package com.hrtgo.heritagego.heritagego.until;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;

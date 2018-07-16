@@ -56,7 +56,7 @@
                     android:textSize="15sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/txt_name_location_recycler_view_exhibition_item"
+                    android:id="@+id/txt_name_exhibition_item"
                     android:text=""
                     android:layout_gravity="center_vertical"
                     />

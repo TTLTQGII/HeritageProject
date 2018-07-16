@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
+        android:id="@+id/action_tool_bar_custom_exhibition"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:id="@+id/action_tool_bar_custom_exhibition"
         android:layout_alignParentTop="true"
-        android:background="@color/colorPrimary"
-        />
+        android:background="@color/colorPrimary" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcv_exhibition"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/action_tool_bar_custom_exhibition"
+        android:padding="1dp" />
 
 </RelativeLayout>

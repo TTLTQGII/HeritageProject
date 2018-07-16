@@ -1,21 +1,28 @@
 <resources>
-    <string name="app_name">Heritage Go</string>
-    <string name="navigation_bottom_home_en">Home</string>
-    <string name="navigation_bottom_Maps_en">Maps</string>
-    <string name="naviagtion_bottom_setting_en">Setting</string>
-    <string name="navigation_bottom_search_en">Search</string>
+    <string name="app_name" translatable="false">Heritage Go</string>
+    <string name="navigation_bottom_home">Home</string>
+    <string name="navigation_bottom_Maps">Maps</string>
+    <string name="naviagtion_bottom_setting">Setting</string>
+    <string name="navigation_bottom_search">Search</string>
 
-    <string name="home_tab_famous_en">Famous</string>
-    <string name="home_tab_near_en">Near</string>
-    <string name="home_tab_mostview_en">Most viewed</string>
-    <string name="home_tab_myfavorite_en">My favourite</string>
+    <string name="home_tab_famous">Famous</string>
+    <string name="home_tab_near">Near</string>
+    <string name="home_tab_mostview">Most viewed</string>
+    <string name="home_tab_myfavorite">My favourite</string>
 
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps" translatable="false">Map</string>
 
     <string name="main_title_item_1">Heritage</string>
     <string name="main_title_item_2">Exhibition</string>
-    <string name="main_title_item_3">Saved</string>
+    <string name="main_title_item_3">Storage</string>
     <string name="main_title_item_4">Document</string>
 
-    <string name="exit_notification">Press again to exit</string>
+    <string name="exit_notification">Press back again to exit</string>
+    <!--setting-->
+    <string name="setting_title_language">Language</string>
+
+    <!--notification message-->
+    <string name="error_user_location">Can\'t access your location</string>
+    <string name="error_destination_of_location">Destination isn\'t found</string>
+
 </resources>

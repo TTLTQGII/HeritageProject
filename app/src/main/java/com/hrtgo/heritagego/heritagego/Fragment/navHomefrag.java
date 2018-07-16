@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Adapter.navBottomAdapterViewpagerHome;
-import com.squareup.picasso.Picasso;
 
 public class navHomefrag extends Fragment {
 
@@ -76,5 +75,4 @@ public class navHomefrag extends Fragment {
             }
         });
     }
-
 }

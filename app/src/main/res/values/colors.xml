@@ -6,6 +6,7 @@
     <color name="colorAccent">#616969</color>
     <color name="main_activity_item">#016160</color>
     <color name="itemHome_background">#60383636</color>
+    <color name="application_name">#c1ab02</color>
 
     <!--tabs color at home-->
     <color name="home_fragment_tab_background">#015959</color>

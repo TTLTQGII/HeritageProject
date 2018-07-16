@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -21,7 +20,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,14 +44,14 @@ import com.hrtgo.heritagego.heritagego.DirectionTask.DirectionTask;
 import com.hrtgo.heritagego.heritagego.DirectionTask.DirectionTaskListener;
 import com.hrtgo.heritagego.heritagego.DirectionTask.Route;
 import com.hrtgo.heritagego.heritagego.R;
-import com.hrtgo.heritagego.heritagego.untill.customize;
+import com.hrtgo.heritagego.heritagego.until.customize;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
+public class MapsActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,DirectionTaskListener {
@@ -69,7 +67,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     List<Marker> originMarkers = new ArrayList<>();
     List<Marker> destinationMarkers = new ArrayList<>();
     List<Polyline> polylinePaths = new ArrayList<>();
-    List<Route> localRoute;
+    List<Route> mLocalRoute;
+    boolean mDirectionflag = false; // check if route existed
+    String mDuration;
     ProgressDialog progressDialog;
     LatLng coordinate;
 
@@ -247,8 +247,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 //move map camera
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinate, 11));
             }
-            sendRequest(CurrentLocation(latitude,longitude),Destination );
-
+            if(!mDirectionflag) {
+                sendRequest(CurrentLocation(latitude, longitude), Destination);
+            }
         }
     };
 

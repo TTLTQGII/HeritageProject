@@ -15,36 +15,65 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hrtgo.heritagego.heritagego.Fragment.navHomefrag;
+import com.hrtgo.heritagego.heritagego.Fragment.tabFamousHome;
+import com.hrtgo.heritagego.heritagego.Fragment.tabMostViewedHome;
+import com.hrtgo.heritagego.heritagego.Fragment.tabMyFavoriteHome;
+import com.hrtgo.heritagego.heritagego.Fragment.tabNearHome;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Fragment.navMapsfrag;
 import com.hrtgo.heritagego.heritagego.Fragment.navSearchfrag;
-import com.hrtgo.heritagego.heritagego.untill.customize;
+import com.hrtgo.heritagego.heritagego.until.customize;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class HeritageActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class HeritageActivity extends BaseActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     private android.support.v7.widget.Toolbar actionToolBar;
     private BottomNavigationView bottomNavigationView;
     List<String> fragmentList = new ArrayList<>();
+    ImageView icBackpress;
+
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    public static tabFamousHome tabFamousHome;
+    public static tabMostViewedHome tabMostViewedHome;
+    public static tabNearHome tabNearHome;
+    public static tabMyFavoriteHome tabMyFavoriteHome;
 
     @Override
     protected void onStart() {
         super.onStart();
         initData();
+    }
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        super.onNetworkConnectionChanged(isConnected);
+        if (tabFamousHome != null) {
+            tabFamousHome.getConnect(isConnected);
+        }
+        if (tabNearHome != null) {
+            tabNearHome.getConnect(isConnected);
+        }
+        if (tabMostViewedHome != null) {
+            tabMostViewedHome.getConnect(isConnected);
+        }
+        if (tabMyFavoriteHome != null) {
+            tabMyFavoriteHome.getConnect(isConnected);
+        }
+
     }
 
     @Override
@@ -65,8 +94,7 @@ public class HeritageActivity extends AppCompatActivity implements BottomNavigat
         bottomNavigationView = findViewById(R.id.nav_bottom_view);
         customize.disableShiftMode(bottomNavigationView);
         initCustomizeNavigationBottom();
-
-        loadFragment("Home", new navHomefrag());
+        loadFragment(this.getResources().getString(R.string.navigation_bottom_home), new navHomefrag());
     }
 
 
@@ -76,11 +104,13 @@ public class HeritageActivity extends AppCompatActivity implements BottomNavigat
         if (actionToolBar != null) {
             setSupportActionBar(actionToolBar);
             ActionBar actionBar = getSupportActionBar();
-            actionBar.hide();
+            actionBar.show();
             LayoutInflater inflater = (LayoutInflater) HeritageActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View customAcionBar = inflater.inflate(R.layout.tool_action_bar_customize, null);
             actionBar.setCustomView(customAcionBar);
             customize.customizeActionBar(actionToolBar, actionBar, customAcionBar);
+
+            mIcBackpress();
         }
     }
 
@@ -90,10 +120,10 @@ public class HeritageActivity extends AppCompatActivity implements BottomNavigat
     }
 
     private void initData() {
-        fragmentList.add(this.getResources().getString(R.string.navigation_bottom_home_en));
-        fragmentList.add(this.getResources().getString(R.string.navigation_bottom_Maps_en));
+        fragmentList.add(this.getResources().getString(R.string.navigation_bottom_home));
+        fragmentList.add(this.getResources().getString(R.string.navigation_bottom_Maps));
 //        fragmentList.add(this.getResources().getString(R.string.naviagtion_bottom_setting_en));
-        fragmentList.add(this.getResources().getString(R.string.navigation_bottom_search_en));
+        fragmentList.add(this.getResources().getString(R.string.navigation_bottom_search));
     }
 
 
@@ -101,7 +131,7 @@ public class HeritageActivity extends AppCompatActivity implements BottomNavigat
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment fragment = new navHomefrag();
-        String title = "Home";
+        String title = getResources().getString(R.string.navigation_bottom_home);
 
         switch (item.getItemId()) {
             case R.id.nav_action_bottom_home:
@@ -110,7 +140,7 @@ public class HeritageActivity extends AppCompatActivity implements BottomNavigat
                 item.setChecked(true);
                 break;
             case R.id.nav_action_bottom_maps:
-                fragment = new navMapsfrag();
+                fragment = new navMapsfrag(getBaseContext());
                 title = item.getTitle().toString();
                 item.setChecked(true);
                 break;
@@ -136,19 +166,18 @@ public class HeritageActivity extends AppCompatActivity implements BottomNavigat
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
         if (getSupportFragmentManager().findFragmentByTag(fragmentName) == null) {
-            switch (fragmentName) {
-                case "Home":
-                    fragmentTransaction.add(R.id.fragment_main_LL_Container, fragment, fragmentName).addToBackStack(fragmentName);
-                    break;
-                case "Maps":
-                    fragmentTransaction.add(R.id.fragment_main_LL_Container, fragment, fragmentName).addToBackStack(fragmentName);
-                    break;
-//                case "Setting":
-//                    fragmentTransaction.add(R.id.fragment_main_LL_Container, fragment, fragmentName).addToBackStack(fragmentName);
-//                    break;
-                case "Search":
-                    fragmentTransaction.add(R.id.fragment_main_LL_Container, fragment, fragmentName).addToBackStack(fragmentName);
-                    break;
+            if (fragmentName.equals(this.getResources().getString(R.string.navigation_bottom_home))) {
+                //Home View
+                fragmentTransaction.add(R.id.fragment_main_LL_Container, fragment, fragmentName).addToBackStack(fragmentName);
+            } else if (fragmentName.equals(this.getResources().getString(R.string.navigation_bottom_Maps))) {
+                //Google Map
+                fragmentTransaction.add(R.id.fragment_main_LL_Container, fragment, fragmentName).addToBackStack(fragmentName);
+            } else if (fragmentName.equals(this.getResources().getString(R.string.naviagtion_bottom_setting))) {
+                //Setting
+//                fragmentTransaction.add(R.id.fragment_main_LL_Container, fragment, fragmentName).addToBackStack(fragmentName);
+            } else if (fragmentName.equals(this.getResources().getString(R.string.navigation_bottom_search))) {
+                //Search
+                fragmentTransaction.add(R.id.fragment_main_LL_Container, fragment, fragmentName).addToBackStack(fragmentName);
             }
         } else {
             fragmentTransaction.show(getSupportFragmentManager().findFragmentByTag(fragmentName));
@@ -170,9 +199,23 @@ public class HeritageActivity extends AppCompatActivity implements BottomNavigat
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        mBackpress();
+    }
+
+    private void mBackpress() {
         Intent mIntent = new Intent(this, MainActivity.class);
         mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(mIntent);
+    }
+
+    private void mIcBackpress() {
+        icBackpress = findViewById(R.id.ic_img_backpress);
+        icBackpress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBackpress();
+            }
+        });
     }
 
     private void checkLocationPermission() {
@@ -238,6 +281,5 @@ public class HeritageActivity extends AppCompatActivity implements BottomNavigat
                 return;
             }
         }
-
     }
 }

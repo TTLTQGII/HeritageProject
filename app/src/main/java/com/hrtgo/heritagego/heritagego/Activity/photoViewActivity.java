@@ -14,9 +14,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.github.chrisbanes.photoview.PhotoView;
-import com.github.chrisbanes.photoview.PhotoViewAttacher;
 import com.hrtgo.heritagego.heritagego.R;
-import com.hrtgo.heritagego.heritagego.untill.customize;
+import com.hrtgo.heritagego.heritagego.until.customize;
 
 public class photoViewActivity extends AppCompatActivity {
 

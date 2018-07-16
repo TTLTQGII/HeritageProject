@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 
-
+import com.hrtgo.heritagego.heritagego.Activity.HeritageActivity;
 import com.hrtgo.heritagego.heritagego.Fragment.tabFamousHome;
 import com.hrtgo.heritagego.heritagego.Fragment.tabMostViewedHome;
 import com.hrtgo.heritagego.heritagego.Fragment.tabNearHome;
@@ -59,16 +59,16 @@ public class navBottomAdapterViewpagerHome extends FragmentPagerAdapter{
         String title = "";
         switch (position){
             case 0:
-                title = context.getString(R.string.home_tab_famous_en);
+                title = context.getString(R.string.home_tab_famous);
                 break;
             case 1:
-                title = context.getString(R.string.home_tab_near_en);
+                title = context.getString(R.string.home_tab_near);
                 break;
             case 2:
-                title = context.getString(R.string.home_tab_mostview_en);
+                title = context.getString(R.string.home_tab_mostview);
                 break;
             case 3:
-                title = context.getString(R.string.home_tab_myfavorite_en);
+                title = context.getString(R.string.home_tab_myfavorite);
                 break;
         }
         return title;

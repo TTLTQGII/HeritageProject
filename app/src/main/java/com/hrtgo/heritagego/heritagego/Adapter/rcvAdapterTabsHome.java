@@ -67,7 +67,7 @@ public class rcvAdapterTabsHome extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if(viewType == view_type_item){
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            View itemView = inflater.inflate(R.layout.recycler_view_home_items_layout, parent, false);
+            View itemView = inflater.inflate(R.layout.items_layout_rcv_home, parent, false);
             return new itemHolder(itemView);
         }else if(viewType == view_type_loading){
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
