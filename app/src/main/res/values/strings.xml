@@ -22,7 +22,11 @@
     <string name="setting_title_language">Language</string>
 
     <!--notification message-->
-    <string name="error_user_location">Can\'t access your location</string>
-    <string name="error_destination_of_location">Destination isn\'t found</string>
+    <string name="notification_error_user_location">Can\'t access your location</string>
+    <string name="notification_error_destination_of_location">Destination isn\'t found</string>
+    <!--network error-->
+    <string name="notification_network_error">Waiting For Network</string>
+    <string name="btn_reload">Reload</string>
+    <string name="btn_offline">Offline Mode</string>
 
 </resources>

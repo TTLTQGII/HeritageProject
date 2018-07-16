@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
 
 import android.support.design.widget.BottomNavigationView;
@@ -16,10 +17,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,12 +48,15 @@ public class HeritageActivity extends BaseActivity implements BottomNavigationVi
     List<String> fragmentList = new ArrayList<>();
     ImageView icBackpress;
 
-
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static tabFamousHome tabFamousHome;
     public static tabMostViewedHome tabMostViewedHome;
     public static tabNearHome tabNearHome;
     public static tabMyFavoriteHome tabMyFavoriteHome;
+
+    public static CardView mNetworkNotification;
+    public static Button btnOfflineMode;
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     @Override
     protected void onStart() {
@@ -61,6 +67,14 @@ public class HeritageActivity extends BaseActivity implements BottomNavigationVi
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
         super.onNetworkConnectionChanged(isConnected);
+
+        if(isConnected){
+           mNetworkNotification.setVisibility(View.GONE);
+        }
+        else {
+            mNetworkNotification.setVisibility(View.VISIBLE);
+        }
+
         if (tabFamousHome != null) {
             tabFamousHome.getConnect(isConnected);
         }
@@ -94,6 +108,9 @@ public class HeritageActivity extends BaseActivity implements BottomNavigationVi
         bottomNavigationView = findViewById(R.id.nav_bottom_view);
         customize.disableShiftMode(bottomNavigationView);
         initCustomizeNavigationBottom();
+
+        mNetworkNotification = findViewById(R.id.m_notification_network_error);
+        btnOfflineMode = findViewById(R.id.btn_offline_mode);
         loadFragment(this.getResources().getString(R.string.navigation_bottom_home), new navHomefrag());
     }
 

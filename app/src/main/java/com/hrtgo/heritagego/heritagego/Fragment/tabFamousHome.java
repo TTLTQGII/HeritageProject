@@ -2,6 +2,7 @@ package com.hrtgo.heritagego.heritagego.Fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.android.volley.DefaultRetryPolicy;
@@ -45,15 +47,15 @@ public class tabFamousHome extends Fragment {
     int currentPage = 1;
     rcvAdapterTabsHome adapter;
     private static final String TAG = "Location Home";
-    TextView t;
+    HeritageActivity heritageActivity1 = (HeritageActivity) getActivity();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         listData = new ArrayList<>();
         super.onCreate(savedInstanceState);
 
-        HeritageActivity activity = (HeritageActivity) getActivity(); // khong hieu o day
-        activity.tabFamousHome = this; // khong hieu o day
+        // khong hieu o day
+        heritageActivity1.tabFamousHome = this; // khong hieu o day
 
 
     }
@@ -72,8 +74,6 @@ public class tabFamousHome extends Fragment {
     private void initView(View view) {
         recyclerView = view.findViewById(R.id.recycler_view_home_tab_famous);
         setHomeRecyclerView();
-
-        t = view.findViewById(R.id.t);
     }
 
 
@@ -99,7 +99,12 @@ public class tabFamousHome extends Fragment {
                 listData.add(null);
                 adapter.locationDatas = listData;
                 adapter.notifyItemInserted(adapter.locationDatas.size() - 1);
-                callAPI(getURL(String.valueOf(currentPage)));
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        callAPI(getURL(String.valueOf(currentPage)));
+                    }
+                }, 2000);
 
                 Log.e("ListData", String.valueOf(listData.size()));
             }
@@ -110,6 +115,7 @@ public class tabFamousHome extends Fragment {
     // call API get DATA
     private void callAPI(String url) {
         //startOverLay();
+        Log.e("currentPage", String.valueOf(currentPage));
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -122,11 +128,13 @@ public class tabFamousHome extends Fragment {
                 // control error in here
                 //stopOverLay();
                 if (listData.size() != 0) {
-                    listData.remove(listData.size() - 1);
-                    adapter.locationDatas = listData;
-                    adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
+                    if (listData.get(listData.size() - 1) == null) {
+                        listData.remove(listData.size() - 1);
+                        adapter.locationDatas = listData;
+                        adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
+                    }
                 }
-                //Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
+                heritageActivity1.mNetworkNotification.setVisibility(View.VISIBLE);
             }
         });
 
@@ -135,15 +143,18 @@ public class tabFamousHome extends Fragment {
     }
 
     public void parseJson(String result) {
+        heritageActivity1.mNetworkNotification.setVisibility(View.GONE);
         try {
             JSONObject root = new JSONObject(result);
 
             JSONArray pdataArray = root.getJSONArray("pdata");
 
             if (listData.size() != 0) {
-                listData.remove(listData.size() - 1);
-                adapter.locationDatas = listData;
-                adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
+                if (listData.get(listData.size() - 1) == null) {
+                    listData.remove(listData.size() - 1);
+                    adapter.locationDatas = listData;
+                    adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
+                }
             } else if (pdataArray.length() == 0) {
                 return;
             }
@@ -161,6 +172,10 @@ public class tabFamousHome extends Fragment {
             if (listData.size() > 0) {
                 adapter.locationDatas = listData;
                 onDataChanged();
+                Log.e("listHome", String.valueOf(listData.get(listData.size() - 1).getLocationName()));
+                Log.e("listHomeA", String.valueOf(adapter.locationDatas.get(adapter.locationDatas.size() - 1).getLocationName()));
+                Log.e("listHomeSize", String.valueOf(listData.size()));
+                Log.e("listHomeSizeA", String.valueOf(adapter.locationDatas.size()));
             }
 
         } catch (JSONException e) {
@@ -189,11 +204,10 @@ public class tabFamousHome extends Fragment {
     }
 
     public void getConnect(boolean isConnected) {
-        //  Toast.makeText(getContext(), "load list", Toast.LENGTH_SHORT).show();
         if (isConnected) {
-
+            callAPI(getURL(String.valueOf(currentPage)));
         } else {
-            t.setVisibility(View.VISIBLE);
+            heritageActivity1.mNetworkNotification.setVisibility(View.VISIBLE);
         }
     }
 

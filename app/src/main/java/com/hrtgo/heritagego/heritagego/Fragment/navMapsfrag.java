@@ -43,6 +43,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.hrtgo.heritagego.heritagego.API.API;
+import com.hrtgo.heritagego.heritagego.Activity.HeritageActivity;
 import com.hrtgo.heritagego.heritagego.Activity.LocationDetail;
 import com.hrtgo.heritagego.heritagego.R;
 import com.hrtgo.heritagego.heritagego.Worker.VolleySingleton;
@@ -70,6 +71,7 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
     private Double Longitude = 0.00;
     private String LocationID;
     LatLng coordinate;
+    HeritageActivity heritageActivity = (HeritageActivity) getActivity();
 
     public navMapsfrag(Context context) {
         this.context = context;
@@ -395,4 +397,6 @@ public class navMapsfrag extends Fragment implements OnMapReadyCallback,GoogleAp
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
+
 }

@@ -16,7 +16,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -61,7 +60,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -201,9 +199,9 @@ public class LocationDetail extends BaseActivity implements GoogleApiClient.Conn
             DirectionMap.putExtra("Data", bundle);
             startActivity(DirectionMap);
         } else if (latitude == 0.00 | longitude == 0.00) {
-            Toast.makeText(this, getResources().getString(R.string.error_user_location), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.notification_error_user_location), Toast.LENGTH_SHORT).show();
         } else if (Destination.equals("0.0 0.0")) {
-            Toast.makeText(this, getResources().getString(R.string.error_destination_of_location), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.notification_error_destination_of_location), Toast.LENGTH_SHORT).show();
         }
     }
 

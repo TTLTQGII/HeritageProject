@@ -8,6 +8,8 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
+
 import com.hrtgo.heritagego.heritagego.Interface.ConnectivityReceiverListener;
 
 
@@ -17,7 +19,6 @@ public class BaseActivity extends AppCompatActivity implements ConnectivityRecei
 
     protected String mLanguage = "ENG";
     public static mNetworkController mNetworkController;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,14 +52,17 @@ public class BaseActivity extends AppCompatActivity implements ConnectivityRecei
     protected void initBroadCastReceiver(){
         mNetworkController = new mNetworkController();
         IntentFilter mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        mNetworkController.connectivityReceiverListener=this; // khong hieu o day
+        mIntentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        mNetworkController.connectivityReceiverListener = this; // khong hieu o day
         registerReceiver(mNetworkController, mIntentFilter);
 
     }
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
-
+        if(isConnected){
+        }
+        else {
+        }
     }
 
     @Override

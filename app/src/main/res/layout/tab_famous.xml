@@ -9,15 +9,4 @@
         android:layout_height="match_parent">
     </android.support.v7.widget.RecyclerView>
 
-    <TextView
-        android:id="@+id/t"
-        android:background="@color/colorPrimary"
-        android:gravity="center"
-        android:text="@string/setting_title_language"
-        android:layout_marginBottom="20dp"
-        android:layout_alignBottom="@id/recycler_view_home_tab_famous"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:visibility="invisible"/>
-
 </RelativeLayout>

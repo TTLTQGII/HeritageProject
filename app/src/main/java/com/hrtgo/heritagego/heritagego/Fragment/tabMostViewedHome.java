@@ -1,6 +1,7 @@
 package com.hrtgo.heritagego.heritagego.Fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -29,18 +30,19 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class tabMostViewedHome extends Fragment{
+public class tabMostViewedHome extends Fragment {
     RecyclerView recyclerView;
     ArrayList<heritageInfoHomeModel> listData;
     rcvAdapterTabsHome adapter;
     int currentPage = 1;
+    HeritageActivity heritageActivity3 = (HeritageActivity) getActivity();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-         listData = new ArrayList<>();
-        HeritageActivity activity = (HeritageActivity) getActivity();
-        activity.tabMostViewedHome = this;
+        listData = new ArrayList<>();
+
+        heritageActivity3.tabMostViewedHome = this;
     }
 
     @Nullable
@@ -59,7 +61,7 @@ public class tabMostViewedHome extends Fragment{
         callAPI(getURL("1"));
     }
 
-    private void initView(View view){
+    private void initView(View view) {
         recyclerView = view.findViewById(R.id.recycler_view_home_tab_most_viewed);
         setMostViewRecyclerView();
     }
@@ -70,7 +72,7 @@ public class tabMostViewedHome extends Fragment{
     }
 
     // set adapter for recyclerView at Tab MostViewed
-    public void setMostViewRecyclerView(){
+    public void setMostViewRecyclerView() {
         recyclerView.setHasFixedSize(false);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -84,13 +86,19 @@ public class tabMostViewedHome extends Fragment{
                 listData.add(null);
                 adapter.locationDatas = listData;
                 adapter.notifyItemInserted(adapter.locationDatas.size() - 1);
-                callAPI(getURL(String.valueOf(currentPage)));
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        callAPI(getURL(String.valueOf(currentPage)));
+                    }
+                }, 2000);
+
             }
         });
     }
 
     // call API get DATA
-    private void callAPI(String url){
+    private void callAPI(String url) {
         //startOverLay();
         StringRequest jsonRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -101,42 +109,49 @@ public class tabMostViewedHome extends Fragment{
             @Override
             public void onErrorResponse(VolleyError error) {
                 // control error in here
-
-//                Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
+                if (listData.size() != 0) {
+                    if (listData.get(listData.size() - 1) == null) {
+                        listData.remove(listData.size() - 1);
+                        adapter.locationDatas = listData;
+                        adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
+                    }
+                }
+                heritageActivity3.mNetworkNotification.setVisibility(View.VISIBLE);
             }
         });
-        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(30000,3,DefaultRetryPolicy.DEFAULT_TIMEOUT_MS));
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(30000, 3, DefaultRetryPolicy.DEFAULT_TIMEOUT_MS));
         VolleySingleton.getInStance(this.getContext()).getRequestQueue().add(jsonRequest);
     }
 
-    public void parseJson(String result){
-
+    public void parseJson(String result) {
+        heritageActivity3.mNetworkNotification.setVisibility(View.GONE);
 
         try {
             JSONObject root = new JSONObject(result);
 
             JSONArray pdataArray = root.getJSONArray("pdata");
 
-            if(listData.size() != 0){
-                listData.remove(listData.size()-1);
-                adapter.locationDatas = listData;
-                adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
-            }
-            else if(pdataArray.length() == 0){
+            if (listData.size() != 0) {
+                if (listData.get(listData.size() - 1) == null) {
+                    listData.remove(listData.size() - 1);
+                    adapter.locationDatas = listData;
+                    adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
+                }
+            } else if (pdataArray.length() == 0) {
                 return;
             }
 
-            for (int i = 0; i < pdataArray.length(); i++){
+            for (int i = 0; i < pdataArray.length(); i++) {
                 JSONObject location = pdataArray.getJSONObject(i);
 
                 listData.add(new heritageInfoHomeModel(location.getInt("ID")
-                        ,location.getString("Name")
-                        ,location.getInt("Liked")
-                        ,location.getInt("Viewed")
-                        ,location.getString("ImagePath")));
+                        , location.getString("Name")
+                        , location.getInt("Liked")
+                        , location.getInt("Viewed")
+                        , location.getString("ImagePath")));
             }
 
-            if(listData.size() > 0){
+            if (listData.size() > 0) {
                 adapter.locationDatas = listData;
                 onDataChanged();
             }
@@ -146,17 +161,21 @@ public class tabMostViewedHome extends Fragment{
         }
     }
 
-    private void onDataChanged(){
+    private void onDataChanged() {
         adapter.notifyDataSetChanged();
         adapter.loaded();
     }
 
-    private String getURL(String currentPage){
+    private String getURL(String currentPage) {
         String url = API.HOME_LIKE() + currentPage.trim();
         return url;
     }
 
-    public void getConnect(boolean isConnected){
-
+    public void getConnect(boolean isConnected) {
+        if (isConnected) {
+            callAPI(getURL(String.valueOf(currentPage)));
+        } else {
+            heritageActivity3.mNetworkNotification.setVisibility(View.VISIBLE);
+        }
     }
 }

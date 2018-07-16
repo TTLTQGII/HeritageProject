@@ -1,6 +1,7 @@
 package com.hrtgo.heritagego.heritagego.Fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -37,13 +38,13 @@ public class tabNearHome extends Fragment{
     rcvAdapterTabsHome adapter;
 
     int currentPage = 1;
+    HeritageActivity heritageActivity2 = (HeritageActivity) getActivity();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         listData = new ArrayList<>();
-        HeritageActivity activity = (HeritageActivity) getActivity();
-        activity.tabNearHome = this;
+        heritageActivity2.tabNearHome = this;
     }
 
     @Nullable
@@ -88,8 +89,12 @@ public class tabNearHome extends Fragment{
                 listData.add(null);
                 adapter.locationDatas = listData;
                 adapter.notifyItemInserted(adapter.locationDatas.size() - 1);
-                callAPI(getURL(String.valueOf(currentPage)));
-                Log.e("ListData", String.valueOf(listData.size()));
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        callAPI(getURL(String.valueOf(currentPage)));
+                    }
+                }, 2000);
             }
         });
     }
@@ -105,7 +110,14 @@ public class tabNearHome extends Fragment{
             @Override
             public void onErrorResponse(VolleyError error) {
                 // control error in here
-                //Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
+                if (listData.size() != 0) {
+                    if (listData.get(listData.size() - 1) == null) {
+                        listData.remove(listData.size() - 1);
+                        adapter.locationDatas = listData;
+                        adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
+                    }
+                }
+                heritageActivity2.mNetworkNotification.setVisibility(View.VISIBLE);
             }
         });
         jsonRequest.setRetryPolicy(new DefaultRetryPolicy(30000,3,DefaultRetryPolicy.DEFAULT_TIMEOUT_MS));
@@ -113,17 +125,19 @@ public class tabNearHome extends Fragment{
     }
 
     public void parseJson(String result){
+        heritageActivity2.mNetworkNotification.setVisibility(View.GONE);
         try {
             JSONObject root = new JSONObject(result);
 
             JSONArray pdataArray = root.getJSONArray("pdata");
 
-            if(listData.size() != 0){
-                listData.remove(listData.size()-1);
-                adapter.locationDatas = listData;
-                adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
-            }
-            else if(pdataArray.length() == 0){
+            if (listData.size() != 0) {
+                if (listData.get(listData.size() - 1) == null) {
+                    listData.remove(listData.size() - 1);
+                    adapter.locationDatas = listData;
+                    adapter.notifyItemRemoved(adapter.locationDatas.size() - 1);
+                }
+            } else if (pdataArray.length() == 0) {
                 return;
             }
 
@@ -157,10 +171,10 @@ public class tabNearHome extends Fragment{
     }
 
     public void getConnect(boolean isConnected){
-        if(isConnected){
+        if (isConnected) {
             callAPI(getURL(String.valueOf(currentPage)));
-        }else {
-
+        } else {
+            heritageActivity2.mNetworkNotification.setVisibility(View.VISIBLE);
         }
     }
 }

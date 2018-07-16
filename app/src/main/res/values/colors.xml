@@ -39,4 +39,8 @@
 
     <!--divider comment color-->
     <color name="divider_comment">#6ad7d5d5</color>
+
+    <!--network error background-->
+    <color name="notification_error_network_color">#fd5d00</color>
+    <color name="error_network_text_color">#ffff</color>
 </resources>
